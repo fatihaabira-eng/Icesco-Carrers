@@ -165,7 +165,7 @@ export default function Home() {
         onSecondaryClick={handleJoinMission}
         background={{
           type: "video",
-          src: "https://videos.pexels.com/video-files/3141210/3141210-uhd_2560_1440_25fps.mp4"
+          src: "https://videos.pexels.com/video-files/7687935/7687935-uhd_2560_1440_30fps.mp4"
         }}
         showVideo={true}
         showSearch={true}

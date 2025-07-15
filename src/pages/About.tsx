@@ -11,7 +11,7 @@ import {
   Heart,
   TrendingUp
 } from "lucide-react";
-import icesco_background from "@/assets/ICESCO.png";
+import icesco_background from "@/assets/about-icesco.jpg";
 
 const stats = [
   { label: "Member States", value: "57", icon: Globe },

@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import icescoLogo from "@/assets/logo.png";
+import { FaInstagram, FaLinkedinIn, FaFacebookF, FaXTwitter } from "react-icons/fa6"; // or use FaTwitter if you prefer
 
 const departments = [
   { name: "Digital Transformation", path: "/departments/digital-transformation" },
@@ -74,7 +75,7 @@ export default function Navbar() {
             </Link>
 
             {/* Departments Dropdown */}
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center space-x-1 font-medium text-foreground hover:text-primary transition-colors">
                 <span>Departments</span>
                 <ChevronDown className="w-4 h-4" />
@@ -88,7 +89,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
 
             {/* Language Selector */}
             <DropdownMenu>
@@ -110,6 +111,21 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          {/* Social Media Icons */}
+          <div className="hidden md:flex items-center space-x-4">
+  <a href="https://www.instagram.com/icesco_en" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+    <FaInstagram className="w-5 h-5" />
+  </a>
+  <a href="https://www.linkedin.com/company/icesco" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+    <FaLinkedinIn className="w-5 h-5" />
+  </a>
+  <a href="https://www.facebook.com/icesco.en" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+    <FaFacebookF className="w-5 h-5" />
+  </a>
+  <a href="https://twitter.com/ICESCO_En" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+    <FaXTwitter className="w-5 h-5" />
+  </a>
+</div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -149,8 +165,22 @@ export default function Navbar() {
               >
                 Opportunities
               </Link>
-              
-              <div className="space-y-2">
+              <div className="flex justify-center space-x-6 pt-4 border-t">
+                <a href="https://www.instagram.com/icesco_en" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+                  <FaInstagram className="w-5 h-5" />
+                </a>
+                <a href="https://www.linkedin.com/company/icesco" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+                  <FaLinkedinIn className="w-5 h-5" />
+                </a>
+                <a href="https://www.facebook.com/icesco.en" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+                  <FaFacebookF className="w-5 h-5" />
+                </a>
+                <a href="https://twitter.com/ICESCO_En" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+                  <FaXTwitter className="w-5 h-5" />
+                </a>
+              </div>
+
+              {/* <div className="space-y-2">
                 <p className="font-medium text-muted-foreground text-sm">Departments</p>
                 {departments.map((dept) => (
                   <Link
@@ -162,7 +192,7 @@ export default function Navbar() {
                     {dept.name}
                   </Link>
                 ))}
-              </div>
+              </div> */}
             </div>
           </div>
         )}
