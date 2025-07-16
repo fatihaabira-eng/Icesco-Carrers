@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, Flag, Upload, FileText, Trash2, Edit, Save, X, Briefcase, Building, Clock, CheckCircle, MoreHorizontal } from 'lucide-react';
-import abiraFatiha from '@/assets/abira-fatiha.jpeg';
+import { User, Mail, Phone, MapPin, Calendar, Flag, Upload, FileText, Trash2, Edit, Save, X, Briefcase, Building, Clock, CheckCircle, MoreHorizontal, Activity, Lightbulb } from 'lucide-react';
+import fatihaabira from '@/assets/abira-fatiha.jpeg'; // Ensure this path is correct
 // Mock Data
 const initialUserDetails = {
     fullName: 'Abira Fatiha',
@@ -9,7 +9,9 @@ const initialUserDetails = {
     nationality: 'Moroccan',
     dob: '2000-05-01',
     address: '123 Innovation Drive, Technopolis, Rabat, Morocco',
-    profilePhoto: abiraFatiha
+    profilePhoto: fatihaabira,
+    memberSince: '2023-01-15',
+    lastLogin: '2024-07-16'
 };
 
 const initialApplications = [
@@ -17,58 +19,41 @@ const initialApplications = [
         id: 1,
         jobTitle: 'Senior Software Engineer',
         department: 'Digital Transformation',
+        company: 'Tech Innovators Inc.',
         location: 'Rabat, Morocco',
         dateApplied: '2024-06-20',
-        status: 'Interview',
+        status: 'Interview Scheduled',
         progress: 75,
         stages: [
-            { name: 'Received', completed: true },
-            { name: 'Under Review', completed: true },
-            { name: 'Interview', completed: true },
-            { name: 'Final Decision', completed: false },
-        ]
-    },
-    {
-        id: 2,
-        jobTitle: 'Education Program Manager',
-        department: 'Education',
-        location: 'Rabat, Morocco',
-        dateApplied: '2024-07-01',
-        status: 'Under Review',
-        progress: 50,
-        stages: [
-            { name: 'Received', completed: true },
-            { name: 'Under Review', completed: true },
-            { name: 'Shortlisted', completed: false },
-            { name: 'Interview', completed: false },
-        ]
-    },
-    {
-        id: 3,
-        jobTitle: 'Data Analyst',
-        department: 'Science & Technology',
-        location: 'Rabat, Morocco',
-        dateApplied: '2024-07-10',
-        status: 'Received',
-        progress: 25,
-        stages: [
-            { name: 'Received', completed: true },
-            { name: 'Under Review', completed: false },
-            { name: 'Shortlisted', completed: false },
+            { name: 'Application Submitted', completed: true },
+            { name: 'Resume Reviewed', completed: true },
+            { name: 'Technical Interview', completed: true },
             { name: 'Final Decision', completed: false },
         ]
     }
 ];
 
+const initialActivities = [
+    { id: 1, type: 'Application', description: 'Applied for Senior Software Engineer at Tech Innovators Inc.', date: '2024-06-20' },
+    { id: 2, type: 'Interview', description: 'Interview scheduled for Senior Software Engineer role.', date: '2024-07-15' },
+    { id: 3, type: 'CV Update', description: 'Updated CV to latest version.', date: '2024-07-14' },
+];
+
+const initialRecommendedJobs = [
+    { id: 101, title: 'Full Stack Developer', company: 'InnovateX', location: 'Rabat, Morocco', match: '90%' },
+    { id: 102, title: 'Data Scientist', company: 'Analytic Co.', location: 'Remote', match: '85%' },
+    { id: 103, title: 'DevOps Engineer', company: 'CloudNet Solutions', location: 'Casablanca, Morocco', match: '78%' },
+];
+
 // Reusable Card Component
 const Card = ({ children, className = '' }) => (
-    <div className={`bg-white rounded-2xl shadow-lg p-6 md:p-8 ${className}`}>
+    <div className={`bg-white rounded-xl shadow-lg p-6 h-full ${className}`}>
         {children}
     </div>
 );
 
 // Reusable Input Field for Profile Editing
-const ProfileInput = ({ icon: Icon, label, value, name, onChange, type = 'text' }) => (
+const ProfileInput = ({ icon: Icon, label, value, name, onChange, type = 'text', placeholder = '' }) => (
     <div>
         <label className="text-sm font-medium text-gray-500 flex items-center mb-1">
             <Icon className="w-4 h-4 mr-2" />
@@ -79,19 +64,39 @@ const ProfileInput = ({ icon: Icon, label, value, name, onChange, type = 'text' 
             name={name}
             value={value}
             onChange={onChange}
-            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder={placeholder}
+            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
         />
     </div>
 );
+
+// Custom Message Box Component
+const MessageBox = ({ message, onClose }) => {
+    if (!message) return null;
+    return (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-auto text-center relative">
+                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-gray-600" aria-label="Close message">
+                    <X size={20} />
+                </button>
+                <p className="text-lg font-semibold text-gray-800 mb-4">{message}</p>
+                <button onClick={onClose} className="bg-primary text-white font-semibold py-2 px-5 rounded-lg hover:bg-primary-dark transition-colors">
+                    OK
+                </button>
+            </div>
+        </div>
+    );
+};
 
 // Main Dashboard Component
 export default function CandidateDashboard() {
     const [userDetails, setUserDetails] = useState(initialUserDetails);
     const [applications, setApplications] = useState(initialApplications);
-    const [cvFile, setCvFile] = useState({ name: 'My_CV_latest.pdf', size: 2.3 }); // Mocked existing CV
+    const [cvFile, setCvFile] = useState({ name: 'My_CV_latest.pdf', size: 2.3, lastUpdated: '2024-07-14' });
     const [isEditing, setIsEditing] = useState(false);
     const [editedDetails, setEditedDetails] = useState(userDetails);
     const fileInputRef = useRef(null);
+    const [message, setMessage] = useState('');
 
     const handleEditToggle = () => {
         if (isEditing) {
@@ -104,32 +109,34 @@ export default function CandidateDashboard() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setEditedDetails(prev => ({ ...prev, value }));
+        setEditedDetails(prev => ({ ...prev, [name]: value }));
     };
     
     const handleCancelEdit = () => {
         setEditedDetails(userDetails);
         setIsEditing(false);
-    }
+    };
 
     const handleCvUpload = (e) => {
         const file = e.target.files[0];
-        if (file && (file.type === 'application/pdf' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
-            if (file.size <= 5 * 1024 * 1024) { // 5MB limit
-                setCvFile({ name: file.name, size: (file.size / 1024 / 1024).toFixed(1) });
-                // Here you would typically upload the file to a server
-                console.log('Uploading CV:', file.name);
+        if (file) {
+            if (file.type === 'application/pdf' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                if (file.size <= 5 * 1024 * 1024) { // 5MB limit
+                    setCvFile({ name: file.name, size: (file.size / 1024 / 1024).toFixed(1), lastUpdated: new Date().toISOString().slice(0, 10) });
+                    console.log('Uploading CV:', file.name);
+                    setMessage('CV uploaded successfully!');
+                } else {
+                    setMessage('File size exceeds 5MB limit.');
+                }
             } else {
-                alert('File size exceeds 5MB limit.');
+                setMessage('Invalid file type. Please upload a PDF or DOCX file.');
             }
-        } else {
-            alert('Invalid file type. Please upload a PDF or DOCX file.');
         }
     };
 
     const handleRemoveCv = () => {
         setCvFile(null);
-        // Also send request to server to delete file
+        setMessage('CV removed successfully.');
     };
 
     const triggerFileInput = () => {
@@ -137,144 +144,184 @@ export default function CandidateDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 font-sans p-4 sm:p-6 lg:p-8">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans p-4 sm:p-6 lg:p-8">
+            <MessageBox message={message} onClose={() => setMessage('')} />
+
+            <div className="max-w-8xl mx-auto">
+                {/* Header Section */}
                 <header className="mb-8">
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Candidate Dashboard</h1>
-                    <p className="text-gray-500 mt-1">Manage your profile and track your applications.</p>
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight text-center">Candidate Dashboard</h1>
+                    <p className="text-lg text-gray-600 mt-2 text-center">Manage your profile, track applications, and discover new opportunities.</p>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    {/* Left Column: Profile & CV */}
-                    <div className="lg:col-span-1 space-y-8">
-                        {/* Personal Details Card */}
-                        <Card>
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-bold text-gray-800">Personal Details</h2>
-                                <div className="flex gap-2">
-                                    {isEditing && (
-                                        <>
-                                            <button onClick={handleCancelEdit} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"><X size={18}/></button>
-                                            <button onClick={handleEditToggle} className="p-2 text-white bg-green-500 hover:bg-green-600 rounded-full transition-colors"><Save size={18}/></button>
-                                        </>
-                                    )}
-                                    {!isEditing && <button onClick={handleEditToggle} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"><Edit size={18}/></button>}
-                                </div>
+                {/* First Row: Profile and Applications */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    {/* Personal Details Card */}
+                    <Card>
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-800">Personal Details</h2>
+                            <div className="flex gap-2">
+                                {isEditing && (
+                                    <>
+                                        <button onClick={handleCancelEdit} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors" aria-label="Cancel Edit"><X size={20}/></button>
+                                        <button onClick={handleEditToggle} className="p-2 text-white bg-green-500 hover:bg-green-600 rounded-full transition-colors" aria-label="Save Changes"><Save size={20}/></button>
+                                    </>
+                                )}
+                                {!isEditing && <button onClick={handleEditToggle} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors" aria-label="Edit Profile"><Edit size={20}/></button>}
                             </div>
+                        </div>
 
-                            <div className="flex flex-col items-center mb-6">
-                                <div className="relative">
-                                    <img src={userDetails.profilePhoto} alt="Profile" className="w-24 h-24 rounded-full object-cover ring-4 ring-primary" />
-                                    <button className="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full hover:bg-primary transition-transform duration-200 hover:scale-110">
-                                        <Upload size={14} />
-                                    </button>
-                                </div>
-                                {!isEditing && <h3 className="text-lg font-semibold mt-4">{userDetails.fullName}</h3>}
+                        <div className="flex flex-col items-center mb-8">
+                            <div className="relative mb-4">
+                                <img src={userDetails.profilePhoto} alt="Profile" className="w-32 h-32 rounded-full object-cover ring-4 ring-primary ring-offset-2" />
+                                <button className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full hover:bg-primary-dark transition-transform duration-200 hover:scale-110" aria-label="Upload Profile Photo">
+                                    <Upload size={16} />
+                                </button>
                             </div>
-                            
-                            {isEditing ? (
-                                <div className="space-y-4">
-                                    <ProfileInput label="Full Name" name="fullName" value={editedDetails.fullName} onChange={handleInputChange} icon={User} />
-                                    <ProfileInput label="Email" name="email" value={editedDetails.email} onChange={handleInputChange} icon={Mail} type="email" />
-                                    <ProfileInput label="Phone" name="phone" value={editedDetails.phone} onChange={handleInputChange} icon={Phone} />
-                                    <ProfileInput label="Nationality" name="nationality" value={editedDetails.nationality} onChange={handleInputChange} icon={Flag} />
-                                    <ProfileInput label="Date of Birth" name="dob" value={editedDetails.dob} onChange={handleInputChange} icon={Calendar} type="date" />
-                                    <ProfileInput label="Address" name="address" value={editedDetails.address} onChange={handleInputChange} icon={MapPin} />
-                                </div>
-                            ) : (
-                                <div className="space-y-3 text-sm text-gray-700">
-                                    <p className="flex items-center"><Mail className="w-4 h-4 mr-3 text-gray-400" /> {userDetails.email}</p>
-                                    <p className="flex items-center"><Phone className="w-4 h-4 mr-3 text-gray-400" /> {userDetails.phone}</p>
-                                    <p className="flex items-center"><Flag className="w-4 h-4 mr-3 text-gray-400" /> {userDetails.nationality}</p>
-                                    <p className="flex items-center"><Calendar className="w-4 h-4 mr-3 text-gray-400" /> {userDetails.dob}</p>
-                                    <p className="flex items-start"><MapPin className="w-4 h-4 mr-3 text-gray-400 mt-1 flex-shrink-0" /> {userDetails.address}</p>
-                                </div>
-                            )}
-                        </Card>
+                            {!isEditing && <h3 className="text-xl font-semibold text-gray-900">{userDetails.fullName}</h3>}
+                            <p className="text-sm text-gray-500 mt-1">Member since: {userDetails.memberSince}</p>
+                        </div>
+                        
+                        {isEditing ? (
+                            <div className="space-y-5">
+                                <ProfileInput label="Full Name" name="fullName" value={editedDetails.fullName} onChange={handleInputChange} icon={User} placeholder="Enter full name" />
+                                <ProfileInput label="Email" name="email" value={editedDetails.email} onChange={handleInputChange} icon={Mail} type="email" placeholder="Enter email" />
+                                <ProfileInput label="Phone" name="phone" value={editedDetails.phone} onChange={handleInputChange} icon={Phone} placeholder="Enter phone number" />
+                                <ProfileInput label="Nationality" name="nationality" value={editedDetails.nationality} onChange={handleInputChange} icon={Flag} placeholder="Enter nationality" />
+                                <ProfileInput label="Date of Birth" name="dob" value={editedDetails.dob} onChange={handleInputChange} icon={Calendar} type="date" />
+                                <ProfileInput label="Address" name="address" value={editedDetails.address} onChange={handleInputChange} icon={MapPin} placeholder="Enter address" />
+                            </div>
+                        ) : (
+                            <div className="space-y-4 text-base text-gray-700">
+                                <p className="flex items-center"><Mail className="w-5 h-5 mr-3 text-gray-500" /> {userDetails.email}</p>
+                                <p className="flex items-center"><Phone className="w-5 h-5 mr-3 text-gray-500" /> {userDetails.phone}</p>
+                                <p className="flex items-center"><Flag className="w-5 h-5 mr-3 text-gray-500" /> {userDetails.nationality}</p>
+                                <p className="flex items-center"><Calendar className="w-5 h-5 mr-3 text-gray-500" /> {userDetails.dob}</p>
+                                <p className="flex items-start"><MapPin className="w-5 h-5 mr-3 text-gray-500 mt-1 flex-shrink-0" /> {userDetails.address}</p>
+                            </div>
+                        )}
+                    </Card>
 
-                        {/* CV Upload Card */}
-                        <Card>
-                            <h2 className="text-xl font-bold text-gray-800 mb-4">My CV</h2>
-                            {cvFile ? (
-                                <div className="bg-primary-20 border-l-4 border-primary p-4 rounded-lg">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center">
-                                            <FileText className="w-8 h-8 text-primary mr-4" />
-                                            <div>
-                                                <p className="font-semibold text-primary">{cvFile.name}</p>
-                                                <p className="text-sm text-primary">{cvFile.size} MB</p>
-                                            </div>
-                                        </div>
-                                        <button onClick={handleRemoveCv} className="p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"><Trash2 size={18}/></button>
-                                    </div>
-                                    <button onClick={triggerFileInput} className="w-full mt-4 bg-white border border-primary text-primary font-semibold py-2 rounded-lg hover:bg-primary hover:text-white transition duration-300">
-                                        Replace CV
-
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="text-center border-2 border-dashed border-gray-300 rounded-lg p-8">
-                                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                                    <p className="font-semibold mb-2">Upload your CV</p>
-                                    <p className="text-xs text-gray-500 mb-4">PDF or DOCX, max 5MB</p>
-                                    <button onClick={triggerFileInput} className="bg-primary text-white font-bold py-2 px-6 rounded-lg hover:bg-primary transition duration-300">
-                                        Choose File
-                                    </button>
-                                </div>
-                            )}
-                            <input type="file" ref={fileInputRef} onChange={handleCvUpload} className="hidden" accept=".pdf,.docx" />
-                        </Card>
-                    </div>
-
-                    {/* Right Column: Applications */}
-                    <div className="lg:col-span-2">
-                        <Card>
-                            <h2 className="text-xl font-bold text-gray-800 mb-6">My Applications ({applications.length})</h2>
-                            <div className="space-y-6">
-                                {applications.map(app => (
-                                    <div key={app.id} className="border border-gray-200 rounded-xl p-5 transition-shadow hover:shadow-md">
-                                        <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4">
-                                            <div>
-                                                <h3 className="text-lg font-bold text-primary">{app.jobTitle}</h3>
-                                                <p className="text-sm text-gray-500 flex items-center gap-4 mt-1">
-                                                    <span className="flex items-center"><Building size={14} className="mr-1.5"/>{app.department}</span>
-                                                    <span className="flex items-center"><MapPin size={14} className="mr-1.5"/>{app.location}</span>
-                                                </p>
-                                            </div>
-                                            <div className="mt-3 sm:mt-0 text-left sm:text-right">
-                                                <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                                                    app.status === 'Interview' ? 'bg-green-100 text-green-800' :
-                                                    app.status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-gray-100 text-gray-800'
-                                                }`}>{app.status}</span>
-                                                <p className="text-xs text-gray-400 mt-2 flex items-center justify-start sm:justify-end"><Clock size={12} className="mr-1"/>Applied on {app.dateApplied}</p>
-                                            </div>
-                                        </div>
-
-                                        {/* Progress Tracker */}
+                    {/* My Applications Card */}
+                    <Card>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">My Applications ({applications.length})</h2>
+                        <div className="space-y-6">
+                            {applications.map(app => (
+                                <div key={app.id} className="border border-gray-200 rounded-xl p-6 transition-shadow hover:shadow-xl">
+                                    <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-5">
                                         <div>
-                                            <div className="flex justify-between items-center mb-1">
-                                                <p className="text-sm font-medium text-gray-600">Application Progress</p>
-                                                <span className="text-sm font-bold text-primary">{app.progress}%</span>
-                                            </div>
-                                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                                <div className="bg-primary h-2.5 rounded-full transition-all duration-500" style={{ width: `${app.progress}%` }}></div>
-                                            </div>
-                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 mt-3 text-xs">
-                                                {app.stages.map(stage => (
-                                                    <div key={stage.name} className={`flex items-center ${stage.completed ? 'text-primary font-semibold' : 'text-gray-500'}`}>
-                                                        <CheckCircle size={14} className={`mr-2 ${stage.completed ? 'opacity-100' : 'opacity-40'}`} />
-                                                        {stage.name}
-                                                    </div>
-                                                ))}
-                                            </div>
+                                            <h3 className="text-xl font-bold text-primary">{app.jobTitle}</h3>
+                                            <p className="text-sm text-gray-600 flex items-center gap-x-4 gap-y-1 mt-1">
+                                                <span className="flex items-center"><Building size={16} className="mr-1.5 text-gray-500"/>{app.company}</span>
+                                                <span className="flex items-center"><Briefcase size={16} className="mr-1.5 text-gray-500"/>{app.department}</span>
+                                                <span className="flex items-center"><MapPin size={16} className="mr-1.5 text-gray-500"/>{app.location}</span>
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 sm:mt-0 text-left sm:text-right">
+                                            <span className={`px-4 py-1.5 text-sm font-semibold rounded-full ${
+                                                app.status === 'Interview Scheduled' ? 'bg-green-100 text-green-800' :
+                                                app.status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-gray-100 text-gray-800'
+                                            }`}>{app.status}</span>
+                                            <p className="text-xs text-gray-500 mt-2 flex items-center justify-start sm:justify-end"><Clock size={14} className="mr-1"/>Applied on {app.dateApplied}</p>
                                         </div>
                                     </div>
-                                ))}
+
+                                    {/* Progress Tracker */}
+                                    <div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <p className="text-base font-medium text-gray-700">Application Progress</p>
+                                            <span className="text-base font-bold text-primary">{app.progress}%</span>
+                                        </div>
+                                        <div className="w-full bg-gray-200 rounded-full h-3">
+                                            <div className="bg-primary h-3 rounded-full transition-all duration-500" style={{ width: `${app.progress}%` }}></div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 mt-4 text-sm">
+                                            {app.stages.map(stage => (
+                                                <div key={stage.name} className={`flex items-center ${stage.completed ? 'text-primary font-semibold' : 'text-gray-500'}`}>
+                                                    <CheckCircle size={16} className={`mr-2 ${stage.completed ? 'opacity-100' : 'opacity-40'}`} />
+                                                    {stage.name}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Second Row: CV and Recent Activity */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    {/* CV Upload Card */}
+                    <Card>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">My CV</h2>
+                        {cvFile ? (
+                            <div className="bg-primary/10 border-l-4 border-primary p-5 rounded-lg">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center">
+                                        <FileText className="w-10 h-10 text-primary mr-4" />
+                                        <div>
+                                            <p className="font-semibold text-primary text-lg">{cvFile.name}</p>
+                                            <p className="text-sm text-primary/80">{cvFile.size} MB | Last Updated: {cvFile.lastUpdated}</p>
+                                        </div>
+                                    </div>
+                                    <button onClick={handleRemoveCv} className="p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors" aria-label="Remove CV"><Trash2 size={20}/></button>
+                                </div>
+                                <button onClick={triggerFileInput} className="w-full mt-4 bg-white border-2 border-primary text-primary font-semibold py-3 rounded-lg hover:bg-primary hover:text-white transition duration-300 shadow-sm hover:shadow-md">
+                                    Replace CV
+                                </button>
                             </div>
-                        </Card>
-                    </div>
+                        ) : (
+                            <div className="text-center border-2 border-dashed border-gray-300 rounded-lg p-10">
+                                <Upload className="w-16 h-16 text-gray-400 mx-auto mb-6" />
+                                <p className="font-semibold text-lg mb-2">Upload your CV</p>
+                                <p className="text-sm text-gray-500 mb-6">PDF or DOCX, max 5MB</p>
+                                <button onClick={triggerFileInput} className="bg-primary text-white font-bold py-3 px-8 rounded-lg hover:bg-primary-dark transition duration-300 shadow-md hover:shadow-lg">
+                                    Choose File
+                                </button>
+                            </div>
+                        )}
+                        <input type="file" ref={fileInputRef} onChange={handleCvUpload} className="hidden" accept=".pdf,.docx" />
+                    </Card>
+
+                    {/* Recent Activity Card */}
+                    <Card>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
+                        <div className="space-y-4">
+                            {initialActivities.map(activity => (
+                                <div key={activity.id} className="flex items-start p-3 bg-gray-50 rounded-lg">
+                                    <Activity size={18} className="text-primary mr-3 mt-1 flex-shrink-0" />
+                                    <div>
+                                        <p className="text-gray-800 font-medium">{activity.description}</p>
+                                        <p className="text-sm text-gray-500 mt-0.5">{activity.date}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Third Row: Recommended Jobs - Full Width */}
+                <div className="w-full">
+                    <Card>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Recommended Jobs</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            {initialRecommendedJobs.map(job => (
+                                <div key={job.id} className="flex items-center justify-between p-4 bg-primary/10 rounded-lg border border-primary/20">
+                                    <div className="flex items-center">
+                                        <Lightbulb size={20} className="text-primary mr-4 flex-shrink-0" />
+                                        <div>
+                                            <p className="font-semibold text-primary text-lg">{job.title}</p>
+                                            <p className="text-sm text-gray-600">{job.company}</p>
+                                            <p className="text-sm text-primary/80 mt-0.5">{job.location}</p>
+                                        </div>
+                                    </div>
+                                    <span className="px-3 py-1 text-sm font-bold bg-primary/20 text-primary rounded-full">{job.match}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
                 </div>
             </div>
         </div>
