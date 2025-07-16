@@ -2,6 +2,7 @@ import { MapPin, Clock, Users, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom"; // ✅ Add this import
 
 interface JobCardProps {
   title: string;
@@ -40,7 +41,7 @@ export default function JobCard({
             </Badge>
           )}
         </div>
-        
+
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
@@ -56,12 +57,12 @@ export default function JobCard({
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <p className="text-muted-foreground text-sm leading-relaxed">
           {description}
         </p>
-        
+
         <div className="space-y-2">
           <p className="text-sm font-medium text-card-foreground">Key Skills:</p>
           <div className="flex flex-wrap gap-2">
@@ -77,14 +78,18 @@ export default function JobCard({
             )}
           </div>
         </div>
-        
+
         <div className="flex justify-between items-center pt-2">
           <Button variant="outline" size="sm" className="btn-outline">
             View Details
           </Button>
-          <Button size="sm" className="bg-primary hover:bg-primary-dark text-primary-foreground">
-            Apply Now
-          </Button>
+
+          {/* ✅ Wrap Apply Now button with Link */}
+          <Link to="/details">
+            <Button size="sm" className="bg-primary hover:bg-primary-dark text-primary-foreground">
+              Apply Now
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

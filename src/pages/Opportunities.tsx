@@ -24,7 +24,7 @@ const allJobs = [
   {
     title: "Education Program Manager",
     department: "Education",
-    location: "Remote",
+    location: "Rabat, Morocco",
     type: "Full-time",
     experience: "3-5 years",
     description: "Design and implement innovative educational programs to enhance learning outcomes in member states.",
@@ -42,7 +42,7 @@ const allJobs = [
   {
     title: "Cultural Heritage Specialist",
     department: "Culture & Heritage",
-    location: "Cairo, Egypt",
+    location: "Rabat, Morocco",
     type: "Full-time",
     experience: "4-6 years",
     description: "Preserve and promote Islamic cultural heritage through innovative digital preservation techniques.",
@@ -51,7 +51,7 @@ const allJobs = [
   {
     title: "Communications Coordinator",
     department: "Communications",
-    location: "Remote",
+    location: "Rabat, Morocco",
     type: "Part-time",
     experience: "2-3 years",
     description: "Develop and execute communication strategies to promote ICESCO's mission and programs globally.",
@@ -69,7 +69,7 @@ const allJobs = [
   {
     title: "DevOps Engineer",
     department: "Digital Transformation",
-    location: "Remote",
+    location: "Rabat, Morocco",
     type: "Full-time",
     experience: "3-5 years",
     urgent: true,
@@ -79,7 +79,7 @@ const allJobs = [
   {
     title: "Research Scientist",
     department: "Science & Technology",
-    location: "Tunis, Tunisia",
+    location: "Rabat, Morocco",
     type: "Full-time",
     experience: "PhD + 2 years",
     description: "Conduct cutting-edge research in emerging technologies to advance scientific knowledge in member states.",
@@ -97,10 +97,10 @@ const departments = [
 ];
 
 const experienceLevels = [
-  "Entry Level (0-2 years)",
-  "Mid Level (2-5 years)", 
-  "Senior Level (5+ years)",
-  "Executive Level"
+  "Technician Bac +2",
+  "Bachelor Bac +3",
+  "Engineer & Master's Degree", 
+  "PhD",
 ];
 
 const contractTypes = [
@@ -112,10 +112,6 @@ const contractTypes = [
 
 const locations = [
   "Rabat, Morocco",
-  "Remote",
-  "Cairo, Egypt",
-  "Tunis, Tunisia",
-  "Kuala Lumpur, Malaysia"
 ];
 
 export default function Opportunities() {
@@ -287,7 +283,7 @@ export default function Opportunities() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Briefcase className="w-5 h-5" />
-                    Department
+                    Category
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -313,7 +309,7 @@ export default function Opportunities() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <GraduationCap className="w-5 h-5" />
-                    Experience Level
+                    Level of Studies
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -339,7 +335,7 @@ export default function Opportunities() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Clock className="w-5 h-5" />
-                    Contract Type
+                    Position Type
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -361,30 +357,7 @@ export default function Opportunities() {
               </Card>
 
               {/* Location Filter */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <MapPin className="w-5 h-5" />
-                    Location
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {locations.map((location) => (
-                    <div key={location} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={location}
-                        checked={selectedLocations.includes(location)}
-                        onCheckedChange={(checked) => 
-                          handleFilterChange("locations", location, checked as boolean)
-                        }
-                      />
-                      <label htmlFor={location} className="text-sm cursor-pointer">
-                        {location}
-                      </label>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+              
             </div>
 
             {/* Jobs List */}
@@ -396,7 +369,7 @@ export default function Opportunities() {
               </div>
 
               {filteredJobs.length > 0 ? (
-                <div className="grid gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredJobs.map((job, index) => (
                     <JobCard key={index} {...job} />
                   ))}

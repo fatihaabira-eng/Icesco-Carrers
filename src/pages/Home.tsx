@@ -60,9 +60,9 @@ const featuredJobs = [
 // Mock testimonial data
 const testimonials = [
   {
-    name: "Amina Al-Rashid",
-    role: "Education Specialist",
-    country: "Jordan",
+    name: "Fatiha ABIRA",
+    role: "Software Engineer",
+    country: "Morocco",
     quote: "Working at ICESCO allows me to contribute to educational transformation across the Islamic world. Every project we work on has real impact on communities.",
     image: "https://images.unsplash.com/photo-1494790108755-2616b612b765?w=200&h=200&fit=crop&crop=face"
   },
@@ -176,74 +176,73 @@ export default function Home() {
 
       {/* EVP + Testimonials */}
       <section className="section-padding bg-background">
-        <div className="max-w-7xl mx-auto container-padding">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Testimonial Video/Image */}
-            <div className="space-y-6">
-                <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
-                  <video
-                    className="w-full h-full object-cover"
-                    src="https://videos.pexels.com/video-files/8086699/8086699-uhd_2560_1440_25fps.mp4"
-                    controls
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                  />
+  <div className="max-w-7xl mx-auto container-padding">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+      {/* Testimonial Video/Image */}
+      <div className="flex flex-col justify-center">
+        <div className="relative aspect-[4/3] h-[26rem] rounded-xl overflow-hidden shadow-2xl group">
+          <video
+            className="w-full h-full object-cover"
+            src="https://videos.pexels.com/video-files/6774780/6774780-uhd_2560_1440_30fps.mp4"
+            controls
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
 
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
 
-                  {/* Optional Overlay Button – only visible if you want to trigger something */}
-                  <Button
-                    size="sm"
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hidden group-hover:flex"
-                  >
-                    <Play className="w-4 h-4 mr-2" />
-                    Play Story
-                  </Button>
+          {/* Optional Overlay Button – only visible if you want to trigger something */}
+          <Button
+            size="sm"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hidden group-hover:flex"
+          >
+            <Play className="w-4 h-4 mr-2" />
+            Play Story
+          </Button>
 
-                  {/* Text overlay */}
-                  {/* <div className="absolute bottom-4 left-4 text-white">
-                    <p className="font-semibold">{testimonials[0].name}</p>
-                    <p className="text-sm opacity-90">{testimonials[0].role}</p>
-                  </div> */}
-                </div>
-              </div>
+          {/* Text overlay */}
+          {/* <div className="absolute bottom-4 left-4 text-white">
+            <p className="font-semibold">{testimonials[0].name}</p>
+            <p className="text-sm opacity-90">{testimonials[0].role}</p>
+          </div> */}
+        </div>
+      </div>
 
+      {/* EVP Text */}
+      <div className="flex flex-col justify-center space-y-6">
+        <div className="space-y-4">
+          <h2 className="font-title text-3xl md:text-4xl font-bold text-foreground">
+            Why Choose ICESCO?
+          </h2>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            At ICESCO, we empower individuals to make a global impact while fostering personal and professional growth. Join a diverse, mission-driven organization where your work contributes to advancing education, science, and culture across the Islamic world.
+          </p>
+        </div>
+        
+        <blockquote className="border-l-4 border-primary pl-6 italic text-muted-foreground">
+          "Working at ICESCO allows me to contribute to educational transformation across the Islamic world. Every project we work on has real impact on communities."
+          <footer className="mt-2 text-sm font-medium text-foreground">
+            — Fatiha ABIRA, Software Engineer
+          </footer>
+        </blockquote>
 
-            {/* EVP Text */}
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <h2 className="font-title text-3xl md:text-4xl font-bold text-foreground">
-                  Why Choose ICESCO?
-                </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  At ICESCO, we empower individuals to make a global impact while fostering personal and professional growth. Join a diverse, mission-driven organization where your work contributes to advancing education, science, and culture across the Islamic world.
-                </p>
-              </div>
-              
-              <blockquote className="border-l-4 border-primary pl-6 italic text-muted-foreground">
-                "{testimonials[0].quote}"
-                <footer className="mt-2 text-sm font-medium text-foreground">
-                  — {testimonials[0].name}, {testimonials[0].role}
-                </footer>
-              </blockquote>
-
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                <div className="text-center p-4 bg-primary/5 rounded-lg">
-                  <p className="text-2xl font-bold text-primary">30+</p>
-                  <p className="text-sm text-muted-foreground">Nationalities</p>
-                </div>
-                <div className="text-center p-4 bg-secondary/20 rounded-lg">
-                  <p className="text-2xl font-bold text-secondary-dark">57</p>
-                  <p className="text-sm text-muted-foreground">Member States</p>
-                </div>
-              </div>
-            </div>
+        <div className="grid grid-cols-2 gap-4 pt-4">
+          <div className="text-center p-4 bg-primary/5 rounded-lg">
+            <p className="text-2xl font-bold text-primary">30+</p>
+            <p className="text-sm text-muted-foreground">Nationalities</p>
+          </div>
+          <div className="text-center p-4 bg-secondary/20 rounded-lg">
+            <p className="text-2xl font-bold text-secondary-dark">57</p>
+            <p className="text-sm text-muted-foreground">Member States</p>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Featured Opportunities */}
       <section className="section-padding bg-muted/30">
