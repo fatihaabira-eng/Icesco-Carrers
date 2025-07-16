@@ -208,7 +208,7 @@ export default function CandidateDashboard() {
                                         </div>
                                         <button onClick={handleRemoveCv} className="p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"><Trash2 size={18}/></button>
                                     </div>
-                                    <button onClick={triggerFileInput} className="w-full mt-4 bg-white border border-primary text-primary font-semibold py-2 rounded-lg hover:bg-primary transition duration-300">
+                                    <button onClick={triggerFileInput} className="w-full mt-4 bg-white border border-primary text-primary font-semibold py-2 rounded-lg hover:bg-primary hover:text-white transition duration-300">
                                         Replace CV
 
                                     </button>
