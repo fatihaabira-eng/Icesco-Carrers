@@ -17,6 +17,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { FaInstagram, FaLinkedinIn, FaFacebookF, FaXTwitter } from "react-icons/fa6"
 import icescoLogo from "@/assets/logo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import fatihaabira from "@/assets/abira-fatiha.jpeg"; // Ensure this path is correct
 
 const departments = [
   { name: "Digital Transformation", path: "/departments/digital-transformation" },
@@ -30,15 +31,12 @@ const departments = [
 const languages = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "ar", name: "العربية", flag: "🇸🇦" },
-  { code: "fr", name: "Français", flag: "🇫🇷" },
+  { code: "fr", "name": "Français", flag: "🇫🇷" },
 ]
 
-const mockUser = {
-  fullName: "Fatima Zahra",
-  email: "fatima.zahra@email.com",
-  profilePhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face",
-  initials: "FZ",
-}
+// This mockUser is no longer directly used within Navbar's state, but as a prop.
+// However, it's good to keep a default structure or type definition if not using TypeScript interfaces.
+// For the purpose of this component, it will now receive 'mockUser' as a prop.
 
 const socialLinks = [
   { icon: FaInstagram, href: "https://www.instagram.com/icesco_en", label: "Instagram" },
@@ -47,16 +45,17 @@ const socialLinks = [
   { icon: FaXTwitter, href: "https://twitter.com/ICESCO_En", label: "Twitter" },
 ]
 
-export default function ImprovedNavbar() {
+// Accept isAuthenticated and mockUser as props, along with onLogout
+export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentLang, setCurrentLang] = useState("en")
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   
-  // Use React Router's useLocation and useNavigate hooks
+  // Remove the internal isAuthenticated state, as it's now received via props.
+  // const [isAuthenticated, setIsAuthenticated] = useState(false) 
+  
   const location = useLocation()
   const navigate = useNavigate()
 
-  // Updated isActive function to use actual location
   const isActive = (path: string) => {
     if (path === "/") {
       return location.pathname === "/"
@@ -64,14 +63,17 @@ export default function ImprovedNavbar() {
     return location.pathname.startsWith(path)
   }
 
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    navigate("/")
+  // Use the onLogout prop passed from App.tsx
+  const handleLogoutClick = () => {
+    console.log("Logging out...");
+    onLogout(); // Call the logout function passed from parent
+    navigate("/"); // Redirect to home page after logout
+    setIsOpen(false); // Close mobile menu if open
   }
 
-  const handleLogin = () => {
-    setIsAuthenticated(true)
-    navigate("/dashboard")
+  const handleLoginRedirect = () => {
+    navigate("/auth");
+    setIsOpen(false); // Close mobile menu if open
   }
 
   const navItems = [
@@ -141,23 +143,6 @@ export default function ImprovedNavbar() {
             >
               Opportunities
             </Link>
-            
-            {/* Departments Dropdown */}
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center space-x-1 font-medium text-gray-700 hover:text-blue-600 transition-colors">
-                <span>Departments</span>
-                <ChevronDown className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 bg-white border shadow-lg">
-                {departments.map((dept) => (
-                  <DropdownMenuItem key={dept.path} asChild>
-                    <Link to={dept.path} className="w-full cursor-pointer hover:bg-blue-50">
-                      {dept.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu> */}
           </div>
 
           {/* Right Section */}
@@ -184,7 +169,7 @@ export default function ImprovedNavbar() {
             </DropdownMenu>
 
             {/* Authentication Section */}
-            {isAuthenticated ? (
+            {isAuthenticated && mockUser ? ( // Check if isAuthenticated is true AND mockUser exists
               <div className="flex items-center space-x-3">
                 {/* Notifications */}
                 <Button variant="ghost" size="sm" className="relative p-2 hover:bg-gray-50">
@@ -198,10 +183,13 @@ export default function ImprovedNavbar() {
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center space-x-3 p-1 rounded-lg hover:bg-gray-50 transition-colors">
                     <Avatar className="h-8 w-8">
+                      {/* Use mockUser.profilePhoto from props */}
                       <AvatarImage src={mockUser.profilePhoto || "/placeholder.svg"} alt={mockUser.fullName} />
+                      {/* Use mockUser.initials from props */}
                       <AvatarFallback className="bg-blue-600 text-white text-sm">{mockUser.initials}</AvatarFallback>
                     </Avatar>
                     <div className="hidden md:block text-left">
+                      {/* Use mockUser.fullName from props */}
                       <p className="text-sm font-medium text-gray-900">{mockUser.fullName}</p>
                       <p className="text-xs text-gray-500">Online</p>
                     </div>
@@ -212,6 +200,7 @@ export default function ImprovedNavbar() {
                     className="w-64 bg-white border border-gray-200 shadow-lg rounded-xl p-2"
                   >
                     <div className="px-3 py-2 border-b border-gray-100">
+                      {/* Use mockUser.fullName and mockUser.email from props */}
                       <p className="font-medium text-gray-900">{mockUser.fullName}</p>
                       <p className="text-sm text-gray-500">{mockUser.email}</p>
                     </div>
@@ -231,7 +220,7 @@ export default function ImprovedNavbar() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="my-2" />
                     <DropdownMenuItem
-                      onClick={handleLogout}
+                      onClick={handleLogoutClick} // Use the new handleLogoutClick
                       className="rounded-lg cursor-pointer hover:bg-red-50 focus:bg-red-50 px-3 py-2 text-red-600"
                     >
                       <LogOut className="w-4 h-4 mr-3" />
@@ -245,12 +234,12 @@ export default function ImprovedNavbar() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handleLogin}
+                  onClick={handleLoginRedirect}
                   className="text-gray-700 hover:text-white hover:bg-primary-light"
                 >
                   Sign In
                 </Button>
-                <Button size="sm" onClick={handleLogin} className="bg-primary hover:bg-primary-dark text-white shadow-sm">
+                <Button size="sm" onClick={handleLoginRedirect} className="bg-primary hover:bg-primary-dark text-white shadow-sm">
                   Get Started
                 </Button>
               </div>
@@ -357,23 +346,26 @@ export default function ImprovedNavbar() {
                         <Button
                           variant="outline"
                           className="w-full bg-transparent"
-                          onClick={() => {
-                            handleLogin()
-                            setIsOpen(false)
-                          }}
+                          onClick={handleLoginRedirect}
                         >
                           Sign In
                         </Button>
                         <Button
                           className="w-full bg-blue-600 hover:bg-blue-700"
-                          onClick={() => {
-                            handleLogin()
-                            setIsOpen(false)
-                          }}
+                          onClick={handleLoginRedirect}
                         >
                           Get Started
                         </Button>
                       </div>
+                    )}
+                     {isAuthenticated && (
+                      <Button
+                        variant="destructive"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white"
+                        onClick={handleLogoutClick} // Use the new handleLogoutClick
+                      >
+                        <LogOut className="w-4 h-4 mr-2" /> Sign Out
+                      </Button>
                     )}
                   </div>
                 </div>

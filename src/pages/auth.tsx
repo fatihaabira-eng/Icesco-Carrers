@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User, Briefcase, Linkedin, Eye, EyeOff, Link } from 'lucide-react';
+import { Mail, Lock, User, Briefcase, Linkedin, Eye, EyeOff } from 'lucide-react';
 import icescoLogo from "@/assets/logo.png";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
+import fatihaabira from "@/assets/abira-fatiha.jpeg";
+
+
 // Reusable Input Component
 const InputField = ({ icon: Icon, type, placeholder, value, onChange }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -35,8 +40,8 @@ const InputField = ({ icon: Icon, type, placeholder, value, onChange }) => {
 // Reusable Social Login Button
 const SocialButton = ({ icon: Icon, text, provider }) => (
   <button className={`flex-1 flex items-center justify-center gap-3 py-3 px-4 border rounded-lg transition duration-300 ${
-    provider === 'google' 
-      ? 'border-gray-300 hover:bg-gray-100' 
+    provider === 'google'
+      ? 'border-gray-300 hover:bg-gray-100'
       : 'bg-[#0077B5] text-white border-[#0077B5] hover:bg-[#005E90]'
   }`}>
     <Icon className="w-5 h-5" />
@@ -44,11 +49,12 @@ const SocialButton = ({ icon: Icon, text, provider }) => (
   </button>
 );
 
-export default function AuthenticationPage() {
+export default function AuthenticationPage({ onLoginSuccess }) { // Accept onLoginSuccess as a prop
   const [isLogin, setIsLogin] = useState(true);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleFormSwitch = () => {
     setIsLogin(!isLogin);
@@ -60,12 +66,42 @@ export default function AuthenticationPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // In a real application, you'd send this data to your backend for authentication.
+    // For now, we'll simulate a successful response and user data.
+
     if (isLogin) {
-      console.log('Logging in with:', { email, password });
-      // Handle login logic here
+      console.log('Attempting to log in with:', { email, password });
+      // Simulate API call success
+      setTimeout(() => { // Simulate network delay
+        // Only proceed with login if email and password match the demo credentials
+        if (email === "fatiha.abira@gmail.com" && password === "secure123") {
+          const mockUserData = {
+            fullName: "Fatiha Abira", // This would come from your backend response
+            email: email,
+            profilePhoto: fatihaabira, // Using the imported image
+            initials: "FA", // Corrected initials for Fatiha Abira
+          };
+          onLoginSuccess(mockUserData); // Call the callback with user data
+          navigate("/"); // Redirect to home page
+        } else {
+          console.log("Login failed: Invalid credentials");
+          // In a real app, you'd show an error message to the user (e.g., a toast notification)
+        }
+      }, 1000); // 1-second delay for demonstration
     } else {
-      console.log('Signing up with:', { fullName, email, password });
-      // Handle signup logic here
+      console.log('Attempting to sign up with:', { fullName, email, password });
+      // Simulate API call success for signup
+      setTimeout(() => { // Simulate network delay
+        const mockUserData = {
+          fullName: fullName, // This would come from your backend response
+          email: email,
+          profilePhoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face", // Or a default for new users
+          initials: fullName.split(' ').map(n => n[0]).join('').toUpperCase() || 'NA',
+        };
+        onLoginSuccess(mockUserData); // Call the callback with new user data
+        navigate("/dashboard"); // Redirect after successful signup
+      }, 1000); // 1-second delay for demonstration
     }
   };
 
@@ -73,17 +109,17 @@ export default function AuthenticationPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4 font-sans">
       <div className="w-full max-w-md mx-auto">
         <div className="text-center mb-8">
-              <img 
-                src={icescoLogo} 
-                alt="ICESCO" 
-                className="mx-auto h-20 w-auto"
-              />
-            <h1 className="text-3xl font-bold text-gray-800 mt-4">
-              {isLogin ? 'Welcome to ICESCO' : 'Create Your Account'}
-            </h1>
-            <p className="text-gray-500 mt-2">
-              {isLogin ? 'Access your candidate dashboard.' : 'Join ICESCO to shape the future.'}
-            </p>
+          <img
+            src={icescoLogo}
+            alt="ICESCO"
+            className="mx-auto h-20 w-auto"
+          />
+          <h1 className="text-3xl font-bold text-gray-800 mt-4">
+            {isLogin ? 'Welcome to ICESCO' : 'Create Your Account'}
+          </h1>
+          <p className="text-gray-500 mt-2">
+            {isLogin ? 'Access your candidate dashboard.' : 'Join ICESCO to shape the future.'}
+          </p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">
@@ -124,13 +160,13 @@ export default function AuthenticationPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            
+
             {isLogin && (
-                <div className="text-right">
-                    <a href="#" className="text-sm font-medium text-primary hover:text-secondary">
-                        Forgot Password?
-                    </a>
-                </div>
+              <div className="text-right">
+                <a href="#" className="text-sm font-medium text-primary hover:text-secondary">
+                  Forgot Password?
+                </a>
+              </div>
             )}
 
             <button
@@ -149,9 +185,9 @@ export default function AuthenticationPage() {
             </button>
           </p>
         </div>
-        
+
         <p className="text-xs text-gray-400 text-center mt-8">
-            By continuing, you agree to ICESCO's <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>.
+          By continuing, you agree to ICESCO's <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>.
         </p>
       </div>
     </div>
