@@ -180,19 +180,19 @@ export default function Home() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
       {/* Testimonial Video/Image */}
       <div className="flex flex-col justify-center">
-        <div className="relative aspect-[4/3] h-[26rem] rounded-xl overflow-hidden shadow-2xl group">
-          <video
-            className="w-full h-full object-cover"
-            src="https://videos.pexels.com/video-files/6774780/6774780-uhd_2560_1440_30fps.mp4"
-            controls
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
+        <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl group">
+  <iframe
+    className="absolute inset-0 w-full h-full"
+    src="https://www.youtube.com/embed/gqCKxEaPgOM?autoplay=1&mute=1&loop=1&playlist=gqCKxEaPgOM"
+    title="اليوم الأول من ملتقى شباب المعرفة للعالم الإسلامي بالإيسيسكو"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerPolicy="strict-origin-when-cross-origin"
+    allowFullScreen
+  ></iframe>
 
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+  {/* Gradient Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
 
           {/* Optional Overlay Button – only visible if you want to trigger something */}
           <Button
