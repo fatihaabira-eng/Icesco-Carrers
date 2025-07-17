@@ -2,14 +2,14 @@ import React, { useEffect, useRef } from "react";
 import { Handshake, Users, Lightbulb, Flag, Layers, Target, ListChecks, GraduationCap, DollarSign } from "lucide-react";
 import gsap from "gsap";
 import { Button } from "@/components/ui/button";// Assuming you have a Button component
-import one from "../imgs/one.png"; 
-import two from "../imgs/two.png"; 
-import thre from "../imgs/thre.png"; 
-import four from "../imgs/four.png"; 
-import annonce from "../imgs/annonce.png"; 
-import sis from "../imgs/sis.png"; 
-import map1 from "../imgs/map1.png"; 
-import val from "../imgs/val.png"; 
+import one from "@/imgs/one.png"; 
+import two from "@/imgs/two.png"; 
+import thre from "@/imgs/thre.png"; 
+import four from "@/imgs/four.png"; 
+import annonce from "@/imgs/annonce-ang.png"; 
+import sis from "@/imgs/sis.png"; 
+import map1 from "@/imgs/map1.png"; 
+import val from "@/imgs/val.png"; 
 interface HexagonIconProps {
   icon: React.ReactNode;
   className?: string;
@@ -71,7 +71,7 @@ export default function JobDetailPage() {
         {/* Background image */}
         <div className="absolute inset-0 w-full h-full z-0">
           <img
-            src="https://images.pexels.com/photos/3184352/pexels-photo-3184352.jpeg"
+            src="https://images.pexels.com/photos/3727510/pexels-photo-3727510.jpeg"
             alt="Hero Background"
             className="w-full h-full object-cover object-center opacity-60"
           />
