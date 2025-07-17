@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Download, Plus } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
+import ReactCountryFlag from 'react-country-flag';
 
 interface Education {
   place: string;
@@ -21,7 +22,8 @@ interface Experience {
 interface FormData {
   fullName: string;
   email: string;
-  phone: string;
+  phoneCountryCode: string;
+  phoneNumber: string;
   nationality: string;
   dateOfBirth: string;
   address: string;
@@ -31,18 +33,32 @@ interface FormData {
   cv: File | null;
 }
 
+const countryCodes = [
+  { code: '+1', name: 'United States', iso: 'US' },
+  { code: '+44', name: 'United Kingdom', iso: 'GB' },
+  { code: '+33', name: 'France', iso: 'FR' },
+  { code: '+49', name: 'Germany', iso: 'DE' },
+  { code: '+212', name: 'Morocco', iso: 'MA' },
+  { code: '+966', name: 'Saudi Arabia', iso: 'SA' },
+  { code: '+971', name: 'UAE', iso: 'AE' },
+  { code: '+20', name: 'Egypt', iso: 'EG' },
+  { code: '+216', name: 'Tunisia', iso: 'TN' },
+  { code: '+213', name: 'Algeria', iso: 'DZ' },
+];
+
 const MultiStepForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
-    phone: '',
+    phoneCountryCode: '+212',
+    phoneNumber: '',
     nationality: '',
     dateOfBirth: '',
     address: '',
-    education: [],
-    experience: [],
-    skills: [],
+    education: [{ place: '', diploma: '', startDate: '', endDate: '' }],
+    experience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '' }],
+    skills: [''],
     cv: null,
   });
   const [submitted, setSubmitted] = useState(false);
@@ -50,6 +66,7 @@ const MultiStepForm: React.FC = () => {
   const [cvParseError, setCvParseError] = useState<string | null>(null);
   const [cvExtraStep, setCvExtraStep] = useState(false);
   const [extraAnswers, setExtraAnswers] = useState({ yearsExperience: '', desiredPosition: '' });
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
   const steps = [
     { number: 1, title: 'Personal Info' },
@@ -99,7 +116,7 @@ const MultiStepForm: React.FC = () => {
         return (
           formData.fullName.trim() !== '' &&
           formData.email.trim() !== '' &&
-          formData.phone.trim() !== '' &&
+          formData.phoneNumber.trim() !== '' &&
           formData.nationality.trim() !== '' &&
           formData.dateOfBirth.trim() !== '' &&
           formData.address.trim() !== ''
@@ -153,7 +170,8 @@ const MultiStepForm: React.FC = () => {
     return {
       fullName: nameMatch ? nameMatch[1].trim() : '',
       email: emailMatch ? emailMatch[0] : '',
-      phone: phoneMatch ? phoneMatch[0] : '',
+      phoneCountryCode: phoneMatch ? phoneMatch[0].split(' ')[0] : '+212',
+      phoneNumber: phoneMatch ? phoneMatch[0].split(' ').slice(1).join(' ') : '',
       education: education ? [{ place: education, diploma: '', startDate: '', endDate: '' }] : [],
       experience: experience ? [{ company: experience, jobTitle: '', startDate: '', endDate: '', description: '' }] : [],
       skills: skills ? skills.split(/,|\n/).map(s => s.trim()).filter(Boolean) : [],
@@ -167,7 +185,8 @@ const MultiStepForm: React.FC = () => {
       const fakeInfo = {
         fullName: "John Doe",
         email: "john.doe@email.com",
-        phone: "+212 600 123 456",
+        phoneCountryCode: "+212",
+        phoneNumber: "600 123 456",
         nationality: "Moroccan",
         dateOfBirth: "1990-01-01",
         address: "123 Main St, Rabat, Morocco",
@@ -182,7 +201,6 @@ const MultiStepForm: React.FC = () => {
       };
       setFormData(prev => ({ ...prev, ...fakeInfo }));
       setCvParsing(false);
-      setCvExtraStep(true);
     }, 1500);
   }
 
@@ -195,7 +213,59 @@ const MultiStepForm: React.FC = () => {
             <div className="space-y-4">
               <InputField label="Full Name" id="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Enter your full name" />
               <InputField label="Email" id="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email address" />
-              <InputField label="Phone Number" id="phone" type="tel" value={formData.phone} onChange={handleInputChange} placeholder="e.g. +212 600 123 456" />
+              
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="col-span-1">
+                  <label htmlFor="phoneCountryCode" className="block text-sm font-medium text-gray-700 mb-1">Country Code</label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      className="w-full flex items-center justify-between px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none bg-white transition-shadow shadow-sm hover:shadow-md"
+                      onClick={() => setShowCountryDropdown(v => !v)}
+                      id="phoneCountryCode"
+                      aria-haspopup="listbox"
+                      aria-expanded={showCountryDropdown}
+                    >
+                      <span className="flex items-center gap-2">
+                        <ReactCountryFlag countryCode={countryCodes.find(c => c.code === formData.phoneCountryCode)?.iso || ''} svg style={{ width: '1.5em', height: '1.5em' }} />
+                        <span className="ml-2">{countryCodes.find(c => c.code === formData.phoneCountryCode)?.name}</span>
+                      </span>
+                      <span className="ml-2 text-gray-700 font-semibold">{formData.phoneCountryCode}</span>
+                      <svg className="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    {showCountryDropdown && (
+                      <ul className="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto" role="listbox">
+                        {countryCodes.map((country) => (
+                          <li
+                            key={country.code}
+                            className={`flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-teal-50 ${formData.phoneCountryCode === country.code ? 'bg-teal-100' : ''}`}
+                            onClick={() => { handleInputChange('phoneCountryCode', country.code); setShowCountryDropdown(false); }}
+                            role="option"
+                            aria-selected={formData.phoneCountryCode === country.code}
+                          >
+                            <span className="flex items-center gap-2">
+                              <ReactCountryFlag countryCode={country.iso} svg style={{ width: '1.5em', height: '1.5em' }} />
+                              <span className="ml-2">{country.name}</span>
+                            </span>
+                            <span className="ml-2 text-gray-700 font-semibold">{country.code}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+                <div className="col-span-2">
+                  <InputField 
+                    label="Phone Number" 
+                    id="phoneNumber" 
+                    type="tel" 
+                    value={formData.phoneNumber} 
+                    onChange={handleInputChange} 
+                    placeholder="e.g. 600 123 456" 
+                  />
+                </div>
+              </div>
+
               <InputField label="Nationality" id="nationality" value={formData.nationality} onChange={handleInputChange} placeholder="e.g. Moroccan" />
               <InputField label="Date of Birth" id="dateOfBirth" type="date" value={formData.dateOfBirth} onChange={handleInputChange} />
               <div>
@@ -220,7 +290,7 @@ const MultiStepForm: React.FC = () => {
                 }
                 className="flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition"
               >
-                <Plus className="w-4 h-4 mr-2" /> Add
+                Add
               </button>
             </div>
 
@@ -265,7 +335,7 @@ const MultiStepForm: React.FC = () => {
                 }
                 className="flex items-center px-4 py-2 bg-[#0e7378] hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition"
               >
-                <Plus className="w-4 h-4 mr-2" /> Add
+                Add
               </button>
             </div>
             {formData.experience.length === 0 && <p className="text-gray-500 text-center py-4">No experience added yet.</p>}
@@ -315,7 +385,7 @@ const MultiStepForm: React.FC = () => {
                 }
                 className="flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition"
               >
-                <Plus className="w-4 h-4 mr-2" /> Add
+                Add
               </button>
             </div>
             {formData.skills.length === 0 && <p className="text-gray-500 text-center py-4">No skills added yet.</p>}
@@ -347,7 +417,7 @@ const MultiStepForm: React.FC = () => {
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold text-teal-600 mb-6">Upload CV</h2>
             <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 bg-gray-50">
-              <label htmlFor="cv-upload" className="cursor-pointer bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium shadow transition mb-4">
+              <label htmlFor="cv-upload" className="cursor-pointer bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition mb-4">
                 {formData.cv ? 'Change CV' : 'Select CV'}
               </label>
               <input
@@ -393,7 +463,7 @@ const MultiStepForm: React.FC = () => {
                 <div className="grid md:grid-cols-2 gap-4 text-gray-800">
                   <div><span className="font-semibold">Full Name:</span> {formData.fullName || '-'}</div>
                   <div><span className="font-semibold">Email:</span> {formData.email || '-'}</div>
-                  <div><span className="font-semibold">Phone:</span> {formData.phone || '-'}</div>
+                  <div><span className="font-semibold">Phone:</span> {formData.phoneCountryCode} {formData.phoneNumber || '-'}</div>
                   <div><span className="font-semibold">Nationality:</span> {formData.nationality || '-'}</div>
                   <div><span className="font-semibold">Date of Birth:</span> {formData.dateOfBirth || '-'}</div>
                   <div><span className="font-semibold">Address:</span> {formData.address || '-'}</div>
@@ -486,7 +556,7 @@ const MultiStepForm: React.FC = () => {
           <div className="text-center mb-8">
             <label className="inline-flex items-center px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium shadow-md transition cursor-pointer">
               <Download className="w-5 h-5 mr-2" />
-              {cvParsing ? 'Parsing CV...' : 'Apply using CV'}
+              {cvParsing ? 'Parsing CV...' : 'Aplly using CV'}
               <input
                 type="file"
                 accept=".pdf,.doc,.docx"
@@ -551,7 +621,7 @@ const MultiStepForm: React.FC = () => {
               <button
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
-                className={`flex items-center px-6 py-2.5 rounded-lg font-medium transition ${currentStep === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-teal-600 hover:bg-teal-50'}`}
+                className={`flex items-center px-6 py-2.5 rounded-lg font-medium transition border border-[#0d9489] ${currentStep === 1 ? 'text-gray-400 cursor-not-allowed bg-white border-gray-300' : 'text-[#0d9489] bg-white hover:bg-[#0d9489] hover:text-white hover:border-[#0d9489]'}`}
               >
                 <ChevronLeft className="w-4 h-4 mr-2" /> Previous
               </button>
@@ -559,14 +629,14 @@ const MultiStepForm: React.FC = () => {
                 <button
                   onClick={handleNext}
                   disabled={!isStepValid()}
-                  className={`flex items-center px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition ${!isStepValid() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`flex items-center px-6 py-2.5 rounded-lg font-medium transition border border-[#0d9489] ${!isStepValid() ? 'opacity-50 cursor-not-allowed bg-[#0d9489] text-white' : 'bg-[#0d9489] text-white hover:bg-white hover:text-[#0d9489] hover:border-[#0d9489]'}`}
                 >
                   Next <ChevronRight className="w-4 h-4 ml-2" />
                 </button>
               ) : !submitted ? (
                 <button
                   onClick={() => setSubmitted(true)}
-                  className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition"
+                  className="px-6 py-2.5 bg-[#0d9489] text-white rounded-lg font-medium transition border border-[#0d9489] hover:bg-white hover:text-[#0d9489] hover:border-[#0d9489]"
                 >
                   Submit Application
                 </button>
@@ -574,40 +644,6 @@ const MultiStepForm: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Additional Info Modal */}
-        {cvExtraStep && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
-              <h3 className="text-lg font-bold text-teal-700 mb-4">Additional Information</h3>
-              <div className="mb-4">
-                <label className="block mb-2 font-medium text-gray-700">Years of Experience</label>
-                <input 
-                  type="number" 
-                  min="0" 
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" 
-                  value={extraAnswers.yearsExperience} 
-                  onChange={e => setExtraAnswers(a => ({ ...a, yearsExperience: e.target.value }))} 
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2 font-medium text-gray-700">Desired Position</label>
-                <input 
-                  type="text" 
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent" 
-                  value={extraAnswers.desiredPosition} 
-                  onChange={e => setExtraAnswers(a => ({ ...a, desiredPosition: e.target.value }))} 
-                />
-              </div>
-              <button 
-                className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2.5 rounded-lg transition"
-                onClick={() => { setCvExtraStep(false); setCurrentStep(2); }}
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

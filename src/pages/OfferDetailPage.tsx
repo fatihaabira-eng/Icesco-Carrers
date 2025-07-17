@@ -88,297 +88,298 @@ export default function JobDetailPage() {
           {/* Right: Job Info Card and Apply Button */}
           <div className="flex flex-col items-end">
 
-         
-          <img
-              src={sis} // Standard <img> tag
-             
-              alt="World Map"
-              className="mr-24 w-[290px] h-[150px] "
-            />
-             
-            {" "}
-            {/* Use flex-col and items-end to align card and button */}
-            <div className="bg-white/30 mr-24 mt-12 backdrop-blur-md border border-white/50 px-6 py-6 rounded-lg shadow-lg text-gray-700 space-y-2 w-md">
-              <h2 className="text-xl font-semibold text-[#f5c402] mb-3">Job information</h2>
-              <p className="text-white">
-                <span className="font-medium text-white">Reference number:</span> ICESCO-JOB-2024-001
-              </p>
-              <p className="text-white">
-                <span className="font-medium  text-white">Publication date:</span> July 15, 2025
-              </p>
-              <p className="text-white">
-                <span className="font-medium  text-white">Application deadline:</span> August 15, 2025
-              </p>
-              <p className="text-white">
-                <span className="font-medium  text-white">location:</span> Rabat, Maroc
-              </p>
-              <p className="text-white" >
-                <span className="font-medium  text-white">Contract type:</span> Open-ended contract
-              </p>
-            </div>
-            {/* Apply Button - now outside the card */}
-            <div className="pt-4">
-              {" "}
-              {/* Add padding top for spacing */}
-              <Button className="bg-[#008080] mr-24 hover:bg-[#008080]/90 text-white mt-12">Apply now</Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content - 3 Columns */}
-      <section className="container mx-auto px-28 py-12 md:py-16 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-        {/* Column 1: Map Image, ICESCO Values Title, and Values */}
-        <div className="lg:col-span-1 relative flex flex-col items-center lg:items-start" ref={valuesRef}>
-          {/* Map Image */}
-          <div className="w-full mb-8">
-            <img
-              src={map1} // Standard <img> tag
-              width={400}
-              height={250}
-              alt="World Map"
-              className="w-full h-auto object-cover"
-            />
-          </div>
-
-          {/* Title for ICESCO Values */}
-          <h2 className="text-3xl font-bold font-sans text-[#008080] mb-8 text-center lg:text-left">
-            ICESCO's core values
-          </h2>
-
-          {/* ICESCO Values List */}
-          <img
-              src={val} // Standard <img> tag
-              width={400}
-              height={250}
-              alt="World Map"
-              className="w-[350px] h-[550px] object-cover"
-            />
-        </div>
-
-        {/* Column 2: Job Objective, Tasks, Qualifications */}
-        <div className="lg:col-span-1 space-y-8 font-sans">
-          {/* I. Objectif du poste */}
-          <div>
-          <div className="flex items-start gap-4">
-          <img
-              src={one} // Standard <img> tag
-             
-              alt="World Map"
-              className="w-[60px] h-[60px] object-cover"
-            />
-            <div>
-                <h3 className="text-2xl font-bold text-[#008080] mb-4">
-                  I. Purpose of the position
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  Contribute to the strategic development and coordination of activities within the Foresight and AI Center, with the aim of strengthening network development, supporting the launch of innovative initiatives and facilitating high-level consultations. This position also involves advancing the development of foresight studies and mechanisms to anticipate major trends in ICESCO's fields of activity, so as to foster more effective planning and informed decision-making.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* II. Tâches à effectuer */}
-          <div>
+       
+        <img
+            src={sis} // Standard <img> tag
            
-          <div className="flex items-start gap-4">
-          <img
-              src= {two} // Standard <img> tag
-             
-              alt="World Map"
-              className="w-[90px] h-[90px] object-cover"
-            />
-             <div>
-            <h3 className="text-2xl font-bold text-[#008080] mb-4 flex items-center gap-2">
-              
-              II. Tasks to be performed
-            </h3>
-            <ul className="custom-green-square list-inside text-gray-700 space-y-2">
-              <li>
-                {
-                  "Superviser et suivre les projets du Centre de Prospective et d'IA et assure le développement de son réseau et le lancement d'initiatives."
-                }
-              </li>
-              <li>
-                {
-                  "Assurer le suivi et participer au développement des recherches et études initiées par le Centre et examiner les meilleures pratiques dans le domaine de la prospective."
-                }
-              </li>
-              <li>{"Développer des mécanismes nouveaux et innovants dans le domaine de la prospective."}</li>
-              <li>{"Analyser et rédiger des documents initiés par le Centre."}</li>
-              <li>
-                {
-                  "Participer à l'organisation d'événements et de sessions de formation pour le Centre de Prospective et d'IA."
-                }
-              </li>
-              <li>
-                {
-                  "Contribuer à l'élaboration et à la mise à jour des mécanismes et des indicateurs clés de performance et de suivi stratégique liés au Centre de Prospective."
-                }
-              </li>
-              <li>{"Toutes les autres tâches qui lui sont confiées dans le domaine de spécialisation du poste."}</li>
-            </ul>
-            </div>
-            </div>
+            alt="World Map"
+            className="mr-24 w-[290px] h-[150px] "
+          />
+           
+          {" "}
+          {/* Use flex-col and items-end to align card and button */}
+          <div className="bg-white/30 mr-24 mt-12 backdrop-blur-md border border-white/50 px-6 py-6 rounded-lg shadow-lg text-gray-700 space-y-2 w-md">
+            <h2 className="text-xl font-semibold text-[#f5c402] mb-3">Informations sur le poste</h2>
+            <p className="text-white">
+              <span className="font-medium text-white">Numéro de référence:</span> ICESCO-JOB-2024-001
+            </p>
+            <p className="text-white">
+              <span className="font-medium  text-white">Date de publication:</span> 15 Juillet 2025
+            </p>
+            <p className="text-white">
+              <span className="font-medium  text-white">Date limite de candidature:</span> 15 Août 2025
+            </p>
+            <p className="text-white">
+              <span className="font-medium  text-white">Lieu:</span> Rabat, Maroc
+            </p>
+            <p className="text-white" >
+              <span className="font-medium  text-white">Type de contrat:</span> Contrat à durée indéterminée
+            </p>
           </div>
-
-          {/* III. Qualifications et compétences */}
-          <div>
-
-          <div className="flex items-start gap-4">
-          <img
-              src={thre} // Standard <img> tag
-             
-              alt="World Map"
-              className="w-[90px] h-[90px] object-cover"
-            />
-            
-            <div>
-            <h3 className="text-2xl font-bold text-[#008080] mb-4 flex items-center gap-2">
-              <GraduationCap size={24} className="text-[#008080]" />
-              III. Qualifications and skills
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Academic qualifications:</h4>
-                <ul className="custom-green-square list-inside text-gray-700 space-y-1">
-                  <li>
-                    {
-                      "Master en prospective stratégique ou dans une autre spécialité adaptée aux tâches et missions du poste."
-                    }
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Preferred certifications:</h4>
-                <ul className="custom-green-square list-inside text-gray-700 space-y-1">
-                  <li>{"Certification en gestion de projet (PMP, PRINCE2) - un atout."}</li>
-                  <li>
-                    {"Certification en prospective stratégique (par exemple, Certificat en prospective stratégique)"}
-                  </li>
-                  <li>
-                    {"Certification en analyse des politiques publiques ou en veille concurrentielle - un atout."}
-                  </li>
-                </ul>
-              </div>
-             
-            </div>
-            </div>
-            </div>
+          {/* Apply Button - now outside the card */}
+          <div className="pt-4">
+            {" "}
+            {/* Add padding top for spacing */}
+            <Button className="bg-[#008080] mr-24 hover:bg-[#008080]/90 text-white mt-12">Postuler maintenant</Button>
           </div>
         </div>
+      </div>
+    </section>
 
-        {/* Column 3: Core Competencies, Salary, Benefits */}
-        <div className="lg:col-span-1 space-y-8">
+    {/* Main Content - 3 Columns */}
+    <section className="container mx-auto px-28 py-12 md:py-16 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+      {/* Column 1: Map Image, ICESCO Values Title, and Values */}
+      <div className="lg:col-span-1 relative flex flex-col items-center lg:items-start" ref={valuesRef}>
+        {/* Map Image */}
+        <div className="w-full mb-8">
+          <img
+            src={map1} // Standard <img> tag
+            width={400}
+            height={250}
+            alt="World Map"
+            className="w-full h-auto object-cover"
+          />
+        </div>
+
+        {/* Title for ICESCO Values */}
+        <h2 className="text-3xl font-bold font-sans text-[#008080] mb-8 text-center lg:text-left">
+          Les valeurs fondamentales de l'ICESCO
+        </h2>
+
+        {/* ICESCO Values List */}
+        <img
+            src={val} // Standard <img> tag
+            width={400}
+            height={250}
+            alt="World Map"
+            className="w-full h-[550px] object-cover"
+          />
+      </div>
+
+      {/* Column 2: Job Objective, Tasks, Qualifications */}
+      <div className="lg:col-span-1 space-y-8 font-sans">
+        {/* I. Objectif du poste */}
         <div>
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">Skills:</h4>
-                <ul className="custom-green-square list-inside text-gray-700 space-y-1">
-                  <li>
-                    {"Au moins 10 ans d'expérience professionnelle dans l'un des domaines suivants "}
-                    <ul className="custom-green-square list-inside ml-4 text-gray-700">
-                      <li>{"Gestion stratégique."}</li>
-                      <li>{"Gestion / Marketing / Relations internationales ;"}</li>
-                      <li>
-                        {
-                          "Expérience professionnelle d'au moins trois ans dans une organisation internationale ou une multinationale."
-                        }
-                      </li>
-                    </ul>
-                  </li>
-                  <li>{"Expérience avérée en matière de prospective stratégique"}</li>
-                  <li>{"Expertise dans les méthodologies de prospective"}</li>
-                  <li>
-                    {
-                      "Solides compétences en matière de recherche et d'analyse des tendances liées aux scénarios futurs."
-                    }
-                  </li>
-                  <li>
-                    {
-                      "Capacité à concevoir et à mettre en œuvre des mécanismes de suivi et à évaluer les politiques publiques."
-                    }
-                  </li>
-                </ul>
-              </div>
-          {/* Compétences de base */}
+        <div className="flex items-start gap-4">
+        <img
+            src={one}// Standard <img> tag
+           
+            alt="World Map"
+            className="w-[60px] h-[60px] object-cover"
+          />
           <div>
-            <h3 className="text-2xl font-bold text-[#008080] mb-4">Basic skills</h3>
-            <ul className="custom-green-square list-inside text-gray-700 space-y-2">
-              <li>
-                <span className="font-semibold">Strategic thinking</span>
-                {" - Capacité à analyser les questions complexes et d'apporter des solutions à long terme."}
-              </li>
-              <li>
-                <span className="font-semibold">Poblem solving</span>
-                {" - Capacité à proposer des solutions innovantes et efficaces."}
-              </li>
-              <li>
-                <span className="font-semibold">Results-oriented approach</span>
-                {" - S'efforcer d'atteindre des résultats efficaces conformes aux objectifs stratégiques de l'ICESCO."}
-              </li>
-              <li>
-                <span className="font-semibold">Collaboration and teamwork</span>
-                {" - Grande capacité à travailler dans différents secteurs et disciplines."}
-              </li>
-              <li>
-                <span className="font-semibold">Adaptability and flexibility</span>
-                {" - Expérience multiculturelle et grande capacité à travailler dans un environnement international."}
-              </li>
-              <li>
-                <span className="font-semibold">Project and program management</span>
-                {" - Solides compétences en planification, mise en œuvre et évaluation de projets."}
-              </li>
-              <li>
-                <span className="font-semibold">Networking and partnerships</span>
-                {
-                  " - Capacité à établir et entretenir des relations avec les parties prenantes, les États membres et les organisations internationales."
-                }
-              </li>
-              <li>
-                <span className="font-semibold">Communication and negotiation</span>
-                {
-                  " - Excellentes compétences en communication écrite et orale, et une capacité d'interagir avec un public diversifié."
-                }
-              </li>
-            </ul>
-          </div>
-
-          {/* IV. Salaire, indemnités et avantages */}
-          <div>
-          <div className="flex items-start gap-4">
-          <img
-              src={four} // Standard <img> tag
-             
-              alt="World Map"
-              className="w-[90px] h-[90px] object-cover"
-            />
-             <div>
-            <h3 className="text-2xl font-bold text-[#008080] mb-4 flex items-center gap-2">
-            
-              IV. Salary, allowances and benefits
-            </h3>
-            <ul className="custom-green-square list-inside text-gray-700 space-y-2">
-              <li>
-                {
-                  "En cas de recrutement le candidat bénéficie du salaire et des primes et avantages prévus dans le Statut du Personnel de l'ICESCO."
-                }
-              </li>
-            </ul>
+              <h3 className="text-2xl font-bold text-[#008080] mb-4">
+                I. Objectif du poste
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Contribuer au développement stratégique et à la coordination des activités au sein du Centre de Prospective et d'IA, dans le but de renforcer le développement du réseau, de soutenir le lancement d'initiatives innovantes et de faciliter les consultations de haut niveau. Ce poste consiste également à faire progresser le développement d'études et de mécanismes de prospective afin d'anticiper les grandes tendances dans les domaines d'activité de l'ICESCO, de manière à favoriser une planification plus efficace et une prise de décision plus éclairée.
+              </p>
             </div>
-            </div>
-          </div>
-
-          {/* Green Box */}
-          <div className="bg-[#005050] text-white p-12 rounded-tl-[60px] rounded-tr-none rounded-bl-none rounded-br-[60px] shadow-lg space-y-4">
-            <p className="leading-relaxed">
-              {
-                "Le processus d'évaluation des candidats dépendra des critères prévus dans l'annonce de recrutement et peut également comprendre des tests ou des évaluations en plus de l'entretien."
-              }
-            </p>
-            <p className="leading-relaxed">
-              {"L'ICESCO adopte les moyens de communication technologiques dans le processus d'évaluation."}
-            </p>
           </div>
         </div>
-      </section>
-    </div>
+
+        {/* II. Tâches à effectuer */}
+        <div>
+         
+        <div className="flex items-start gap-4">
+        <img
+            src={two}// Standard <img> tag
+           
+            alt="World Map"
+            className="w-[90px] h-[90px] object-cover"
+          />
+           <div>
+          <h3 className="text-2xl font-bold text-[#008080] mb-4 flex items-center gap-2">
+            
+            II. Tâches à effectuer
+          </h3>
+          <ul className="custom-green-square list-inside text-gray-700 space-y-2">
+            <li>
+              {
+                "Superviser et suivre les projets du Centre de Prospective et d'IA et assure le développement de son réseau et le lancement d'initiatives."
+              }
+            </li>
+            <li>
+              {
+                "Assurer le suivi et participer au développement des recherches et études initiées par le Centre et examiner les meilleures pratiques dans le domaine de la prospective."
+              }
+            </li>
+            <li>{"Développer des mécanismes nouveaux et innovants dans le domaine de la prospective."}</li>
+            <li>{"Analyser et rédiger des documents initiés par le Centre."}</li>
+            <li>
+              {
+                "Participer à l'organisation d'événements et de sessions de formation pour le Centre de Prospective et d'IA."
+              }
+            </li>
+            <li>
+              {
+                "Contribuer à l'élaboration et à la mise à jour des mécanismes et des indicateurs clés de performance et de suivi stratégique liés au Centre de Prospective."
+              }
+            </li>
+            <li>{"Toutes les autres tâches qui lui sont confiées dans le domaine de spécialisation du poste."}</li>
+          </ul>
+          </div>
+          </div>
+        </div>
+
+        {/* III. Qualifications et compétences */}
+        <div>
+
+        <div className="flex items-start gap-4">
+        <img
+            src={thre} // Standard <img> tag
+           
+            alt="World Map"
+            className="w-[90px] h-[90px] object-cover"
+          />
+          
+          <div>
+          <h3 className="text-2xl font-bold text-[#008080] mb-4 flex items-center gap-2">
+            <GraduationCap size={24} className="text-[#008080]" />
+            III. Qualifications et compétences
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <h4 className="text-xl font-semibold text-gray-800 mb-2">Qualifications académiques:</h4>
+              <ul className="custom-green-square list-inside text-gray-700 space-y-1">
+                <li>
+                  {
+                    "Master en prospective stratégique ou dans une autre spécialité adaptée aux tâches et missions du poste."
+                  }
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-xl font-semibold text-gray-800 mb-2">Certifications privilégiées:</h4>
+              <ul className="custom-green-square list-inside text-gray-700 space-y-1">
+                <li>{"Certification en gestion de projet (PMP, PRINCE2) - un atout."}</li>
+                <li>
+                  {"Certification en prospective stratégique (par exemple, Certificat en prospective stratégique)"}
+                </li>
+                <li>
+                  {"Certification en analyse des politiques publiques ou en veille concurrentielle - un atout."}
+                </li>
+              </ul>
+            </div>
+           
+          </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Column 3: Core Competencies, Salary, Benefits */}
+      <div className="lg:col-span-1 space-y-8">
+      <div>
+              <h4 className="text-xl font-semibold text-gray-800 mb-2">Compétences:</h4>
+              <ul className="custom-green-square list-inside text-gray-700 space-y-1">
+                <li>
+                  {"Au moins 10 ans d'expérience professionnelle dans l'un des domaines suivants "}
+                  <ul className="custom-green-square list-inside ml-4 text-gray-700">
+                    <li>{"Gestion stratégique."}</li>
+                    <li>{"Gestion / Marketing / Relations internationales ;"}</li>
+                    <li>
+                      {
+                        "Expérience professionnelle d'au moins trois ans dans une organisation internationale ou une multinationale."
+                      }
+                    </li>
+                  </ul>
+                </li>
+                <li>{"Expérience avérée en matière de prospective stratégique"}</li>
+                <li>{"Expertise dans les méthodologies de prospective"}</li>
+                <li>
+                  {
+                    "Solides compétences en matière de recherche et d'analyse des tendances liées aux scénarios futurs."
+                  }
+                </li>
+                <li>
+                  {
+                    "Capacité à concevoir et à mettre en œuvre des mécanismes de suivi et à évaluer les politiques publiques."
+                  }
+                </li>
+              </ul>
+            </div>
+        {/* Compétences de base */}
+        <div>
+          <h3 className="text-2xl font-bold text-[#008080] mb-4">Compétences de base</h3>
+          <ul className="custom-green-square list-inside text-gray-700 space-y-2">
+            <li>
+              <span className="font-semibold">Pensée stratégique</span>
+              {" - Capacité à analyser les questions complexes et d'apporter des solutions à long terme."}
+            </li>
+            <li>
+              <span className="font-semibold">Résolution de problèmes</span>
+              {" - Capacité à proposer des solutions innovantes et efficaces."}
+            </li>
+            <li>
+              <span className="font-semibold">Approche axée sur les résultats</span>
+              {" - S'efforcer d'atteindre des résultats efficaces conformes aux objectifs stratégiques de l'ICESCO."}
+            </li>
+            <li>
+              <span className="font-semibold">Collaboration et travail d\'équipe</span>
+              {" - Grande capacité à travailler dans différents secteurs et disciplines."}
+            </li>
+            <li>
+              <span className="font-semibold">Adaptabilité et flexibilité</span>
+              {" - Expérience multiculturelle et grande capacité à travailler dans un environnement international."}
+            </li>
+            <li>
+              <span className="font-semibold">Gestion de projets et programmes</span>
+              {" - Solides compétences en planification, mise en œuvre et évaluation de projets."}
+            </li>
+            <li>
+              <span className="font-semibold">Réseautage et partenariats</span>
+              {
+                " - Capacité à établir et entretenir des relations avec les parties prenantes, les États membres et les organisations internationales."
+              }
+            </li>
+            <li>
+              <span className="font-semibold">Communication et négociation</span>
+              {
+                " - Excellentes compétences en communication écrite et orale, et une capacité d'interagir avec un public diversifié."
+              }
+            </li>
+          </ul>
+        </div>
+
+        {/* IV. Salaire, indemnités et avantages */}
+        <div>
+        <div className="flex items-start gap-4">
+        <img
+            src={four} // Standard <img> tag
+           
+            alt="World Map"
+            className="w-[90px] h-[90px] object-cover"
+          />
+           <div>
+          <h3 className="text-2xl font-bold text-[#008080] mb-4 flex items-center gap-2">
+          
+            IV. Salaire, indemnités et avantages
+          </h3>
+          <ul className="custom-green-square list-inside text-gray-700 space-y-2">
+            <li>
+              {
+                "En cas de recrutement le candidat bénéficie du salaire et des primes et avantages prévus dans le Statut du Personnel de l'ICESCO."
+              }
+            </li>
+          </ul>
+          </div>
+          </div>
+        </div>
+
+        {/* Green Box */}
+        <div className="bg-[#005050] text-white p-12 rounded-tl-[60px] rounded-tr-none rounded-bl-none rounded-br-[60px] shadow-lg space-y-4">
+          <p className="leading-relaxed">
+            {
+              "Le processus d'évaluation des candidats dépendra des critères prévus dans l'annonce de recrutement et peut également comprendre des tests ou des évaluations en plus de l'entretien."
+            }
+          </p>
+          <p className="leading-relaxed">
+            {"L'ICESCO adopte les moyens de communication technologiques dans le processus d'évaluation."}
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
   );
 }
