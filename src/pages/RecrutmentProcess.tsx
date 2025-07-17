@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  FileText, 
-  Phone, 
-  PhoneCall, 
-  Users, 
-  UserCheck, 
-  CheckCircle2, 
-  Mail, 
-  ThumbsUp, 
-  Briefcase, 
-  Calendar,
+import {
+  FileText,
   Clock,
-  User,
+  PhoneCall,
+  Users,
+  Mail,
+  Upload,
+  Calendar,
   Check,
   ChevronDown,
   ChevronUp,
-  Upload,
   X,
   LucideIcon
 } from 'lucide-react';
@@ -39,110 +33,104 @@ const CandidateProcess: React.FC = () => {
   const [offerAccepted, setOfferAccepted] = useState(false);
 
   const steps: Step[] = [
-    {
-      id: 1,
-      title: "CV Selected - Pre-screening",
-      icon: FileText,
-      description: "Your CV has been selected for in-depth analysis by our HR team",
-      detailedContent: "Congratulations! Your profile matches the criteria we're looking for in this position. Our HR team has conducted an initial evaluation of your application and wishes to continue the recruitment process with you. Your skills and experience align with our needs.",
-      confirmedBy: 'hr',
-      timestamp: "09:30 am",
-      status: 'completed'
-    },
-    {
-      id: 2,
-      title: "Phone Interview: Scheduled",
-      icon: Phone,
-      description: "Phone appointment scheduled with an HR team member",
-      detailedContent: "A 30-minute phone interview has been scheduled with Sarah Martin, HR Manager. This interview will allow us to get to know each other, discuss your professional background and motivations. Prepare to present your experience and ask questions about the company and position.",
-      confirmedBy: 'hr',
-      timestamp: "10:15 am",
-      status: 'completed'
-    },
-    {
-      id: 3,
-      title: "Phone Interview - Completed",
-      icon: PhoneCall,
-      description: "Phone interview successfully completed",
-      detailedContent: "The phone interview went very well. You demonstrated excellent understanding of the position and our company values. Your motivation and professionalism were particularly appreciated. The HR team is satisfied with this exchange and wishes to continue the process.",
-      confirmedBy: 'candidate',
-      timestamp: "11:00 am",
-      status: 'completed'
-    },
-    {
-      id: 4,
-      title: "HR/Manager Interview: Scheduled",
-      icon: Users,
-      description: "In-person or video conference interview with HR team and manager",
-      detailedContent: "A 1.5-hour interview is scheduled with Sarah Martin (HR) and Marc Johnson (Team Manager). This in-depth interview will evaluate your technical skills, ability to integrate into the team, and fit with company culture. Prepare concrete examples of your achievements.",
-      confirmedBy: 'hr',
-      timestamp: "02:30 pm",
-      status: 'completed'
-    },
-    {
-      id: 5,
-      title: "HR/Manager Interview - Completed",
-      icon: UserCheck,
-      description: "Interview with HR team and manager completed",
-      detailedContent: "Excellent interview! You impressed the team with your technical skills and ability to envision yourself in the role. Your answers to technical questions were precise and your concrete examples demonstrated your expertise. The team is unanimous about your candidacy.",
-      confirmedBy: 'candidate',
-      timestamp: "03:45 pm",
-      status: 'active'
-    },
-    {
-      id: 6,
-      title: "Status: Internal Offer Validation",
-      icon: CheckCircle2,
-      description: "Validation in progress by management team and stakeholders",
-      detailedContent: "Your application is currently undergoing final validation by management. This step includes budget validation, compensation level, and employment conditions. The feedback is very positive and we hope to finalize this step quickly.",
-      confirmedBy: 'hr',
-      timestamp: "04:20 pm",
-      status: 'pending'
-    },
-    {
-      id: 7,
-      title: "Offer Sent",
-      icon: Mail,
-      description: "Official job offer sent by email",
-      detailedContent: "The official job offer will be sent to you by email with all details: salary, benefits, start date, working conditions. You will have 7 days to review the offer and let us know your decision. Don't hesitate to contact us with any questions.",
-      confirmedBy: 'hr',
-      timestamp: "09:00 am",
-      status: 'pending'
-    },
-    {
-      id: 8,
-      title: "Offer Accepted",
-      icon: ThumbsUp,
-      description: "Offer accepted by candidate with contract signature",
-      detailedContent: "To officially accept the offer, please submit your updated CV and a copy of your national ID card. These documents are necessary to finalize your administrative file and prepare your employment contract.",
-      confirmedBy: 'candidate',
-      timestamp: "11:30 am",
-      status: 'pending'
-    },
-    {
-      id: 9,
-      title: "Arrival Preparation",
-      icon: Briefcase,
-      description: "Preparing integration and work tools",
-      detailedContent: "Preparing for your arrival: creating your IT access, setting up your workstation, planning your integration journey. You will receive an email with all practical information for your first day.",
-      confirmedBy: 'hr',
-      timestamp: "02:15 pm",
-      status: 'pending'
-    },
-    {
-      id: 10,
-      title: "First Day Confirmed",
-      icon: Calendar,
-      description: "Start date confirmed and integration schedule established",
-      detailedContent: "Your first day is confirmed! You will receive a detailed schedule for your first week including training, team meetings, and company presentation. Welcome to the team!",
-      confirmedBy: 'candidate',
-      timestamp: "04:00 pm",
-      status: 'pending'
-    }
-  ];
+  {
+    id: 1,
+    title: "Form Submitted",
+    icon: FileText,
+    description: "Your application form has been submitted successfully",
+    detailedContent: "Thank you for applying! We have received your application and our recruitment team will begin reviewing it shortly.",
+    confirmedBy: 'candidate',
+    timestamp: "09:00 am",
+    status: 'completed'
+  },
+  {
+    id: 2,
+    title: "Application Under Review",
+    icon: Clock,
+    description: "HR is reviewing your application",
+    detailedContent: "Our HR team is carefully reviewing your application, qualifications, and experiences to determine alignment with the role.",
+    confirmedBy: 'hr',
+    timestamp: "10:30 am",
+    status: 'completed'
+  },
+  {
+    id: 3,
+    title: "Phone Interview: HR",
+    icon: PhoneCall,
+    description: "HR phone interview scheduled on Wednesday at 11:00 AM",
+    detailedContent: "A 30-minute phone interview is scheduled on Wednesday at 11:00 AM with Sarah Martin (HR Manager). We’ll discuss your background, expectations, and the job role in detail. Please ensure you're in a quiet location.",
+    confirmedBy: 'hr',
+    timestamp: "01:00 pm",
+    status: 'completed'
+  },
+  {
+    id: 4,
+    title: "Team Interview",
+    icon: Users,
+    description: "Online interview with the technical team on Friday at 2:00 PM",
+    detailedContent: "Your interview with the technical team is scheduled on Friday at 2:00 PM via Zoom. Participants: Marc Johnson (Tech Lead), Amina Badr (Team Manager). This is a 1-hour session focused on technical challenges, previous experience, and collaboration style.",
+    confirmedBy: 'hr',
+    timestamp: "03:00 pm",
+    status: 'completed'
+  },
+  {
+    id: 5,
+    title: "Offer Sent",
+    icon: Mail,
+    description: "You have received a job offer with next steps",
+    detailedContent: `
+    Congratulations! You've been selected for the position. The job offer includes details on salary, benefits, and expected start date.
+    
+    📄 Required Documents:
+    - National ID Card  
+    - Passport  
+    - Diploma/Certificate of Education  
+    - Acte de Naissance (Birth Certificate)  
+    - Experience Certificate  
+    - Acte de Mariage (Marriage Certificate – if applicable)  
+    - 2 Recent ID Photos
+    
+    Please prepare these documents for submission to proceed with contract finalization.`,
+    confirmedBy: 'hr',
+    timestamp: "05:00 pm",
+    status: 'active'
+  },
+  {
+    id: 6,
+    title: "Upload Required Documents",
+    icon: Upload,
+    description: "Upload all requested documents to finalize your file",
+    detailedContent: `
+    To accept your offer and proceed with the onboarding process, please upload the following documents:
+    
+    ✅ National ID Card  
+    ✅ Passport  
+    ✅ Diploma or Degree Certificate  
+    ✅ Acte de Naissance (Birth Certificate)  
+    ✅ Experience Certificate  
+    ✅ Acte de Mariage (if married – optional)  
+    ✅ Two (2) ID Photos
+    
+    Once submitted, our HR team will validate your file and send you the final contract.`,
+    confirmedBy: 'candidate',
+    timestamp: "09:30 am",
+    status: 'pending'
+  },
+  {
+    id: 7,
+    title: "Start Date Confirmed",
+    icon: Calendar,
+    description: "Your start date is set for Monday, 02/04/2025",
+    detailedContent: "Welcome aboard! Your official recruitment date is Monday, 02 April 2025. You will receive a detailed onboarding schedule including meetings, training, and access setup prior to your first day.",
+    confirmedBy: 'hr',
+    timestamp: "11:00 am",
+    status: 'pending'
+  }
+];
+
 
   const handleStepClick = (stepId: number) => {
-    if (stepId === 8 && !offerAccepted) {
+    if (stepId === 6 && !offerAccepted) {
       setShowOfferModal(true);
       return;
     }
@@ -152,11 +140,8 @@ const CandidateProcess: React.FC = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, type: 'cv' | 'id') => {
     const file = event.target.files?.[0];
     if (file) {
-      if (type === 'cv') {
-        setCvFile(file);
-      } else {
-        setIdFile(file);
-      }
+      if (type === 'cv') setCvFile(file);
+      else setIdFile(file);
     }
   };
 
@@ -164,7 +149,7 @@ const CandidateProcess: React.FC = () => {
     if (cvFile && idFile) {
       setOfferAccepted(true);
       setShowOfferModal(false);
-      setExpandedStep(8);
+      setExpandedStep(6);
     }
   };
 
@@ -196,42 +181,28 @@ const CandidateProcess: React.FC = () => {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Application Process
         </h1>
-        <p className="text-gray-600">
-          Click on each step to see details
-        </p>
+        <p className="text-gray-600">Click on each step to see details</p>
       </div>
 
       <div className="relative max-w-3xl mx-auto flex justify-start">
         <div className="w-full max-w-2xl">
-          {/* Timeline Line */}
-          {/* (If you want to add the vertical line back, use the same color: bg-[#0e7378]) */}
-
           {steps.map((step, index) => {
             const isExpanded = expandedStep === step.id;
-            const isLast = index === steps.length - 1;
 
             return (
               <div key={step.id} className="relative flex items-start mb-8">
-                {/* Timestamp */}
                 <div className="w-24 text-left pr-4 pt-3">
                   <span className="text-sm text-gray-500 font-medium">
                     {step.timestamp}
                   </span>
                 </div>
 
-                {/* Circle Indicator */}
                 <div className="relative z-10 flex-shrink-0" onClick={() => handleStepClick(step.id)}>
-                  <div className={getCircleStyles(step)}>
-                    {getCircleIcon(step)}
-                  </div>
+                  <div className={getCircleStyles(step)}>{getCircleIcon(step)}</div>
                 </div>
 
-                {/* Content */}
                 <div className="flex-1 pl-6 pt-1">
-                  <div 
-                    className="cursor-pointer"
-                    onClick={() => handleStepClick(step.id)}
-                  >
+                  <div className="cursor-pointer" onClick={() => handleStepClick(step.id)}>
                     <div className="flex items-center justify-between mb-2">
                       <h3 className={`text-lg font-semibold ${
                         step.status === 'completed' ? 'text-[#0e7378]' :
@@ -240,13 +211,11 @@ const CandidateProcess: React.FC = () => {
                       }`}>
                         {step.title}
                       </h3>
-                      <div className="flex items-center space-x-2">
-                        {isExpanded ? (
-                          <ChevronUp size={20} className="text-gray-400" />
-                        ) : (
-                          <ChevronDown size={20} className="text-gray-400" />
-                        )}
-                      </div>
+                      {isExpanded ? (
+                        <ChevronUp size={20} className="text-gray-400" />
+                      ) : (
+                        <ChevronDown size={20} className="text-gray-400" />
+                      )}
                     </div>
                     <p className={`text-sm ${
                       step.status === 'completed' ? 'text-[#0e7378]' :
@@ -256,16 +225,14 @@ const CandidateProcess: React.FC = () => {
                       {step.description}
                     </p>
                   </div>
-                  {/* Expanded Content */}
+
                   {isExpanded && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-[#edc42d]">
-                      <p className="text-gray-700 leading-relaxed">
-                        {step.detailedContent}
-                      </p>
-                      {step.id === 8 && offerAccepted && (
+                      <p className="text-gray-700 leading-relaxed">{step.detailedContent}</p>
+                      {step.id === 6 && offerAccepted && (
                         <div className="mt-4 p-3 bg-[#0e7378]/10 border border-[#0e7378]/30 rounded-lg">
                           <p className="text-sm text-[#0e7378] font-medium">
-                            ✅ Offer accepted successfully! Documents submitted.
+                            ✅ Documents submitted successfully!
                           </p>
                         </div>
                       )}
@@ -278,92 +245,113 @@ const CandidateProcess: React.FC = () => {
         </div>
       </div>
 
-      {/* Offer Acceptance Modal */}
-      {showOfferModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Accept Job Offer
-              </h3>
-              <button
-                onClick={() => setShowOfferModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <p className="text-gray-600 mb-6">
-              To accept the offer, please submit the following documents:
-            </p>
+      {/* Modal for Document Upload */}
+      {/* Modal for Document Upload */}
+{showOfferModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">Upload Required Documents</h3>
+        <button onClick={() => setShowOfferModal(false)} className="text-gray-400 hover:text-gray-600">
+          <X size={20} />
+        </button>
+      </div>
 
-            <div className="space-y-4">
-              {/* CV Upload */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Updated CV *
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => handleFileUpload(e, 'cv')}
-                    className="hidden"
-                    id="cv-upload"
-                  />
-                  <label
-                    htmlFor="cv-upload"
-                    className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600"
-                  >
-                    <Upload size={20} />
-                    <span>{cvFile ? cvFile.name : 'Click to upload your CV'}</span>
-                  </label>
-                </div>
-              </div>
+      <p className="text-gray-600 mb-6">To accept the offer, please upload the following documents:</p>
 
-              {/* ID Upload */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  National ID Card *
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-                  <input
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => handleFileUpload(e, 'id')}
-                    className="hidden"
-                    id="id-upload"
-                  />
-                  <label
-                    htmlFor="id-upload"
-                    className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600"
-                  >
-                    <Upload size={20} />
-                    <span>{idFile ? idFile.name : 'Click to upload your ID'}</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex space-x-3 mt-6">
-              <button
-                onClick={() => setShowOfferModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleOfferSubmission}
-                disabled={!cvFile || !idFile}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-              >
-                Accept Offer
-              </button>
-            </div>
+      <div className="space-y-4">
+        {/* ID Card */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">ID Card *</label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => handleFileUpload(e, 'id')}
+              className="hidden"
+              id="id-card-upload"
+            />
+            <label htmlFor="id-card-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+              <Upload size={20} />
+              <span>{idFile ? idFile.name : 'Click to upload your ID Card'}</span>
+            </label>
           </div>
         </div>
-      )}
+
+        {/* Passport */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Passport *</label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => handleFileUpload(e, 'id')}
+              className="hidden"
+              id="passport-upload"
+            />
+            <label htmlFor="passport-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+              <Upload size={20} />
+              <span>{cvFile ? cvFile.name : 'Click to upload your Passport'}</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Diploma */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Diploma *</label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => handleFileUpload(e, 'cv')}
+              className="hidden"
+              id="diploma-upload"
+            />
+            <label htmlFor="diploma-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+              <Upload size={20} />
+              <span>{cvFile ? cvFile.name : 'Click to upload your Diploma'}</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Birth Certificate */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Birth Certificate *</label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => handleFileUpload(e, 'cv')}
+              className="hidden"
+              id="birth-certificate-upload"
+            />
+            <label htmlFor="birth-certificate-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+              <Upload size={20} />
+              <span>{cvFile ? cvFile.name : 'Click to upload your Birth Certificate'}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex space-x-3 mt-6">
+        <button
+          onClick={() => setShowOfferModal(false)}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleOfferSubmission}
+          disabled={!cvFile || !cvFile || !cvFile || !cvFile}
+          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        >
+          Submit Documents
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* Progress Summary */}
       <div className="mt-12 max-w-3xl mx-auto">
@@ -373,14 +361,12 @@ const CandidateProcess: React.FC = () => {
             <span>{steps.filter(s => s.status === 'completed').length} / {steps.length} steps completed</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
-            <div 
+            <div
               className="bg-[#edc42d] h-3 rounded-full transition-all duration-700 ease-out"
               style={{ width: `${(steps.filter(s => s.status === 'completed').length / steps.length) * 100}%` }}
             ></div>
           </div>
-          <div className="mt-4 text-xs text-gray-500">
-            Click on each step to see complete details
-          </div>
+          <div className="mt-4 text-xs text-gray-500">Click on each step to see complete details</div>
         </div>
       </div>
     </div>
