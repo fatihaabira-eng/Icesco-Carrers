@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { User, Mail, Phone, MapPin, Calendar, Flag, Upload, FileText, Trash2, Edit, Save, X, Briefcase, Building, Clock, CheckCircle, MoreHorizontal, Activity, Lightbulb } from 'lucide-react';
-import fatihaabira from '@/assets/abira-fatiha.jpeg'; // Ensure this path is correct
+import fatihaabira from '@/assets/abira-fatiha.jpeg';
+import { useNavigate } from "react-router-dom";
+
 // Mock Data
 const initialUserDetails = {
     fullName: 'Abira Fatiha',
@@ -97,6 +99,7 @@ export default function CandidateDashboard() {
     const [editedDetails, setEditedDetails] = useState(userDetails);
     const fileInputRef = useRef(null);
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleEditToggle = () => {
         if (isEditing) {
@@ -245,6 +248,16 @@ export default function CandidateDashboard() {
                                             ))}
                                         </div>
                                     </div>
+                                    {/* View Process Button */}
+<div className="flex justify-end mt-4">
+    <button
+        onClick={() => navigate("/process")}
+        className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-sm font-semibold"
+    >
+        View Process
+    </button>
+</div>
+
                                 </div>
                             ))}
                         </div>
