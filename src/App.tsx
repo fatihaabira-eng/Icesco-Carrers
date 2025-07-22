@@ -18,6 +18,7 @@ import CandidateDashboard from "./pages/CandidateProfile";
 import AuthenticationPage from "./pages/auth";
 import MultiStepForm from "./pages/apply" // Ensure this import is correct
 import CandidateProcess from "./pages/RecrutmentProcess"; // Ensure this import is correct
+import ChatBot from "./components/ChatBot";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +100,7 @@ const App = () => {
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <ChatBot />
             </main>
 
             {!hideNavbarOnRoutes.includes(location.pathname) && <Footer />}
