@@ -219,7 +219,7 @@ export default function Opportunities() {
         secondaryButtonText="Join Talent Pool"
         background={{
           type: "video",
-          src: "https://videos.pexels.com/video-files/3141210/3141210-uhd_2560_1440_25fps.mp4"
+          src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4"
         }}
       />
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Menu, ChevronDown, Globe, User, LogOut, LayoutDashboard, Bell } from "lucide-react"
+import { Menu, ChevronDown, Globe, User, LogOut, LayoutDashboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -18,6 +18,8 @@ import { FaInstagram, FaLinkedinIn, FaFacebookF, FaXTwitter } from "react-icons/
 import icescoLogo from "@/assets/logo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import fatihaabira from "@/assets/abira-fatiha.jpeg"; // Ensure this path is correct
+import NotificationCenter from "@/components/NotificationCenter"
+import { useNotificationContext } from "@/contexts/NotificationContext"
 
 const departments = [
   { name: "Digital Transformation", path: "/departments/digital-transformation" },
@@ -55,6 +57,9 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
   
   const location = useLocation()
   const navigate = useNavigate()
+  
+  // Notification system
+  const { notifications, markAsRead, clearNotification, markAllAsRead } = useNotificationContext()
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -172,12 +177,12 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
             {isAuthenticated && mockUser ? ( // Check if isAuthenticated is true AND mockUser exists
               <div className="flex items-center space-x-3">
                 {/* Notifications */}
-                <Button variant="ghost" size="sm" className="relative p-2 hover:bg-gray-50">
-                  <Bell className="w-5 h-5 text-gray-600" />
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center p-0">
-                    3
-                  </Badge>
-                </Button>
+                <NotificationCenter
+                  notifications={notifications}
+                  onNotificationRead={markAsRead}
+                  onNotificationClear={clearNotification}
+                  onMarkAllRead={markAllAsRead}
+                />
 
                 {/* User Profile Dropdown */}
                 <DropdownMenu>

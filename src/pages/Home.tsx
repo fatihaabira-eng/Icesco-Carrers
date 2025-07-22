@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import JobRecommendations from "@/components/JobRecommendations";
+import StatusUpdateDemo from "@/components/StatusUpdateDemo";
 import heroImage from "@/assets/icesco-hero-main.jpg";
 import JobCard from "@/components/JobCard";
 import { Button } from "@/components/ui/button";
@@ -60,10 +61,10 @@ const featuredJobs = [
 // Mock testimonial data
 const testimonials = [
   {
-    name: "Fatiha ABIRA",
-    role: "Software Engineer",
+    name: "Dr. Salim M. AlMalik",
+    role: "Director‑General of ICESCO",
     country: "Morocco",
-    quote: "Working at ICESCO allows me to contribute to educational transformation across the Islamic world. Every project we work on has real impact on communities.",
+    quote: "At ICESCO, we do not just prepare for the future — we shape it. We empower youth, champion innovation, and build bridges between cultures.",
     image: "https://images.unsplash.com/photo-1494790108755-2616b612b765?w=200&h=200&fit=crop&crop=face"
   },
   {
@@ -223,9 +224,9 @@ export default function Home() {
         </div>
         
         <blockquote className="border-l-4 border-primary pl-6 italic text-muted-foreground">
-          "Working at ICESCO allows me to contribute to educational transformation across the Islamic world. Every project we work on has real impact on communities."
+          "At ICESCO, we do not just prepare for the future — we shape it. We empower youth, champion innovation, and build bridges between cultures."
           <footer className="mt-2 text-sm font-medium text-foreground">
-            — Fatiha ABIRA, Software Engineer
+            — Dr. Salim M. AlMalik, Director‑General of ICESCO
           </footer>
         </blockquote>
 
@@ -235,7 +236,7 @@ export default function Home() {
             <p className="text-sm text-muted-foreground">Nationalities</p>
           </div>
           <div className="text-center p-4 bg-secondary/20 rounded-lg">
-            <p className="text-2xl font-bold text-secondary-dark">57</p>
+            <p className="text-2xl font-bold text-secondary-dark">53</p>
             <p className="text-sm text-muted-foreground">Member States</p>
           </div>
         </div>
@@ -269,10 +270,10 @@ export default function Home() {
                 <div className="sm:w-48">
                   <Select value={searchCategory} onValueChange={setSearchCategory}>
                     <SelectTrigger>
-                      <SelectValue placeholder="All Departments" />
+                      <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Departments</SelectItem>
+                      <SelectItem value="all">All Categories</SelectItem>
                       <SelectItem value="digital">Digital Transformation</SelectItem>
                       <SelectItem value="education">Education</SelectItem>
                       <SelectItem value="science">Science & Technology</SelectItem>
@@ -405,6 +406,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Demo Component for Testing */}
+      <StatusUpdateDemo />
     </div>
   );
 }

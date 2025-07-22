@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 
 import ImprovedNavbar from "@/components/Navbar"; // Ensure this import is correct
 import Footer from "./components/Footer";
@@ -15,8 +16,8 @@ import NotFound from "./pages/NotFound";
 import OfferDetailPage from "./pages/OfferDetailPage";
 import CandidateDashboard from "./pages/CandidateProfile";
 import AuthenticationPage from "./pages/auth";
-import MultiStepForm from "./pages/apply"; // Ensure this import is correct
-import CandidateProcess from "./pages/RecrutmentProcess";
+import MultiStepForm from "./pages/apply" // Ensure this import is correct
+import CandidateProcess from "./pages/RecrutmentProcess"; // Ensure this import is correct
 
 const queryClient = new QueryClient();
 
@@ -64,43 +65,45 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <div className="flex flex-col min-h-screen">
-          {!hideNavbarOnRoutes.includes(location.pathname) && (
-            <ImprovedNavbar
-              isAuthenticated={isAuthenticated}
-              mockUser={currentUser}
-              onLogout={handleLogout}
-            />
-          )}
-
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              {/* This is the crucial part: ensure onLoginSuccess is passed here */}
-              <Route
-                path="/auth"
-                element={<AuthenticationPage onLoginSuccess={handleLoginSuccess} />}
+        <NotificationProvider>
+          <Toaster />
+          <Sonner />
+          <div className="flex flex-col min-h-screen">
+            {!hideNavbarOnRoutes.includes(location.pathname) && (
+              <ImprovedNavbar
+                isAuthenticated={isAuthenticated}
+                mockUser={currentUser}
+                onLogout={handleLogout}
               />
-              <Route path="/details" element={<OfferDetailPage />} />
-              <Route path="/steps" element={<MultiStepForm />} />
-              <Route path="/process" element={<CandidateProcess />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/opportunities" element={<Opportunities />} />
-              <Route path="/departments/:department" element={<DepartmentPage />} />
+            )}
 
-              <Route
-                path="/dashboard"
-                element={isAuthenticated ? <CandidateDashboard /> : <Navigate to="/auth" replace />}
-              />
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                {/* This is the crucial part: ensure onLoginSuccess is passed here */}
+                <Route
+                  path="/auth"
+                  element={<AuthenticationPage onLoginSuccess={handleLoginSuccess} />}
+                />
+                <Route path="/details" element={<OfferDetailPage />} />
+                <Route path="/steps" element={<MultiStepForm />} />
+                <Route path="/process" element={<CandidateProcess />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/opportunities" element={<Opportunities />} />
+                <Route path="/departments/:department" element={<DepartmentPage />} />
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
+                <Route
+                  path="/dashboard"
+                  element={isAuthenticated ? <CandidateDashboard /> : <Navigate to="/auth" replace />}
+                />
 
-          {!hideNavbarOnRoutes.includes(location.pathname) && <Footer />}
-        </div>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+
+            {!hideNavbarOnRoutes.includes(location.pathname) && <Footer />}
+          </div>
+        </NotificationProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
