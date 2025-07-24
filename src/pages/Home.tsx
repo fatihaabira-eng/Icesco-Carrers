@@ -408,7 +408,7 @@ export default function Home() {
       </section>
 
       {/* Demo Component for Testing */}
-      <StatusUpdateDemo />
+      {/* <StatusUpdateDemo /> */}
     </div>
   );
 }

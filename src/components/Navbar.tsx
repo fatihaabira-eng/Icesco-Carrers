@@ -261,12 +261,13 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                 <div className="flex flex-col h-full">
                   {/* Mobile Header */}
                   <div className="flex items-center justify-between pb-6 border-b border-gray-200">
-                    <div className="flex items-center space-x-3">
-                      <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold">I</span>
-                      </div>
-                      <span className="text-lg font-bold text-gray-900">ICESCO</span>
-                    </div>
+                    <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src={icescoLogo} 
+              alt="ICESCO" 
+              className="h-12 w-auto"
+            />
+          </Link>
                   </div>
 
                   {/* Mobile Navigation */}
@@ -278,7 +279,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                           to={item.path}
                           onClick={() => setIsOpen(false)}
                           className={`block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors ${
-                            isActive(item.path) ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-50"
+                            isActive(item.path) ? "bg-primary-light text-white" : "text-gray-700 hover:bg-gray-50"
                           }`}
                         >
                           {item.name}
@@ -287,7 +288,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                     </div>
 
                     {/* Mobile Departments */}
-                    <div className="mt-6">
+                    {/* <div className="mt-6">
                       <h3 className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
                         Departments
                       </h3>
@@ -305,7 +306,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                           </Link>
                         ))}
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Mobile Language Selector */}
                     <div className="mt-6">
@@ -318,7 +319,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                             key={lang.code}
                             onClick={() => setCurrentLang(lang.code)}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-colors flex items-center space-x-3 ${
-                              currentLang === lang.code ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-50"
+                              currentLang === lang.code ? "bg-[#cbf0f2] text-primary" : "text-gray-600 hover:bg-gray-50"
                             }`}
                           >
                             <span>{lang.flag}</span>
