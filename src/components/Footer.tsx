@@ -24,7 +24,7 @@ export default function Footer() {
       }}
     >
       {/* Dark overlay to ensure text readability */}
-      <div className="max-w-7xl mx-auto container-padding section-padding relative z-10"></div>
+      <div className="max-w-7xl mx-auto container-padding py-8 relative z-10"></div>
       
       <div className="max-w-7xl mx-auto container-padding section-padding relative z-10">
         {/* Main Footer Content */}
@@ -36,7 +36,7 @@ export default function Footer() {
                 <img 
                   src={icescoLogo} 
                   alt="ICESCO" 
-                  className="h-14 w-auto"
+                  className="h-20 w-auto"
                 />
               </Link>
             </div>
