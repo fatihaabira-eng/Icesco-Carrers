@@ -194,7 +194,7 @@ export default function CandidateDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans text-gray-800 p-4 sm:p-6 lg:p-8">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-title text-gray-800 p-4 sm:p-6 lg:p-8">
             <MessageBox message={message} onClose={() => setMessage('')} />
 
             <div className="max-w-8xl mx-auto flex flex-col lg:flex-row gap-6">
