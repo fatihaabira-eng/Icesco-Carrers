@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { User, Mail, Phone, MapPin, Calendar, Flag, Upload, FileText, Trash2, Edit, Save, X, Briefcase, Building, Clock, CheckCircle, MoreHorizontal, Activity, Lightbulb, Menu, ChevronLeft, Award, BookOpen, Layers, Bell } from 'lucide-react';
 import fatihaabira from '@/assets/abira-fatiha.jpeg';
+import { useNavigate } from 'react-router-dom';
 // Mock Data
 const initialUserDetails = {
     fullName: 'Abira Fatiha',
@@ -147,6 +148,8 @@ export default function CandidateDashboard() {
     const [message, setMessage] = useState('');
     const [activeTab, setActiveTab] = useState('profile'); // 'profile' or 'applications'
     const [isSidebarOpen, setIsSidebarOpen] = useState(false); // For mobile sidebar toggle
+    
+    const navigate = useNavigate();
 
     const handleEditToggle = () => {
         if (isEditing) {
@@ -458,7 +461,7 @@ export default function CandidateDashboard() {
                                             {/* View Process Button - Removed useNavigate */}
                                             <div className="flex justify-end mt-4">
                                                 <button
-                                                    onClick={() => setMessage('View Process functionality would navigate to a detailed application page.')} // Replaced navigation with message
+                                                    onClick={() => navigate("/process") }// Replaced navigation with message
                                                     className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-sm font-semibold"
                                                 >
                                                     View Process
