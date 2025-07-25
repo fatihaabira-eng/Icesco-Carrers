@@ -5,7 +5,9 @@
 /* ICESCO Design System - Colors, gradients, fonts, etc
 All colors MUST be HSL based on brand guidelines.
 */
-
+body {
+  @apply font-title;
+}
 @layer base {
   :root {
     /* ICESCO Brand Colors */

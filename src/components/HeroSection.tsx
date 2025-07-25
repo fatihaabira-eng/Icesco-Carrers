@@ -40,7 +40,7 @@ export default function HeroSection({
   background
 }: HeroSectionProps) {
   return (
-  <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+  <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
     {/* Background */}
     <div className="absolute inset-0 bg-gradient-hero">
       {background.type=="video" ? (
@@ -72,26 +72,26 @@ export default function HeroSection({
             {title}
           </h1>
 
-          <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
+          <p className="text-xl font-title md:text-2xl text-white/90 leading-relaxed">
             {subtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 items-start items-center justify-center">
-            <Button
-              onClick={onPrimaryClick}
-              size="lg"
-              className="btn-hero group bg-[#ecc42d]"
-            >
-              {primaryButtonText}
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-
+            {secondaryButtonText && (<Button
+                onClick={onPrimaryClick}
+                size="lg"
+                className="btn-hero group bg-[#ecc42d] font-title"
+              >
+                {primaryButtonText}
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+          )}
             {secondaryButtonText && (
               <Button
                 variant="outline"
                 size="lg"
                 onClick={onSecondaryClick}
-                className="border-white text-white hover:bg-white hover:text-accent bg-transparent"
+                className="border-white text-white font-title hover:bg-white hover:text-accent bg-transparent"
               >
                 {showVideo && <Play className="mr-2 w-5 h-5" />}
                 {secondaryButtonText}
@@ -102,7 +102,7 @@ export default function HeroSection({
           {/* Search Bar */}
           {showSearch && (
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-6 space-y-4">
-              <h3 className="text-white font-semibold text-lg">Find Your Perfect Role</h3>
+              <h3 className="text-white font-semibold font-title text-lg">Find Your Perfect Role</h3>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70 w-5 h-5" />

@@ -124,7 +124,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${icescoBackground})` }}
@@ -135,10 +135,10 @@ export default function About() {
         <div className={`relative z-10 max-w-4xl mx-auto text-center px-6 transform transition-all duration-1000 ${
           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
         }`}>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+          <h1 className="text-5xl md:text-7xl font-title text-white mb-6 animate-fade-in">
             Working at ICESCO
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
+          <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-title">
             Empowering Minds, Uniting Cultures, Shaping the Future
           </p>
           <Button 

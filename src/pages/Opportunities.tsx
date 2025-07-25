@@ -215,8 +215,8 @@ export default function Opportunities() {
       <HeroSection
         title="Career Opportunities"
         subtitle="Discover meaningful roles that advance education, science, and culture across the Islamic world."
-        primaryButtonText="View All Roles"
-        secondaryButtonText="Join Talent Pool"
+        // primaryButtonText="View All Roles"
+        // secondaryButtonText="Join Talent Pool"
         background={{
           type: "video",
           src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4"
@@ -369,7 +369,7 @@ export default function Opportunities() {
               </div>
 
               {filteredJobs.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {filteredJobs.map((job, index) => (
                     <JobCard key={index} {...job} />
                   ))}

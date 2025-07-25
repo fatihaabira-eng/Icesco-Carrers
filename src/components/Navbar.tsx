@@ -124,7 +124,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
           <div className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
-              className={`font-medium transition-colors hover:text-primary ${
+              className={`font-medium  font-titletransition-colors hover:text-primary ${
                 isActive("/") ? "text-primary border-b-2 border-primary" : "text-gray-700"
               }`}
             >
@@ -133,7 +133,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
             
             <Link 
               to="/about" 
-              className={`font-medium transition-colors hover:text-primary ${
+              className={`font-medium font-title transition-colors hover:text-primary ${
                 isActive("/about") ? "text-primary border-b-2 border-primary" : "text-gray-700"
               }`}
             >
@@ -142,7 +142,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
             
             <Link 
               to="/opportunities" 
-              className={`font-medium transition-colors hover:text-primary ${
+              className={`font-medium font-title transition-colors hover:text-primary ${
                 isActive("/opportunities") ? "text-primary border-b-2 border-primary" : "text-gray-700"
               }`}
             >
@@ -191,12 +191,12 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                       {/* Use mockUser.profilePhoto from props */}
                       <AvatarImage src={mockUser.profilePhoto || "/placeholder.svg"} alt={mockUser.fullName} />
                       {/* Use mockUser.initials from props */}
-                      <AvatarFallback className="bg-blue-600 text-white text-sm">{mockUser.initials}</AvatarFallback>
+                      <AvatarFallback className="bg-blue-600 text-white text-sm font-title">{mockUser.initials}</AvatarFallback>
                     </Avatar>
                     <div className="hidden md:block text-left">
                       {/* Use mockUser.fullName from props */}
                       <p className="text-sm font-medium text-gray-900">{mockUser.fullName}</p>
-                      <p className="text-xs text-gray-500">Online</p>
+                      <p className="text-xs text-gray-500 font-title">Online</p>
                     </div>
                     <ChevronDown className="w-4 h-4 text-gray-400" />
                   </DropdownMenuTrigger>
@@ -206,22 +206,22 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                   >
                     <div className="px-3 py-2 border-b border-gray-100">
                       {/* Use mockUser.fullName and mockUser.email from props */}
-                      <p className="font-medium text-gray-900">{mockUser.fullName}</p>
-                      <p className="text-sm text-gray-500">{mockUser.email}</p>
+                      <p className="font-medium text-gray-900 font-title">{mockUser.fullName}</p>
+                      <p className="text-sm text-gray-500 font-title">{mockUser.email}</p>
                     </div>
                     <DropdownMenuItem
                       className="rounded-lg cursor-pointer hover:bg-blue-50 focus:bg-blue-50 px-3 py-2 mt-2"
                       onClick={() => navigate("/dashboard")}
                     >
                       <LayoutDashboard className="w-4 h-4 mr-3 text-gray-500" />
-                      <span className="text-gray-700">Dashboard</span>
+                      <span className="text-gray-700 font-title">Dashboard</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="rounded-lg cursor-pointer hover:bg-blue-50 focus:bg-blue-50 px-3 py-2"
                       onClick={() => navigate("/profile")}
                     >
                       <User className="w-4 h-4 mr-3 text-gray-500" />
-                      <span className="text-gray-700">Profile Settings</span>
+                      <span className="text-gray-700 font-title">Profile Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="my-2" />
                     <DropdownMenuItem
@@ -229,7 +229,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                       className="rounded-lg cursor-pointer hover:bg-red-50 focus:bg-red-50 px-3 py-2 text-red-600"
                     >
                       <LogOut className="w-4 h-4 mr-3" />
-                      <span>Sign Out</span>
+                      <span className="font-title">Sign Out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -240,11 +240,11 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                   variant="ghost"
                   size="sm"
                   onClick={handleLoginRedirect}
-                  className="text-gray-700 hover:text-white hover:bg-primary-light"
+                  className="text-gray-700 font-title hover:text-white hover:bg-primary-light"
                 >
                   Sign In
                 </Button>
-                <Button size="sm" onClick={handleLoginRedirect} className="bg-primary hover:bg-primary-dark text-white shadow-sm">
+                <Button size="sm" onClick={handleLoginRedirect} className="bg-primary font-title hover:bg-primary-dark text-white shadow-sm">
                   Get Started
                 </Button>
               </div>
@@ -310,7 +310,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
 
                     {/* Mobile Language Selector */}
                     <div className="mt-6">
-                      <h3 className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                      <h3 className="px-4 font-title text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
                         Language
                       </h3>
                       <div className="space-y-1">
@@ -318,7 +318,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                           <button
                             key={lang.code}
                             onClick={() => setCurrentLang(lang.code)}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-colors flex items-center space-x-3 ${
+                            className={`w-full font-title text-left px-4 py-2 rounded-lg transition-colors flex items-center space-x-3 ${
                               currentLang === lang.code ? "bg-[#cbf0f2] text-primary" : "text-gray-600 hover:bg-gray-50"
                             }`}
                           >
