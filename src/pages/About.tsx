@@ -222,7 +222,7 @@ export default function About() {
       </section>
 
       {/* Core Values */}
-       <section className="section-padding bg-gradient-to-br from-primary/5 to-secondary/10 relative overflow-hidden">
+       <section className="section-padding bg-gradient-to-br from-primary/5 to-primary/10 relative overflow-hidden">
       <div className="max-w-7xl mx-auto container-padding">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
