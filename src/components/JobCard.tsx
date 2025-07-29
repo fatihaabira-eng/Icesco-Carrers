@@ -84,13 +84,9 @@ export default function JobCard({
 
     {/* Footer fixed at bottom */}
     <div className="flex justify-between items-center pt-4">
-      <Button variant="outline" size="sm" className="btn-outline">
-        View Details
-      </Button>
-
       <Link to="/details">
         <Button size="sm" className="bg-primary hover:bg-primary-dark text-primary-foreground">
-          Apply Now
+          View Details
         </Button>
       </Link>
     </div>
