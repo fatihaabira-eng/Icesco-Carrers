@@ -69,7 +69,7 @@ export default {
 				}
 			},
 			fontFamily: {
-				'title': ['Letter Gothic'],
+				'title': ['Letter Gothic, Courier New, monospace', 'sans-serif'],
 				'sans': ['Letter Gothic','sans-serif']
 			},
 			borderRadius: {

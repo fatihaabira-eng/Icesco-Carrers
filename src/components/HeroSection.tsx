@@ -67,7 +67,7 @@ export default function HeroSection({
     <div className="relative z-10 max-w-7xl mx-auto container-padding">
       <div className="flex flex-col items-center justify-center text-center min-h-[60vh] space-y-8">
         {/* Left Side - Content */}
-        <div className="space-y-8 text-center">
+        <div className="mt-12 space-y-8 text-center">
           <h1 className="font-title text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
             {title}
           </h1>
