@@ -217,13 +217,13 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                       <LayoutDashboard className="w-4 h-4 mr-3 text-gray-500" />
                       <span className="text-gray-700 font-title">Dashboard</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem
+                    {/* <DropdownMenuItem
                       className="rounded-lg cursor-pointer hover:bg-blue-50 focus:bg-blue-50 px-3 py-2"
                       onClick={() => navigate("/profile")}
                     >
                       <User className="w-4 h-4 mr-3 text-gray-500" />
                       <span className="text-gray-700 font-title">Profile Settings</span>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                     <DropdownMenuSeparator className="my-2" />
                     <DropdownMenuItem
                       onClick={handleLogoutClick} // Use the new handleLogoutClick

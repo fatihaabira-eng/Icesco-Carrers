@@ -364,7 +364,7 @@ export default function JobDetailPage() {
         </div>
 
           {/* Green Box */}
-          <div className="bg-[#005050] text-white p-12 rounded-tl-[60px] rounded-tr-none rounded-bl-none rounded-br-[60px] shadow-lg space-y-4">
+          <div className="bg-primary text-white p-12 rounded-tl-[60px] rounded-tr-none rounded-bl-none rounded-br-[60px] shadow-lg space-y-4">
             <p className="leading-relaxed">
               {
                 "The candidate assessment process will depend on the criteria set out in the job advertisement and may also include tests or assessments in addition to the interview."

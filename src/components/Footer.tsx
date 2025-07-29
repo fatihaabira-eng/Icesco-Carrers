@@ -61,7 +61,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-[#ecc42d] font-semibold text-lg text-accent-foreground">Quick Links</h3>
+            <h3 className="text-secondary font-semibold text-lg text-accent-foreground">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/about" className="text-accent-foreground/80 hover:text-primary transition-colors">
@@ -93,7 +93,7 @@ export default function Footer() {
 
           {/* Departments */}
           <div className="space-y-4">
-            <h3 className="text-[#ecc42d] font-semibold text-lg text-accent-foreground">Departments</h3>
+            <h3 className="text-secondary font-semibold text-lg text-accent-foreground">Departments</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/departments/digital-transformation" className="text-accent-foreground/80 hover:text-primary transition-colors">
@@ -125,7 +125,7 @@ export default function Footer() {
 
           {/* Connect */}
           <div className="space-y-4">
-            <h3 className="text-[#ecc42d] font-semibold text-lg text-accent-foreground">Connect</h3>
+            <h3 className="text-secondary font-semibold text-lg text-accent-foreground">Connect</h3>
             <div className="flex space-x-4">
               <a 
                 href="#" 
