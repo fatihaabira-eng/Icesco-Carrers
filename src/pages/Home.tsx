@@ -225,7 +225,7 @@ export default function Home() {
         
         <blockquote className="border-l-4 border-primary pl-6 italic text-muted-foreground">
           "At ICESCO, we do not just prepare for the future — we shape it. We empower youth, champion innovation, and build bridges between cultures."
-          <footer className="mt-2 text-sm font-medium text-foreground">
+          <footer className="mt-2 text-sm font-title font-bold text-foreground">
             — Dr. Salim M. AlMalik, Director‑General of ICESCO
           </footer>
         </blockquote>
