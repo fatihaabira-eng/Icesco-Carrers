@@ -100,7 +100,7 @@ export default function JobDetailPage() {
         />
 
         {/* Info Card */}
-        <div className="bg-white/30 font-title backdrop-blur-md border border-white/50 px-4 py-4 rounded-lg shadow-lg text-gray-700 space-y-2 w-full">
+        <div className="bg-[#008080]/80 font-title backdrop-blur-md border border-white/50 px-4 py-4 rounded-lg shadow-lg space-y-2 w-full">
           <h2 className="text-lg font-semibold text-[#f5c402] mb-2">Post Informations</h2>
           <p className="text-white"><span className="font-medium">Reference:</span> ICESCO-JOB-2024-001</p>
           <p className="text-white"><span className="font-medium">Publication DATE:</span> 15th July 2025</p>
@@ -108,7 +108,6 @@ export default function JobDetailPage() {
           <p className="text-white"><span className="font-medium">Place:</span> Rabat, Morocco</p>
           <p className="text-white"><span className="font-medium">Type:</span> Fixed-term contract</p>
         </div>
-
         {/* Apply Button */}
         <Button
           onClick={() => navigate("/steps")}

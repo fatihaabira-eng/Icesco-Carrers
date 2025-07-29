@@ -40,7 +40,7 @@ const CandidateProcess: React.FC = () => {
     description: "Your application form has been submitted successfully",
     detailedContent: "Thank you for applying! We have received your application and our recruitment team will begin reviewing it shortly.",
     confirmedBy: 'candidate',
-    timestamp: "09:00 am",
+    timestamp: "9th april 2025",
     status: 'completed'
   },
   {
@@ -50,7 +50,7 @@ const CandidateProcess: React.FC = () => {
     description: "HR is reviewing your application",
     detailedContent: "Our HR team is carefully reviewing your application, qualifications, and experiences to determine alignment with the role.",
     confirmedBy: 'hr',
-    timestamp: "10:30 am",
+    timestamp: "12th April 2025",
     status: 'completed'
   },
   {
@@ -60,7 +60,7 @@ const CandidateProcess: React.FC = () => {
     description: "HR phone interview scheduled on Wednesday at 11:00 AM",
     detailedContent: "A 30-minute phone interview is scheduled on Wednesday at 11:00 AM with Sarah Martin (HR Manager). We’ll discuss your background, expectations, and the job role in detail. Please ensure you're in a quiet location.",
     confirmedBy: 'hr',
-    timestamp: "01:00 pm",
+    timestamp: "20th April 2025",
     status: 'completed'
   },
   {
@@ -70,7 +70,7 @@ const CandidateProcess: React.FC = () => {
     description: "Online interview with the technical team on Friday at 2:00 PM",
     detailedContent: "Your interview with the technical team is scheduled on Friday at 2:00 PM via Zoom. Participants: Marc Johnson (Tech Lead), Amina Badr (Team Manager). This is a 1-hour session focused on technical challenges, previous experience, and collaboration style.",
     confirmedBy: 'hr',
-    timestamp: "03:00 pm",
+    timestamp: "25th April 2025",
     status: 'completed'
   },
   {
@@ -92,7 +92,7 @@ const CandidateProcess: React.FC = () => {
     
     Please prepare these documents for submission to proceed with contract finalization.`,
     confirmedBy: 'hr',
-    timestamp: "05:00 pm",
+    timestamp: "28th April 2025",
     status: 'active'
   },
   {
@@ -113,17 +113,17 @@ const CandidateProcess: React.FC = () => {
     
     Once submitted, our HR team will validate your file and send you the final contract.`,
     confirmedBy: 'candidate',
-    timestamp: "09:30 am",
+    timestamp: "3th May 2025",
     status: 'pending'
   },
   {
     id: 7,
     title: "Start Date Confirmed",
     icon: Calendar,
-    description: "Your start date is set for Monday, 02/04/2025",
+    description: "Your start date is set for Monday, 02/06/2025",
     detailedContent: "Welcome aboard! Your official recruitment date is Monday, 02 April 2025. You will receive a detailed onboarding schedule including meetings, training, and access setup prior to your first day.",
     confirmedBy: 'hr',
-    timestamp: "11:00 am",
+    timestamp: "10th May 2025",
     status: 'pending'
   }
 ];
