@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Upload, FileText, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,15 +15,46 @@ import LoginModal from "@/components/LoginModal";
 import PersonalizedDashboard from "@/components/PersonalizedDashboard";
 
 export default function JobRecommendations() {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [selectedAction, setSelectedAction] = useState<"cv" | "questionnaire" | null>(null);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string; hasData?: boolean } | null>(null);
+  const [isCheckingUserData, setIsCheckingUserData] = useState(false);
 
   // Track if dashboard should be shown
   const [showDashboard, setShowDashboard] = useState(false);
 
+  // Simulate checking for existing user data
+  useEffect(() => {
+    if (user) {
+      checkUserData();
+    }
+  }, [user]);
+
+  const checkUserData = () => {
+    setIsCheckingUserData(true);
+    // Simulate API call to check if user has existing data
+    setTimeout(() => {
+      // Replace this with actual API call
+      const userHasData = false; // Change this based on actual data check
+      setUser(prev => prev ? { ...prev, hasData: userHasData } : null);
+      setIsCheckingUserData(false);
+      
+      if (userHasData) {
+        setShowDashboard(true);
+      }
+    }, 500);
+  };
+
   const handleGetStarted = () => {
+    if (!user) {
+      // Redirect to login page if not logged in
+      navigate("/auth");
+      return;
+    }
+    
+    // If logged in but no data exists, open the modal
     setIsModalOpen(true);
   };
 
@@ -31,23 +63,34 @@ export default function JobRecommendations() {
     setIsModalOpen(false);
 
     if (!user) {
-      setShowLogin(true);
+      // This shouldn't happen now since we redirect first, but keeping as fallback
+      navigate("/auth");
     } else {
-      setShowDashboard(true); // Already logged in
+      // Proceed to dashboard (will be handled by useEffect if user.hasData is false)
+      setShowDashboard(true);
     }
   };
 
   const handleLoginSuccess = (userData: { name: string; email: string }) => {
     setUser(userData);
     setShowLogin(false);
-    setShowDashboard(true);
+    // The useEffect will handle checking for existing data and redirecting
   };
 
   const handleBackFromDashboard = () => {
     setShowDashboard(false);
     setSelectedAction(null);
-    setUser(null);
   };
+
+  if (isCheckingUserData) {
+    return (
+      <section className="section-padding bg-muted/50">
+        <div className="max-w-7xl mx-auto container-padding text-center">
+          <p>Loading your data...</p>
+        </div>
+      </section>
+    );
+  }
 
   if (showDashboard && user) {
     return (
