@@ -11,77 +11,91 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import LoginModal from "@/components/LoginModal";
 import PersonalizedDashboard from "@/components/PersonalizedDashboard";
+
+interface UserData {
+  fullName: string;
+  email: string;
+  profilePhoto?: string;
+  hasData?: boolean;
+}
 
 export default function JobRecommendations() {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const [selectedAction, setSelectedAction] = useState<"cv" | "questionnaire" | null>(null);
-  const [user, setUser] = useState<{ name: string; email: string; hasData?: boolean } | null>(null);
-  const [isCheckingUserData, setIsCheckingUserData] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [isCheckingUserData, setIsCheckingUserData] = useState(true); // Start with true to check auth status
 
-  // Track if dashboard should be shown
-  const [showDashboard, setShowDashboard] = useState(false);
-
-  // Simulate checking for existing user data
+  // Check for existing user session on component mount
   useEffect(() => {
-    if (user) {
-      checkUserData();
+     const handleStorageChange = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      checkUserData(parsedUser);
+    } else {
+      setIsCheckingUserData(false); // No user found, checking complete
     }
+     if (!storedUser && user) {
+        // User was logged out from another tab
+        setUser(null);
+      }}
+      window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [user]);
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
 
-  const checkUserData = () => {
+  const checkAuthStatus = () => {
+    setIsCheckingUserData(true);
+    const storedUser = localStorage.getItem('user');
+    
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      checkUserData(parsedUser);
+    } else {
+      setUser(null);
+      setIsCheckingUserData(false);
+    }
+  };
+  // Check for existing user data
+  const checkUserData = (userData: UserData) => {
     setIsCheckingUserData(true);
     // Simulate API call to check if user has existing data
     setTimeout(() => {
       // Replace this with actual API call
-      const userHasData = false; // Change this based on actual data check
-      setUser(prev => prev ? { ...prev, hasData: userHasData } : null);
+      const userHasData = true; // Change this based on actual data check
+      const updatedUser = { ...userData, hasData: userHasData };
+      setUser(updatedUser);
       setIsCheckingUserData(false);
-      
-      if (userHasData) {
-        setShowDashboard(true);
-      }
     }, 500);
   };
 
   const handleGetStarted = () => {
-    if (!user) {
-      // Redirect to login page if not logged in
-      navigate("/auth");
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+      navigate("/auth", { state: { from: "/job-recommendations" } });
       return;
     }
-    
-    // If logged in but no data exists, open the modal
     setIsModalOpen(true);
   };
+
 
   const handleSelectAction = (action: "cv" | "questionnaire") => {
     setSelectedAction(action);
     setIsModalOpen(false);
-
-    if (!user) {
-      // This shouldn't happen now since we redirect first, but keeping as fallback
-      navigate("/auth");
-    } else {
-      // Proceed to dashboard (will be handled by useEffect if user.hasData is false)
-      setShowDashboard(true);
-    }
-  };
-
-  const handleLoginSuccess = (userData: { name: string; email: string }) => {
-    setUser(userData);
-    setShowLogin(false);
-    // The useEffect will handle checking for existing data and redirecting
+    // In a real app, you would save the action and proceed to dashboard
   };
 
   const handleBackFromDashboard = () => {
-    setShowDashboard(false);
     setSelectedAction(null);
   };
 
+  // Loading state while checking user data
   if (isCheckingUserData) {
     return (
       <section className="section-padding bg-muted/50">
@@ -92,10 +106,11 @@ export default function JobRecommendations() {
     );
   }
 
-  if (showDashboard && user) {
+  // If user is logged in and has data, show dashboard immediately
+  if (user?.hasData) {
     return (
       <PersonalizedDashboard
-        user={user}
+        user={{ name: user.fullName, email: user.email }}
         onBack={handleBackFromDashboard}
         openCV={selectedAction === "cv"}
         openQuestionnaire={selectedAction === "questionnaire"}
@@ -103,6 +118,9 @@ export default function JobRecommendations() {
     );
   }
 
+  // Show the get started section only if:
+  // - User is not logged in, or
+  // - User is logged in but has no data
   return (
     <section className="section-padding bg-muted/50">
       <div className="max-w-7xl mx-auto container-padding">
@@ -151,9 +169,6 @@ export default function JobRecommendations() {
                     <p className="text-sm text-muted-foreground">
                       Upload your resume and we'll analyze your skills and experience to recommend the best opportunities.
                     </p>
-                    <p className="text-xs text-primary mt-2 font-medium">
-                      *Requires login with Google or LinkedIn
-                    </p>
                   </CardContent>
                 </Card>
 
@@ -184,12 +199,6 @@ export default function JobRecommendations() {
               </div>
             </DialogContent>
           </Dialog>
-
-          <LoginModal
-            isOpen={showLogin}
-            onClose={() => setShowLogin(false)}
-            onSuccess={handleLoginSuccess}
-          />
         </div>
       </div>
     </section>

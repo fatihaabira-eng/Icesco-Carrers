@@ -71,6 +71,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
   // Use the onLogout prop passed from App.tsx
   const handleLogoutClick = () => {
     console.log("Logging out...");
+    localStorage.removeItem('user'); 
     onLogout(); // Call the logout function passed from parent
     navigate("/"); // Redirect to home page after logout
     setIsOpen(false); // Close mobile menu if open

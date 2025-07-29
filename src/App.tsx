@@ -57,11 +57,14 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setCurrentUser(null);
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('currentUser');
-  };
+  setIsAuthenticated(false);
+  setCurrentUser(null);
+  localStorage.removeItem('isAuthenticated');
+  localStorage.removeItem('currentUser');
+  
+  // Add this to ensure all tabs are synced
+  window.dispatchEvent(new Event('storage'));
+};
 
   return (
     <QueryClientProvider client={queryClient}>

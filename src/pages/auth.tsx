@@ -104,7 +104,18 @@ export default function AuthenticationPage({ onLoginSuccess }) { // Accept onLog
       }, 1000); // 1-second delay for demonstration
     }
   };
-
+  if (email === "fatiha.abira@gmail.com" && password === "secure123") {
+      const mockUserData = {
+        fullName: "Fatiha Abira",
+        email: email,
+        profilePhoto: fatihaabira,
+        initials: "FA",
+      };
+      localStorage.setItem('user', JSON.stringify(mockUserData)); // Add this line
+      onLoginSuccess(mockUserData);
+      const returnTo = location.state?.from || "/";
+      navigate(returnTo);
+    }
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4 font-sans">
       <div className="w-full max-w-md mx-auto">
