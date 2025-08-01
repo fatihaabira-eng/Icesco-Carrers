@@ -55,7 +55,7 @@ const CandidateProcess: React.FC = () => {
   },
   {
     id: 3,
-    title: "Phone Interview: HR",
+    title: "Online Interview: HR",
     icon: PhoneCall,
     description: "HR phone interview scheduled on Wednesday at 11:00 AM",
     detailedContent: "A 30-minute phone interview is scheduled on Wednesday at 11:00 AM with Sarah Martin (HR Manager). We’ll discuss your background, expectations, and the job role in detail. Please ensure you're in a quiet location.",
