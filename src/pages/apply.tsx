@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Download, Plus } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
 import ReactCountryFlag from 'react-country-flag';
+import { useNavigate } from 'react-router-dom';
 
 interface Education {
   place: string;
@@ -17,6 +18,21 @@ interface Experience {
   startDate: string;
   endDate: string;
   description: string;
+  achievements: string;
+}
+
+interface Certification {
+  title: string;
+  issuer: string;
+  date: string;
+  url?: string;
+}
+
+interface Reference {
+  name: string;
+  title: string;
+  email: string;
+  note?: string;
 }
 
 interface FormData {
@@ -31,6 +47,10 @@ interface FormData {
   experience: Experience[];
   skills: string[];
   cv: File | null;
+  practicalExperience: string;
+  certifications: Certification[];
+  references: Reference[];
+  videoIntroSubmitted: boolean;
 }
 
 const countryCodes = [
@@ -47,6 +67,7 @@ const countryCodes = [
 ];
 
 const MultiStepForm: React.FC = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
@@ -57,15 +78,17 @@ const MultiStepForm: React.FC = () => {
     dateOfBirth: '',
     address: '',
     education: [{ place: '', diploma: '', startDate: '', endDate: '' }],
-    experience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '' }],
+    experience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '', achievements: '' }],
     skills: [''],
     cv: null,
+    practicalExperience: '',
+    certifications: [{ title: '', issuer: '', date: '', url: '' }],
+    references: [{ name: '', title: '', email: '', note: '' }],
+    videoIntroSubmitted: false,
   });
   const [submitted, setSubmitted] = useState(false);
   const [cvParsing, setCvParsing] = useState(false);
   const [cvParseError, setCvParseError] = useState<string | null>(null);
-  const [cvExtraStep, setCvExtraStep] = useState(false);
-  const [extraAnswers, setExtraAnswers] = useState({ yearsExperience: '', desiredPosition: '' });
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
   const steps = [
@@ -73,8 +96,12 @@ const MultiStepForm: React.FC = () => {
     { number: 2, title: 'Education' },
     { number: 3, title: 'Experience' },
     { number: 4, title: 'Skills' },
-    { number: 5, title: 'Upload CV' },
-    { number: 6, title: 'Review' },
+    { number: 5, title: 'Practical Experience' },
+    { number: 6, title: 'Certifications' },
+    { number: 7, title: 'References' },
+    { number: 8, title: 'Upload CV' },
+    { number: 9, title: 'Video Introduction' },
+    { number: 10, title: 'Review' },
   ];
 
   const handleInputChange = (field: keyof FormData, value: string) => {
@@ -110,6 +137,26 @@ const MultiStepForm: React.FC = () => {
     setFormData({ ...formData, skills: updated });
   };
 
+  const updateCertificationField = (
+    index: number,
+    field: keyof Certification,
+    value: string
+  ) => {
+    const updated = [...formData.certifications];
+    updated[index][field] = value;
+    setFormData({ ...formData, certifications: updated });
+  };
+
+  const updateReferenceField = (
+    index: number,
+    field: keyof Reference,
+    value: string
+  ) => {
+    const updated = [...formData.references];
+    updated[index][field] = value;
+    setFormData({ ...formData, references: updated });
+  };
+
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
@@ -132,7 +179,7 @@ const MultiStepForm: React.FC = () => {
         return (
           formData.experience.length > 0 &&
           formData.experience.every(
-            exp => exp.company.trim() !== '' && exp.jobTitle.trim() !== '' && exp.startDate.trim() !== '' && exp.endDate.trim() !== '' && exp.description.trim() !== ''
+            exp => exp.company.trim() !== '' && exp.jobTitle.trim() !== '' && exp.startDate.trim() !== '' && exp.endDate.trim() !== '' && exp.description.trim() !== '' && exp.achievements.trim() !== ''
           )
         );
       case 4:
@@ -141,7 +188,25 @@ const MultiStepForm: React.FC = () => {
           formData.skills.every(skill => skill.trim() !== '')
         );
       case 5:
+        return formData.practicalExperience.trim() !== '';
+      case 6:
+        return (
+          formData.certifications.length > 0 &&
+          formData.certifications.every(
+            cert => cert.title.trim() !== '' && cert.issuer.trim() !== '' && cert.date.trim() !== ''
+          )
+        );
+      case 7:
+        return (
+          formData.references.length > 0 &&
+          formData.references.every(
+            ref => ref.name.trim() !== '' && ref.title.trim() !== '' && ref.email.trim() !== ''
+          )
+        );
+      case 8:
         return formData.cv !== null;
+      case 9:
+        return formData.videoIntroSubmitted;
       default:
         return true;
     }
@@ -173,8 +238,12 @@ const MultiStepForm: React.FC = () => {
       phoneCountryCode: phoneMatch ? phoneMatch[0].split(' ')[0] : '+212',
       phoneNumber: phoneMatch ? phoneMatch[0].split(' ').slice(1).join(' ') : '',
       education: education ? [{ place: education, diploma: '', startDate: '', endDate: '' }] : [],
-      experience: experience ? [{ company: experience, jobTitle: '', startDate: '', endDate: '', description: '' }] : [],
+      experience: experience ? [{ company: experience, jobTitle: '', startDate: '', endDate: '', description: '', achievements: '' }] : [],
       skills: skills ? skills.split(/,|\n/).map(s => s.trim()).filter(Boolean) : [],
+      practicalExperience: '',
+      certifications: [],
+      references: [],
+      videoIntroSubmitted: false,
     };
   }
 
@@ -194,10 +263,14 @@ const MultiStepForm: React.FC = () => {
           { place: "Université Mohammed V", diploma: "Master en Informatique", startDate: "2012-09-01", endDate: "2014-06-30" }
         ],
         experience: [
-          { company: "TechCorp", jobTitle: "Software Engineer", startDate: "2015-01-01", endDate: "2020-12-31", description: "Développement d'applications web." }
+          { company: "TechCorp", jobTitle: "Software Engineer", startDate: "2015-01-01", endDate: "2020-12-31", description: "Développement d'applications web.", achievements: "Led a team to deliver a recruitment portal." }
         ],
         skills: ["JavaScript", "React", "Node.js"],
         cv: file,
+        practicalExperience: "Contributed to open-source recruitment portal development.",
+        certifications: [{ title: "React Developer", issuer: "Coursera", date: "2020-06-01", url: "https://coursera.org/cert/react" }],
+        references: [{ name: "Jane Smith", title: "Manager", email: "jane.smith@techcorp.com", note: "Can speak to technical skills" }],
+        videoIntroSubmitted: false,
       };
       setFormData(prev => ({ ...prev, ...fakeInfo }));
       setCvParsing(false);
@@ -329,7 +402,7 @@ const MultiStepForm: React.FC = () => {
                     ...prev,
                     experience: [
                       ...prev.experience,
-                      { company: '', jobTitle: '', startDate: '', endDate: '', description: '' },
+                      { company: '', jobTitle: '', startDate: '', endDate: '', description: '', achievements: '' },
                     ],
                   }))
                 }
@@ -351,7 +424,17 @@ const MultiStepForm: React.FC = () => {
                     value={exp.description}
                     onChange={e => updateExperienceField(index, 'description', e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-gray-50"
-                    placeholder="Describe your responsibilities, achievements, etc."
+                    placeholder="Describe the projects and your responsibilities, etc."
+                    rows={3}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Major Achievements & Hands-On Contributions</label>
+                  <textarea
+                    value={exp.achievements}
+                    onChange={e => updateExperienceField(index, 'achievements', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-gray-50"
+                    placeholder="Describe your major achievements and contributions..."
                     rows={3}
                   />
                 </div>
@@ -415,6 +498,112 @@ const MultiStepForm: React.FC = () => {
       case 5:
         return (
           <div className="space-y-6">
+            <h2 className="text-2xl font-semibold text-teal-600 mb-6">Practical Experience</h2>
+            <div className="bg-gray-50 p-4 rounded-lg border">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Informal Practical Experience</label>
+              <textarea
+                value={formData.practicalExperience}
+                onChange={e => handleInputChange('practicalExperience', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-gray-50"
+                placeholder="Despite not having a formal title as a software engineer, I contributed to the development of the Recruitment Portal..."
+                rows={5}
+              />
+            </div>
+          </div>
+        );
+
+      case 6:
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-teal-600">Certifications & Informal Learning</h2>
+              <button
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    certifications: [...prev.certifications, { title: '', issuer: '', date: '', url: '' }],
+                  }))
+                }
+                className="flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition"
+              >
+                Add
+              </button>
+            </div>
+            {formData.certifications.length === 0 && <p className="text-gray-500 text-center py-4">No certifications added yet.</p>}
+            {formData.certifications.map((cert, index) => (
+              <div key={index} className="grid md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border">
+                <InputField label="Certificate Title" id={`cert-title-${index}` as keyof FormData} value={cert.title} placeholder="e.g. React Developer" onChange={(_, value) => updateCertificationField(index, 'title', value)} />
+                <InputField label="Issuing Organization" id={`cert-issuer-${index}` as keyof FormData} value={cert.issuer} placeholder="e.g. Coursera" onChange={(_, value) => updateCertificationField(index, 'issuer', value)} />
+                <InputField label="Date Received" id={`cert-date-${index}` as keyof FormData} type="date" value={cert.date} onChange={(_, value) => updateCertificationField(index, 'date', value)} />
+                <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} />
+                <div className="col-span-2 flex justify-end">
+                  <button
+                    onClick={() => {
+                      const filtered = formData.certifications.filter((_, i) => i !== index);
+                      setFormData({ ...formData, certifications: filtered });
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+
+      case 7:
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-teal-600">Professional References</h2>
+              <button
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    references: [...prev.references, { name: '', title: '', email: '', note: '' }],
+                  }))
+                }
+                className="flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition"
+              >
+                Add
+              </button>
+            </div>
+            {formData.references.length === 0 && <p className="text-gray-500 text-center py-4">No references added yet.</p>}
+            {formData.references.map((ref, index) => (
+              <div key={index} className="grid md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border">
+                <InputField label="Name" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
+                <InputField label="Title/Relationship" id={`ref-title-${index}` as keyof FormData} value={ref.title} placeholder="e.g. Manager" onChange={(_, value) => updateReferenceField(index, 'title', value)} />
+                <InputField label="Email" id={`ref-email-${index}` as keyof FormData} type="email" value={ref.email} placeholder="e.g. jane.smith@company.com" onChange={(_, value) => updateReferenceField(index, 'email', value)} />
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Note (Optional)</label>
+                  <textarea
+                    value={ref.note}
+                    onChange={e => updateReferenceField(index, 'note', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-gray-50"
+                    placeholder="Additional comments about this reference..."
+                    rows={3}
+                  />
+                </div>
+                <div className="col-span-2 flex justify-end">
+                  <button
+                    onClick={() => {
+                      const filtered = formData.references.filter((_, i) => i !== index);
+                      setFormData({ ...formData, references: filtered });
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+
+      case 8:
+        return (
+          <div className="space-y-6">
             <h2 className="text-2xl font-semibold text-teal-600 mb-6">Upload CV</h2>
             <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 bg-gray-50">
               <label htmlFor="cv-upload" className="cursor-pointer bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition mb-4">
@@ -438,7 +627,28 @@ const MultiStepForm: React.FC = () => {
           </div>
         );
 
-      case 6:
+      case 9:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-semibold text-teal-600 mb-6">Video Introduction</h2>
+            <div className="bg-gray-50 p-6 rounded-lg border">
+              <p className="text-gray-700 mb-4">
+                We’d love to hear from you! Please record a 2-minute video introducing yourself, your experience, and your motivation for applying. Ensure you're in a quiet place and that your camera and microphone are working properly.
+              </p>
+              <button
+                onClick={() => {
+                  navigate('/record');
+                  setFormData({ ...formData, videoIntroSubmitted: true });
+                }}
+                className="flex items-center px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition"
+              >
+                Start Recording
+              </button>
+            </div>
+          </div>
+        );
+
+      case 10:
         if (submitted) {
           return (
             <div className="flex flex-col items-center justify-center py-12">
@@ -510,6 +720,12 @@ const MultiStepForm: React.FC = () => {
                             <p className="text-gray-700 mt-1">{exp.description}</p>
                           </div>
                         )}
+                        {exp.achievements && (
+                          <div className="mt-2">
+                            <span className="font-semibold">Achievements:</span>
+                            <p className="text-gray-700 mt-1">{exp.achievements}</p>
+                          </div>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -532,11 +748,76 @@ const MultiStepForm: React.FC = () => {
               </div>
 
               <div>
+                <h3 className="font-bold text-lg text-teal-700 mb-3">Practical Experience</h3>
+                {formData.practicalExperience ? (
+                  <p className="text-gray-700">{formData.practicalExperience}</p>
+                ) : (
+                  <div className="text-gray-500">No practical experience provided.</div>
+                )}
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-teal-700 mb-3">Certifications</h3>
+                {formData.certifications.length === 0 ? (
+                  <div className="text-gray-500">No certifications provided.</div>
+                ) : (
+                  <ul className="space-y-4">
+                    {formData.certifications.map((cert, idx) => (
+                      <li key={idx} className="border-b pb-4 last:border-b-0 last:pb-0">
+                        <div className="grid md:grid-cols-2 gap-2">
+                          <div><span className="font-semibold">Title:</span> {cert.title || '-'}</div>
+                          <div><span className="font-semibold">Issuer:</span> {cert.issuer || '-'}</div>
+                          <div><span className="font-semibold">Date:</span> {cert.date || '-'}</div>
+                          {cert.url && (
+                            <div><span className="font-semibold">URL:</span> <a href={cert.url} className="text-teal-600 hover:underline">{cert.url}</a></div>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-teal-700 mb-3">References</h3>
+                {formData.references.length === 0 ? (
+                  <div className="text-gray-500">No references provided.</div>
+                ) : (
+                  <ul className="space-y-4">
+                    {formData.references.map((ref, idx) => (
+                      <li key={idx} className="border-b pb-4 last:border-b-0 last:pb-0">
+                        <div className="grid md:grid-cols-2 gap-2">
+                          <div><span className="font-semibold">Name:</span> {ref.name || '-'}</div>
+                          <div><span className="font-semibold">Title/Relationship:</span> {ref.title || '-'}</div>
+                          <div><span className="font-semibold">Email:</span> {ref.email || '-'}</div>
+                          {ref.note && (
+                            <div className="col-span-2">
+                              <span className="font-semibold">Note:</span>
+                              <p className="text-gray-700 mt-1">{ref.note}</p>
+                            </div>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div>
                 <h3 className="font-bold text-lg text-teal-700 mb-3">CV</h3>
                 {formData.cv ? (
                   <div className="text-teal-700 font-medium">{formData.cv.name}</div>
                 ) : (
                   <div className="text-gray-500">No CV uploaded.</div>
+                )}
+              </div>
+
+              <div>
+                <h3 className="font-bold text-lg text-teal-700 mb-3">Video Introduction</h3>
+                {formData.videoIntroSubmitted ? (
+                  <div className="text-teal-700 font-medium">Video introduction submitted</div>
+                ) : (
+                  <div className="text-gray-500">No video introduction submitted.</div>
                 )}
               </div>
             </div>
@@ -551,12 +832,11 @@ const MultiStepForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* CV Upload Button at the top */}
         {currentStep === 1 && (
           <div className="text-center mb-8">
             <label className="inline-flex items-center px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium shadow-md transition cursor-pointer">
               <Download className="w-5 h-5 mr-2" />
-              {cvParsing ? 'Parsing CV...' : 'Aplly using CV'}
+              {cvParsing ? 'Parsing CV...' : 'Apply using CV'}
               <input
                 type="file"
                 accept=".pdf,.doc,.docx"
@@ -577,7 +857,6 @@ const MultiStepForm: React.FC = () => {
         )}
 
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          {/* Stepper Header */}
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex justify-between items-center mb-2">
               <h1 className="text-xl font-bold text-gray-800">Job Application Form</h1>
@@ -612,11 +891,9 @@ const MultiStepForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Form Content */}
           <div className="p-6 md:p-8">
             {renderStepContent()}
 
-            {/* Navigation Buttons */}
             <div className="flex items-center justify-between mt-12">
               <button
                 onClick={handlePrevious}
@@ -649,7 +926,6 @@ const MultiStepForm: React.FC = () => {
   );
 };
 
-// Input Field Component
 interface InputFieldProps {
   label: string;
   id: keyof FormData;

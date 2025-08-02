@@ -19,6 +19,8 @@ import AuthenticationPage from "./pages/auth";
 import MultiStepForm from "./pages/apply" // Ensure this import is correct
 import CandidateProcess from "./pages/RecrutmentProcess"; // Ensure this import is correct
 import ChatBot from "./components/ChatBot";
+import Record from "./pages/record";
+
 
 const queryClient = new QueryClient();
 
@@ -95,6 +97,7 @@ const App = () => {
                 <Route path="/about" element={<About />} />
                 <Route path="/opportunities" element={<Opportunities />} />
                 <Route path="/departments/:department" element={<DepartmentPage />} />
+                <Route path="/record" element={<Record />} />
 
                 <Route
                   path="/dashboard"

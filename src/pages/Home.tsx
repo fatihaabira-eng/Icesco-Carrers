@@ -161,7 +161,7 @@ export default function Home() {
         title="Shape the Future with ICESCO"
         subtitle="Empowering innovation and excellence in education, science, and culture across the Islamic world."
         primaryButtonText="Explore Opportunities"
-        secondaryButtonText="Watch Our Story"
+        secondaryButtonText="Life in ICESCO"
         onPrimaryClick={handleExploreOpportunities}
         onSecondaryClick={handleJoinMission}
         background={{
@@ -173,7 +173,7 @@ export default function Home() {
       />
 
       {/* Job Recommendations */}
-      <JobRecommendations />
+      {/* <JobRecommendations /> */}
 
       {/* EVP + Testimonials */}
       <section className="section-padding bg-background">
@@ -230,16 +230,12 @@ export default function Home() {
           </footer>
         </blockquote>
 
-        <div className="grid grid-cols-2 gap-4 pt-4">
+        {/* <div className="grid grid-cols-1 gap-4 pt-4">
           <div className="text-center p-4 bg-primary/5 rounded-lg">
-            <p className="text-2xl font-bold text-primary">30+</p>
-            <p className="text-sm text-muted-foreground">Nationalities</p>
-          </div>
-          <div className="text-center p-4 bg-secondary/20 rounded-lg">
-            <p className="text-2xl font-bold text-secondary-dark">53</p>
+            <p className="text-2xl font-bold text-primary">53</p>
             <p className="text-sm text-muted-foreground">Member States</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   </div>
@@ -267,7 +263,7 @@ export default function Home() {
                     className="w-full"
                   />
                 </div>
-                <div className="sm:w-48">
+                {/* <div className="sm:w-48">
                   <Select value={searchCategory} onValueChange={setSearchCategory}>
                     <SelectTrigger>
                       <SelectValue placeholder="All Categories" />
@@ -281,7 +277,7 @@ export default function Home() {
                       <SelectItem value="hr">Human Resources</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
+                </div> */}
                 <Button onClick={handleSearch} className="sm:w-auto">
                   <Search className="w-4 h-4 mr-2" />
                   Search

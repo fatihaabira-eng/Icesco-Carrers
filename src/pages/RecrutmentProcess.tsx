@@ -22,7 +22,7 @@ type Step = {
   detailedContent: string;
   confirmedBy: string;
   timestamp: string;
-  status: 'completed' | 'active' | 'pending';
+  status: 'completed' | 'active' | 'pending' | 'terminated';
 };
 
 const CandidateProcess: React.FC = () => {
@@ -30,106 +30,110 @@ const CandidateProcess: React.FC = () => {
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [idFile, setIdFile] = useState<File | null>(null);
+  const [birthCertificateFile, setBirthCertificateFile] = useState<File | null>(null);
+  const [diplomaFile, setDiplomaFile] = useState<File | null>(null);
   const [offerAccepted, setOfferAccepted] = useState(false);
+  const [offerDeclined, setOfferDeclined] = useState(false);
+  const [startDate, setStartDate] = useState<string>('');
 
-  const steps: Step[] = [
-  {
-    id: 1,
-    title: "Form Submitted",
-    icon: FileText,
-    description: "Your application form has been submitted successfully",
-    detailedContent: "Thank you for applying! We have received your application and our recruitment team will begin reviewing it shortly.",
-    confirmedBy: 'candidate',
-    timestamp: "9th april 2025",
-    status: 'completed'
-  },
-  {
-    id: 2,
-    title: "Application Under Review",
-    icon: Clock,
-    description: "HR is reviewing your application",
-    detailedContent: "Our HR team is carefully reviewing your application, qualifications, and experiences to determine alignment with the role.",
-    confirmedBy: 'hr',
-    timestamp: "12th April 2025",
-    status: 'completed'
-  },
-  {
-    id: 3,
-    title: "Online Interview: HR",
-    icon: PhoneCall,
-    description: "HR phone interview scheduled on Wednesday at 11:00 AM",
-    detailedContent: "A 30-minute phone interview is scheduled on Wednesday at 11:00 AM with Sarah Martin (HR Manager). We’ll discuss your background, expectations, and the job role in detail. Please ensure you're in a quiet location.",
-    confirmedBy: 'hr',
-    timestamp: "20th April 2025",
-    status: 'completed'
-  },
-  {
-    id: 4,
-    title: "Team Interview",
-    icon: Users,
-    description: "Online interview with the technical team on Friday at 2:00 PM",
-    detailedContent: "Your interview with the technical team is scheduled on Friday at 2:00 PM via Zoom. Participants: Marc Johnson (Tech Lead), Amina Badr (Team Manager). This is a 1-hour session focused on technical challenges, previous experience, and collaboration style.",
-    confirmedBy: 'hr',
-    timestamp: "25th April 2025",
-    status: 'completed'
-  },
-  {
-    id: 5,
-    title: "Offer Sent",
-    icon: Mail,
-    description: "You have received a job offer with next steps",
-    detailedContent: `
-    Congratulations! You've been selected for the position. The job offer includes details on salary, benefits, and expected start date.
-    
-    📄 Required Documents:
-    - National ID Card  
-    - Passport  
-    - Diploma/Certificate of Education  
-    - Acte de Naissance (Birth Certificate)  
-    - Experience Certificate  
-    - Acte de Mariage (Marriage Certificate – if applicable)  
-    - 2 Recent ID Photos
-    
-    Please prepare these documents for submission to proceed with contract finalization.`,
-    confirmedBy: 'hr',
-    timestamp: "28th April 2025",
-    status: 'active'
-  },
-  {
-    id: 6,
-    title: "Upload Required Documents",
-    icon: Upload,
-    description: "Upload all requested documents to finalize your file",
-    detailedContent: `
-    To accept your offer and proceed with the onboarding process, please upload the following documents:
-    
-    ✅ National ID Card  
-    ✅ Passport  
-    ✅ Diploma or Degree Certificate  
-    ✅ Acte de Naissance (Birth Certificate)  
-    ✅ Experience Certificate  
-    ✅ Acte de Mariage (if married – optional)  
-    ✅ Two (2) ID Photos
-    
-    Once submitted, our HR team will validate your file and send you the final contract.`,
-    confirmedBy: 'candidate',
-    timestamp: "3th May 2025",
-    status: 'pending'
-  },
-  {
-    id: 7,
-    title: "Start Date Confirmed",
-    icon: Calendar,
-    description: "Your start date is set for Monday, 02/06/2025",
-    detailedContent: "Welcome aboard! Your official recruitment date is Monday, 02 April 2025. You will receive a detailed onboarding schedule including meetings, training, and access setup prior to your first day.",
-    confirmedBy: 'hr',
-    timestamp: "10th May 2025",
-    status: 'pending'
-  }
-];
-
+  const [steps, setSteps] = useState<Step[]>([
+    {
+      id: 1,
+      title: "Form Submitted",
+      icon: FileText,
+      description: "Your application form has been submitted successfully",
+      detailedContent: "Thank you for applying! We have received your application and our recruitment team will begin reviewing it shortly.",
+      confirmedBy: 'candidate',
+      timestamp: "9th April 2025",
+      status: 'completed'
+    },
+    {
+      id: 2,
+      title: "Application Under Review",
+      icon: Clock,
+      description: "HR is reviewing your application",
+      detailedContent: "Our HR team is carefully reviewing your application, qualifications, and experiences to determine alignment with the role.",
+      confirmedBy: 'hr',
+      timestamp: "12th April 2025",
+      status: 'completed'
+    },
+    {
+      id: 3,
+      title: "Online Interview: HR",
+      icon: PhoneCall,
+      description: "HR phone interview scheduled on Wednesday at 11:00 AM",
+      detailedContent: "A 30-minute phone interview is scheduled on Wednesday at 11:00 AM with Sarah Martin (HR Manager). We’ll discuss your background, expectations, and the job role in detail. Please ensure you're in a quiet location.",
+      confirmedBy: 'hr',
+      timestamp: "20th April 2025",
+      status: 'completed'
+    },
+    {
+      id: 4,
+      title: "Team Interview",
+      icon: Users,
+      description: "Online interview with the technical team on Friday at 2:00 PM",
+      detailedContent: "Your interview with the technical team is scheduled on Friday at 2:00 PM via Zoom. Participants: Marc Johnson (Tech Lead), Amina Badr (Team Manager). This is a 1-hour session focused on technical challenges, previous experience, and collaboration style.",
+      confirmedBy: 'hr',
+      timestamp: "25th April 2025",
+      status: 'completed'
+    },
+    {
+      id: 5,
+      title: "Offer Received",
+      icon: Mail,
+      description: "You have received a job offer with next steps",
+      detailedContent: `
+      Congratulations! You've been selected for the position. The job offer includes details on salary, benefits, and expected start date.
+      
+      📄 Required Documents:
+      - National ID Card  
+      - Passport  
+      - Diploma/Certificate of Education  
+      - Acte de Naissance (Birth Certificate)  
+      - Experience Certificate  
+      - Acte de Mariage (Marriage Certificate – if applicable)  
+      - 2 Recent ID Photos
+      
+      Please accept or decline the offer to proceed.`,
+      confirmedBy: 'hr',
+      timestamp: "28th April 2025",
+      status: 'active'
+    },
+    {
+      id: 6,
+      title: "Upload Required Documents",
+      icon: Upload,
+      description: "Upload all requested documents to finalize your file",
+      detailedContent: `
+      To accept your offer and proceed with the onboarding process, please upload the following documents:
+      
+      ✅ National ID Card  
+      ✅ Passport  
+      ✅ Diploma or Degree Certificate  
+      ✅ Acte de Naissance (Birth Certificate)  
+      ✅ Experience Certificate  
+      ✅ Acte de Mariage (if married – optional)  
+      ✅ Two (2) ID Photos
+      
+      Once submitted, our HR team will validate your file and send you the final contract.`,
+      confirmedBy: 'candidate',
+      timestamp: "3rd May 2025",
+      status: 'pending'
+    },
+    {
+      id: 7,
+      title: "Start Date Confirmed",
+      icon: Calendar,
+      description: "Your start date is set for Monday, 02/06/2025",
+      detailedContent: "Welcome aboard! Your official recruitment date is Monday, 02 June 2025. You will receive a detailed onboarding schedule including meetings, training, and access setup prior to your first day.",
+      confirmedBy: 'hr',
+      timestamp: "10th May 2025",
+      status: 'pending'
+    }
+  ]);
 
   const handleStepClick = (stepId: number) => {
+    if (offerDeclined) return; // Prevent interaction if offer is declined
     if (stepId === 6 && !offerAccepted) {
       setShowOfferModal(true);
       return;
@@ -137,19 +141,50 @@ const CandidateProcess: React.FC = () => {
     setExpandedStep(expandedStep === stepId ? null : stepId);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, type: 'cv' | 'id') => {
+  const handleAcceptOffer = () => {
+    setOfferAccepted(true);
+    setSteps(prevSteps =>
+      prevSteps.map(step =>
+        step.id === 6 ? { ...step, status: 'active' } : step
+      )
+    );
+    setExpandedStep(6);
+  };
+
+  const handleDeclineOffer = () => {
+    setOfferDeclined(true);
+    setSteps(prevSteps =>
+      prevSteps.map(step =>
+        step.id > 5 ? { ...step, status: 'terminated' } : step
+      )
+    );
+    setExpandedStep(5);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, type: 'cv' | 'id' | 'birthCertificate' | 'diploma') => {
     const file = event.target.files?.[0];
     if (file) {
       if (type === 'cv') setCvFile(file);
-      else setIdFile(file);
+      else if (type === 'id') setIdFile(file);
+      else if (type === 'birthCertificate') setBirthCertificateFile(file);
+      else if (type === 'diploma') setDiplomaFile(file);
     }
   };
 
   const handleOfferSubmission = () => {
-    if (cvFile && idFile) {
+    if (cvFile && idFile && birthCertificateFile && diplomaFile && startDate) {
       setOfferAccepted(true);
       setShowOfferModal(false);
       setExpandedStep(6);
+      setSteps(prevSteps =>
+        prevSteps.map(step =>
+          step.id === 6
+            ? { ...step, status: 'completed' }
+            : step.id === 7
+            ? { ...step, status: 'active', description: `Your start date is set for ${startDate}` }
+            : step
+        )
+      );
     }
   };
 
@@ -159,6 +194,8 @@ const CandidateProcess: React.FC = () => {
         return 'w-12 h-12 rounded-full bg-[#0e7378] border-4 border-[#0e7378] flex items-center justify-center cursor-pointer hover:bg-[#0e7378]/90 transition-colors';
       case 'active':
         return 'w-12 h-12 rounded-full border-4 border-[#edc42d] bg-[#edc42d] flex items-center justify-center cursor-pointer hover:bg-[#edc42d]/90 transition-colors';
+      case 'terminated':
+        return 'w-12 h-12 rounded-full border-4 border-red-300 bg-red-100 flex items-center justify-center cursor-not-allowed';
       default:
         return 'w-12 h-12 rounded-full border-4 border-gray-300 bg-white flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors';
     }
@@ -170,6 +207,8 @@ const CandidateProcess: React.FC = () => {
         return <Check size={20} className="text-white" />;
       case 'active':
         return <div className="w-3 h-3 bg-white rounded-full"></div>;
+      case 'terminated':
+        return <X size={20} className="text-red-500" />;
       default:
         return <step.icon size={20} className="text-gray-400" />;
     }
@@ -207,6 +246,7 @@ const CandidateProcess: React.FC = () => {
                       <h3 className={`text-lg font-semibold ${
                         step.status === 'completed' ? 'text-[#0e7378]' :
                         step.status === 'active' ? 'text-[#edc42d]' :
+                        step.status === 'terminated' ? 'text-red-600' :
                         'text-gray-600'
                       }`}>
                         {step.title}
@@ -220,6 +260,7 @@ const CandidateProcess: React.FC = () => {
                     <p className={`text-sm ${
                       step.status === 'completed' ? 'text-[#0e7378]' :
                       step.status === 'active' ? 'text-[#edc42d]' :
+                      step.status === 'terminated' ? 'text-red-500' :
                       'text-gray-500'
                     }`}>
                       {step.description}
@@ -229,6 +270,29 @@ const CandidateProcess: React.FC = () => {
                   {isExpanded && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-[#edc42d]">
                       <p className="text-gray-700 leading-relaxed">{step.detailedContent}</p>
+                      {step.id === 5 && !offerAccepted && !offerDeclined && (
+                        <div className="mt-4 flex space-x-4">
+                          <button
+                            onClick={handleAcceptOffer}
+                            className="px-4 py-2 bg-[#0e7378] text-white rounded-lg hover:bg-[#0e7378]/90 transition-colors"
+                          >
+                            Accept Offer
+                          </button>
+                          <button
+                            onClick={handleDeclineOffer}
+                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                          >
+                            Decline Offer
+                          </button>
+                        </div>
+                      )}
+                      {step.id === 5 && offerDeclined && (
+                        <div className="mt-4 p-3 bg-red-50 border border-red-300 rounded-lg">
+                          <p className="text-sm text-red-600 font-medium">
+                            You have declined the job offer. The recruitment process is now closed.
+                          </p>
+                        </div>
+                      )}
                       {step.id === 6 && offerAccepted && (
                         <div className="mt-4 p-3 bg-[#0e7378]/10 border border-[#0e7378]/30 rounded-lg">
                           <p className="text-sm text-[#0e7378] font-medium">
@@ -245,115 +309,118 @@ const CandidateProcess: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal for Document Upload */}
-      {/* Modal for Document Upload */}
-{showOfferModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Upload Required Documents</h3>
-        <button onClick={() => setShowOfferModal(false)} className="text-gray-400 hover:text-gray-600">
-          <X size={20} />
-        </button>
-      </div>
+      {showOfferModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Upload Required Documents</h3>
+              <button onClick={() => setShowOfferModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X size={20} />
+              </button>
+            </div>
 
-      <p className="text-gray-600 mb-6">To accept the offer, please upload the following documents:</p>
+            <p className="text-gray-600 mb-6">To proceed with the onboarding process, please upload the following documents and select your preferred start date:</p>
 
-      <div className="space-y-4">
-        {/* ID Card */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ID Card *</label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileUpload(e, 'id')}
-              className="hidden"
-              id="id-card-upload"
-            />
-            <label htmlFor="id-card-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
-              <Upload size={20} />
-              <span>{idFile ? idFile.name : 'Click to upload your ID Card'}</span>
-            </label>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">ID Card *</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleFileUpload(e, 'id')}
+                    className="hidden"
+                    id="id-card-upload"
+                  />
+                  <label htmlFor="id-card-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+                    <Upload size={20} />
+                    <span>{idFile ? idFile.name : 'Click to upload your ID Card'}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Passport *</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleFileUpload(e, 'id')}
+                    className="hidden"
+                    id="passport-upload"
+                  />
+                  <label htmlFor="passport-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+                    <Upload size={20} />
+                    <span>{idFile ? idFile.name : 'Click to upload your Passport'}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Diploma *</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleFileUpload(e, 'diploma')}
+                    className="hidden"
+                    id="diploma-upload"
+                  />
+                  <label htmlFor="diploma-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+                    <Upload size={20} />
+                    <span>{diplomaFile ? diplomaFile.name : 'Click to upload your Diploma'}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Birth Certificate *</label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => handleFileUpload(e, 'birthCertificate')}
+                    className="hidden"
+                    id="birth-certificate-upload"
+                  />
+                  <label htmlFor="birth-certificate-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
+                    <Upload size={20} />
+                    <span>{birthCertificateFile ? birthCertificateFile.name : 'Click to upload your Birth Certificate'}</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Start Date *</label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg p-2"
+                  min={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]} // Minimum date is 1 week from now
+                />
+              </div>
+            </div>
+
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={() => setShowOfferModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleOfferSubmission}
+                disabled={!cvFile || !idFile || !birthCertificateFile || !diplomaFile || !startDate}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                Submit Documents
+              </button>
+            </div>
           </div>
         </div>
+      )}
 
-        {/* Passport */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Passport *</label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileUpload(e, 'id')}
-              className="hidden"
-              id="passport-upload"
-            />
-            <label htmlFor="passport-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
-              <Upload size={20} />
-              <span>{cvFile ? cvFile.name : 'Click to upload your Passport'}</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Diploma */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Diploma *</label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileUpload(e, 'cv')}
-              className="hidden"
-              id="diploma-upload"
-            />
-            <label htmlFor="diploma-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
-              <Upload size={20} />
-              <span>{cvFile ? cvFile.name : 'Click to upload your Diploma'}</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Birth Certificate */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Birth Certificate *</label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileUpload(e, 'cv')}
-              className="hidden"
-              id="birth-certificate-upload"
-            />
-            <label htmlFor="birth-certificate-upload" className="cursor-pointer flex items-center justify-center space-x-2 text-gray-600 hover:text-blue-600">
-              <Upload size={20} />
-              <span>{cvFile ? cvFile.name : 'Click to upload your Birth Certificate'}</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex space-x-3 mt-6">
-        <button
-          onClick={() => setShowOfferModal(false)}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleOfferSubmission}
-          disabled={!cvFile || !cvFile || !cvFile || !cvFile}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-        >
-          Submit Documents
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-
-      {/* Progress Summary */}
       <div className="mt-12 max-w-3xl mx-auto">
         <div className="bg-gray-50 rounded-lg p-6">
           <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
