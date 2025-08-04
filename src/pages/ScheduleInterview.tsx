@@ -20,7 +20,8 @@ import {
   Plus,
   X,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Briefcase
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -157,8 +158,32 @@ const ScheduleInterview: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column - Candidate & Interviewers */}
+        {/* Left Column - Position & Candidate & Interviewers */}
         <div className="space-y-6">
+          {/* Position Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Briefcase className="h-5 w-5" />
+                Select Position
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select job position" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pos1">Senior Education Specialist</SelectItem>
+                    <SelectItem value="pos2">Digital Transformation Manager</SelectItem>
+                    <SelectItem value="pos3">Research Coordinator</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Candidate Selection */}
           <Card>
             <CardHeader>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Lock, Mail, Briefcase } from 'lucide-react';
+import icescoLogo from "@/assets/logo.png";
 
 const ManpowerAuth = () => {
   const [email, setEmail] = useState('');
@@ -45,11 +46,13 @@ const ManpowerAuth = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center space-y-4">
-          <div className="flex justify-center">
-            <div className="bg-primary/10 p-3 rounded-full">
-              <Briefcase className="h-8 w-8 text-primary" />
-            </div>
-          </div>
+           <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src={icescoLogo} 
+              alt="ICESCO" 
+              className="h-12 w-auto"
+            />
+          </Link>
           <CardTitle className="text-2xl font-bold">ICESCO Manpower Portal</CardTitle>
           <p className="text-muted-foreground">
             Sign in to access your recruitment dashboard
@@ -102,7 +105,7 @@ const ManpowerAuth = () => {
               <div className="space-y-1 text-muted-foreground">
                 <p><strong>HR:</strong> hr@icesco.org</p>
                 <p><strong>Committee:</strong> naoufal.chaouqi@icesco.org</p>
-                <p><strong>Director:</strong> sally.mabrouk@icesco.org</p>
+                <p><strong>Business Unit:</strong> sally.mabrouk@icesco.org</p>
                 <p><strong>Password:</strong> 123456 (for all accounts)</p>
               </div>
             </div>

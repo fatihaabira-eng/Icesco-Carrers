@@ -124,17 +124,13 @@ const CVTechPage = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">CV Technology Center</h1>
+          <h1 className="text-3xl font-bold text-foreground">Resumes Library</h1>
           <p className="text-muted-foreground">Advanced resume analysis and candidate management</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
             <Upload className="h-4 w-4 mr-2" />
             Bulk Upload
-          </Button>
-          <Button>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Re-analyze CVs
           </Button>
         </div>
       </div>
@@ -276,13 +272,6 @@ const CVTechPage = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="text-center">
-                    <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getScoreColor(candidate.score)}`}>
-                      <Star className="h-4 w-4 mr-1" />
-                      {candidate.score}%
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">Match Score</p>
-                  </div>
                   <Badge className={getStatusColor(candidate.status)}>
                     {candidate.status}
                   </Badge>

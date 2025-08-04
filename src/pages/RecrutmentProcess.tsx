@@ -69,7 +69,7 @@ const CandidateProcess: React.FC = () => {
     },
     {
       id: 4,
-      title: "Team Interview",
+      title: "Recrutment Commission Interview",
       icon: Users,
       description: "Online interview with the technical team on Friday at 2:00 PM",
       detailedContent: "Your interview with the technical team is scheduled on Friday at 2:00 PM via Zoom. Participants: Marc Johnson (Tech Lead), Amina Badr (Team Manager). This is a 1-hour session focused on technical challenges, previous experience, and collaboration style.",
