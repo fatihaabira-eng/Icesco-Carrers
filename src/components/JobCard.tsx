@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom"; // ✅ Add this import
 
 interface JobCardProps {
+  id: string;
   title: string;
   department: string;
   location: string;
@@ -16,6 +17,7 @@ interface JobCardProps {
 }
 
 export default function JobCard({
+  id,
   title,
   department,
   location,
@@ -84,9 +86,14 @@ export default function JobCard({
 
     {/* Footer fixed at bottom */}
     <div className="flex justify-between items-center pt-4">
-      <Link to="/details">
-        <Button size="sm" className="bg-primary hover:bg-primary-dark text-primary-foreground">
+      <Link to={`/offer/${id}`}>
+        <Button size="sm" variant="outline" className="mr-2">
           View Details
+        </Button>
+      </Link>
+      <Link to={`/apply?offre_id=${id}`}>
+        <Button size="sm" className="bg-primary hover:bg-primary-dark text-primary-foreground">
+          Apply Now
         </Button>
       </Link>
     </div>

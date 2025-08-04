@@ -21,6 +21,10 @@ const Record: React.FC = () => {
           audio: true,
         });
         setStream(mediaStream);
+        
+        // Mark that camera is active
+        sessionStorage.setItem('cameraStreamActive', 'true');
+        
         if (videoRef.current) {
           videoRef.current.srcObject = mediaStream;
         }
@@ -30,12 +34,33 @@ const Record: React.FC = () => {
     }
     setupMedia();
 
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+    // Listen for camera cleanup messages
+    const handleCameraCleanup = (event: MessageEvent) => {
+      if (event.data?.type === 'STOP_CAMERA_STREAMS') {
+        console.log('🎥 Received camera cleanup signal');
+        cleanupCameraStream();
       }
     };
+    
+    window.addEventListener('message', handleCameraCleanup);
+
+    return () => {
+      cleanupCameraStream();
+      window.removeEventListener('message', handleCameraCleanup);
+    };
   }, []);
+
+  // Function to properly cleanup camera stream
+  const cleanupCameraStream = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => {
+        track.stop();
+        console.log('🎥 Stopped camera track:', track.kind);
+      });
+      setStream(null);
+      sessionStorage.removeItem('cameraStreamActive');
+    }
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -112,10 +137,13 @@ const Record: React.FC = () => {
           }
         }
         
-        // Show success message and redirect back to apply page
+        // Clean up camera stream since video is uploaded
+        cleanupCameraStream();
+        
+        // Show success message and redirect
         console.log('Video stored for application form:', recordedBlob);
-        alert('Video submitted successfully!');
-        navigate('/apply?step=8'); // Go back to step 8 to show success state
+        alert('Video recorded successfully! Proceeding to review step...');
+        navigate('/apply?step=10'); // Go directly to step 10 (Review)
       };
       reader.readAsDataURL(recordedBlob);
 
@@ -226,7 +254,7 @@ const Record: React.FC = () => {
                     className="flex items-center px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition"
                   >
                     <Upload className="w-5 h-5 mr-2" />
-                    Upload & Submit
+                    Add to Application
                   </button>
                 </>
               )}

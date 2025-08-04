@@ -113,6 +113,7 @@ const AppContent = () => {
             element={<AuthenticationPage onLoginSuccess={handleLoginSuccess} />}
           />
           <Route path="/details" element={<OfferDetailPage />} />
+          <Route path="/apply" element={<MultiStepForm />} />
           <Route path="/steps" element={<MultiStepForm />} />
           <Route path="/process" element={<CandidateProcess />} />
           <Route path="/about" element={<About />} />
