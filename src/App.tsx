@@ -19,11 +19,11 @@ import CandidateDashboard from "./pages/CandidateProfile";
 import AuthenticationPage from "./pages/auth";
 import MultiStepForm from "./pages/apply";
 import CandidateProcess from "./pages/RecrutmentProcess";
-import ManpowerDashboard from "./pages/ManpowerDashboard";
+import ManpowerDashboard from "./pages/ManPowerDashboard";
 import ManpowerPortal from "./pages/ManpowerPortal";
 import ManpowerAuth from "./pages/ManpowerAuth";
-import CVTechPage from "./pages/CVTechPage";
 import RecruitmentRequestForm from "./pages/RecruitmentRequestForm";
+import Record from "./pages/record";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +116,7 @@ const AppContent = () => {
           <Route path="/steps" element={<MultiStepForm />} />
           <Route path="/process" element={<CandidateProcess />} />
           <Route path="/about" element={<About />} />
+          <Route path="/record" element={<Record />} />
           <Route path="/opportunities" element={<Opportunities />} />
           <Route path="/departments/:department" element={<DepartmentPage />} />
           <Route path="/manpower-dashboard" element={<ManpowerDashboard />} />
@@ -132,14 +133,7 @@ const AppContent = () => {
               </ProtectedManpowerRoute>
             } 
           />
-          <Route 
-            path="/manpower/hr/cvtech" 
-            element={
-              <ProtectedManpowerRoute>
-                <CVTechPage />
-              </ProtectedManpowerRoute>
-            } 
-          />
+         
           <Route 
             path="/manpower/committee" 
             element={
