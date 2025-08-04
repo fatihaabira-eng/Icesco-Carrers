@@ -218,7 +218,7 @@ const MultiStepForm: React.FC = () => {
 
   const steps = [
     { number: 1, title: 'Personal Information' },
-    { number: 2, title: 'Education & Certifications' },
+    { number: 2, title: 'Education & Professional Certifications' },
     { number: 3, title: 'Professional Experience' },
     { number: 4, title: 'Skills' },
     { number: 5, title: 'Languages' },
@@ -989,7 +989,7 @@ const MultiStepForm: React.FC = () => {
             <div className="border-t border-gray-200 pt-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" /> Certifications
+                  <BookOpen className="w-5 h-5" />Professional Certifications
                 </h3>
                 <button
                   onClick={() => setFormData((prev) => ({ ...prev, certifications: [...prev.certifications, { title: '', issuer: '', date: '', url: '' }] }))}

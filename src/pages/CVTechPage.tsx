@@ -16,7 +16,8 @@ import {
   Calendar,
   FileText,
   Upload,
-  RefreshCw
+  RefreshCw,
+  Check
 } from 'lucide-react';
 import {
   Select,
@@ -30,6 +31,7 @@ const CVTechPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDepartment, setFilterDepartment] = useState('all');
   const [sortBy, setSortBy] = useState('score');
+  const [shortlisted, setShortlisted] = useState({});
 
   const mockCandidates = [
     {
@@ -103,6 +105,13 @@ const CVTechPage = () => {
       case 'Under Review': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const handleShortlist = (candidateId) => {
+    setShortlisted(prev => ({
+      ...prev,
+      [candidateId]: true
+    }));
   };
 
   const filteredCandidates = mockCandidates
@@ -282,6 +291,20 @@ const CVTechPage = () => {
                     <Button variant="outline" size="sm">
                       <Download className="h-4 w-4" />
                     </Button>
+                    {shortlisted[candidate.id] ? (
+                      <Button variant="outline" size="sm" disabled className="text-green-600">
+                        <Check className="h-4 w-4 mr-1" />
+                        Shortlisted
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleShortlist(candidate.id)}
+                      >
+                        Shortlist
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -18,11 +18,41 @@ import {
   Eye,
   MessageSquare
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import CommitteeEvaluation from '@/pages/CommitteeEvaluation';
+
+interface Candidate {
+  id: number;
+  name: string;
+  nationality: string;
+  flag: string;
+  age: number;
+  degree: string;
+  university: string;
+  experience: string;
+  position: string;
+  matchingScore: number;
+  skills: string[];
+  languages: string[];
+  priority: string;
+  status: string;
+  avatar: string;
+}
+
 
 const JobMatchingModule: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [sortBy, setSortBy] = useState('score');
+  
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+    
+      const [isEvaluationOpen, setIsEvaluationOpen] = useState(false);
 
   const candidatesData = [
     {
@@ -128,6 +158,11 @@ const JobMatchingModule: React.FC = () => {
       case 'low': return 'bg-green-100 text-green-800 border-green-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
+  };
+
+  const handleCandidateClick = (candidate: Candidate) => {
+    setSelectedCandidate(candidate);
+    setIsEvaluationOpen(true);
   };
 
   const getScoreColor = (score: number) => {
@@ -352,7 +387,7 @@ const JobMatchingModule: React.FC = () => {
                   
                   <TableCell>
                     <div className="flex items-center justify-center gap-2">
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
                         <Eye className="h-4 w-4" />
                       </Button>
                       <Button size="sm" variant="outline">
@@ -366,6 +401,16 @@ const JobMatchingModule: React.FC = () => {
           </Table>
         </div>
       </CardContent>
+      <Dialog open={isEvaluationOpen} onOpenChange={setIsEvaluationOpen}>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Candidate Evaluation</DialogTitle>
+                </DialogHeader>
+                {selectedCandidate && (
+                  <CommitteeEvaluation candidateId={selectedCandidate.id} />
+                )}
+              </DialogContent>
+            </Dialog>
     </Card>
   );
 };

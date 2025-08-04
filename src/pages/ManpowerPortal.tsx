@@ -73,7 +73,7 @@ const ManpowerPortal: React.FC<ManpowerPortalProps> = ({ defaultRole }) => {
         return (
           <div className="space-y-6">
             <GlobalAnalyticsDashboard userRole="committee" />
-            <CommitteeEvaluation />
+            <JobMatchingModule />
           </div>
         );
       case 'director':
@@ -165,7 +165,7 @@ const ManpowerPortal: React.FC<ManpowerPortalProps> = ({ defaultRole }) => {
                     onClick={() => setActiveView('CVTech')}
                   >
                     <Database className="h-4 w-4 mr-2" />
-                    CV Tech
+                    Resume Library
                   </Button>
                   <Button 
                     variant={activeView === 'schedule' ? 'default' : 'ghost'} 

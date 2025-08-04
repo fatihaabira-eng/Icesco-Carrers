@@ -21,8 +21,9 @@ import {
   XCircle,
   AlertTriangle
 } from 'lucide-react';
-import { organizationUnits, getUnitsByType } from '@/data/organizationData';
-import CandidateScoring from './CandidateScoring';
+// import { organizationUnits, getUnitsByType } from '@/data/organizationData';
+// import CandidateScoring from './CandidateScoring';
+import CandidateScoring from './../pages/CommitteeEvaluation';
 import {
   Dialog,
   DialogContent,
@@ -65,6 +66,38 @@ interface RoleBasedDashboardProps {
   userRole: 'hr' | 'committee' | 'director';
 }
 
+const organizationUnits = [
+  { name: "Education Sector", type: "sector" },
+  { name: "Sector of Strategy and Institutional Excellence", type: "sector" },
+  { name: "Sector of Partnerships and International Cooperation", type: "sector" },
+  { name: "Science and Environment Sector", type: "sector" },
+  { name: "Culture and Communication Sector", type: "sector" },
+  { name: "Social and Human Sciences Sector", type: "sector" },
+  { name: "Media and Communication Sector", type: "sector" },
+  { name: "External Specialized Offices and Centers", type: "center" },
+  { name: "Center of Chairs, Scholarships and Prizes", type: "center" },
+  { name: "Poetry and Literature Center", type: "center" },
+  { name: "Calligraphie and Manuscript Center", type: "center" },
+  { name: "Training Center", type: "center" },
+  { name: "Center of Foresight and Artificial Intelligence", type: "center" },
+  { name: "Civilizational Dialogue Center", type: "center" },
+  { name: "Arabic Language Center for Non-Arabic Speakers", type: "center" },
+  { name: "Islamic World Heritage Center", type: "center" },
+  { name: "Center of Translation and Publishing", type: "center" },
+  { name: "Director General Office", type: "support unit" },
+  { name: "General Secretariat of National Commissions and Conferences", type: "support unit" },
+  { name: "Department of legal affairs and international standards", type: "support unit" },
+  { name: "Deputy Director General for Programs", type: "support unit" },
+  { name: "Federation of Universities of the Islamic World", type: "support unit" },
+  { name: "Department of Administrative Operations", type: "support unit" },
+  { name: "Department of Digital Transformation", type: "support unit" },
+  { name: "Department of Financial Operations", type: "support unit" },
+  { name: "Internal Audit Department", type: "support unit" },
+  { name: "Department of Public Relations and Protocol", type: "support unit" },
+  { name: "Department of Design and Printing", type: "support unit" },
+  { name: "Department of Human Capital Management", type: "support unit" },
+];
+
 const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => {
   const [selectedJob, setSelectedJob] = useState<JobPosition | null>(null);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
@@ -72,6 +105,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
   const [activeTab, setActiveTab] = useState(userRole === 'hr' ? 'sectors' : 'positions');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
 
   // Mock data
   const mockPositions: JobPosition[] = [
@@ -199,18 +233,31 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
     // Handle interview acceptance/decline logic
   };
 
+  const getDepartmentsByType = (type: string) => {
+    return organizationUnits
+      .filter(unit => unit.type === type)
+      .map(unit => unit.name);
+  };
+
   const filteredPositions = mockPositions.filter(position => {
     const matchesSearch = position.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          position.department.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterValue === 'all' || 
-                         position.priority.toLowerCase() === filterValue.toLowerCase() ||
-                         position.status.toLowerCase() === filterValue.toLowerCase();
+    
+    const matchesFilter = userRole === 'hr' ? 
+      (filterValue === 'all' || 
+       position.priority.toLowerCase() === filterValue.toLowerCase() ||
+       position.status.toLowerCase() === filterValue.toLowerCase()) : 
+      true;
+    
+    const matchesDepartment = departmentFilter === 'all' || 
+                            position.department === departmentFilter;
     
     if (userRole === 'hr' && activeTab !== 'positions') {
-      return matchesSearch && matchesFilter && position.type === activeTab.slice(0, -1) as any;
+      return matchesSearch && matchesFilter && matchesDepartment && 
+             position.type === activeTab.slice(0, -1) as any;
     }
     
-    return matchesSearch && matchesFilter;
+    return matchesSearch && matchesFilter && matchesDepartment;
   });
 
   const renderPositionsTable = () => (
@@ -223,21 +270,39 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-64"
           />
-          <Select value={filterValue} onValueChange={setFilterValue}>
-            <SelectTrigger className="w-48">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Filter by..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="high">High Priority</SelectItem>
-              <SelectItem value="medium">Medium Priority</SelectItem>
-              <SelectItem value="low">Low Priority</SelectItem>
-              <SelectItem value="open">Open</SelectItem>
-              <SelectItem value="in progress">In Progress</SelectItem>
-              <SelectItem value="closed">Closed</SelectItem>
-            </SelectContent>
-          </Select>
+          {userRole === 'hr' && (
+            <>
+              <Select value={filterValue} onValueChange={setFilterValue}>
+                <SelectTrigger className="w-48">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Filter by..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="high">High Priority</SelectItem>
+                  <SelectItem value="medium">Medium Priority</SelectItem>
+                  <SelectItem value="low">Low Priority</SelectItem>
+                  <SelectItem value="open">Open</SelectItem>
+                  <SelectItem value="in progress">In Progress</SelectItem>
+                  <SelectItem value="closed">Closed</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+                <SelectTrigger className="w-64">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Filter by department..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Departments</SelectItem>
+                  {getDepartmentsByType(activeTab.slice(0, -1)).map(department => (
+                    <SelectItem key={department} value={department}>
+                      {department}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </>
+          )}
         </div>
       </div>
 
