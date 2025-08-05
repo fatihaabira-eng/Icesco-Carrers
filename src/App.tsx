@@ -24,6 +24,18 @@ import ManpowerPortal from "./pages/ManpowerPortal";
 import ManpowerAuth from "./pages/ManpowerAuth";
 import RecruitmentRequestForm from "./pages/RecruitmentRequestForm";
 import Record from "./pages/record";
+import CreateJobOfferForm from "./components/CreateJobOfferForm";
+import VacanciesListView from "./components/VacanciesListView";
+
+// New HR-specific components
+import HRPortalLayout from "./components/HRPortalLayout";
+import HRDashboard from "./pages/HRDashboard";
+import HRAnalytics from "./pages/HRAnalytics";
+import HRCandidates from "./pages/HRCandidates";
+import HRResumeLibrary from "./pages/HRResumeLibrary";
+import HRInterviews from "./pages/HRInterviews";
+import HRJobOffers from "./pages/HRJobOffers";
+import HRDepartments from "./pages/HRDepartments";
 
 const queryClient = new QueryClient();
 
@@ -122,18 +134,86 @@ const AppContent = () => {
           <Route path="/departments/:department" element={<DepartmentPage />} />
           <Route path="/manpower-dashboard" element={<ManpowerDashboard />} />
           <Route path="/recruitment-request" element={<RecruitmentRequestForm />} />
+          
 
           {/* Manpower Portal Routes */}
           <Route path="/manpower/auth" element={<ManpowerAuth />} />
           <Route path="/manpower" element={<ManpowerRoleRedirect />} />
+          
+          {/* HR Portal Routes with Sidebar Layout */}
           <Route 
             path="/manpower/hr" 
             element={
               <ProtectedManpowerRoute>
-                <ManpowerPortal defaultRole="hr" />
+                <HRPortalLayout>
+                  <HRDashboard />
+                </HRPortalLayout>
               </ProtectedManpowerRoute>
             } 
           />
+          <Route 
+            path="/manpower/hr/analytics" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <HRAnalytics />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/candidates" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <HRCandidates />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/resume-library" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <HRResumeLibrary />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/interviews" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <HRInterviews />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/job-offers" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <HRJobOffers />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/departments" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <HRDepartments />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          
+          {/* Legacy Manpower Portal Routes (for other roles) */}
+          <Route path="/manpower/create-offer" element={<VacanciesListView />} />
          
           <Route 
             path="/manpower/committee" 
