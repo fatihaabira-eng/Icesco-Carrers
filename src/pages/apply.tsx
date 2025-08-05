@@ -121,7 +121,7 @@ interface Certification {
   title: string;
   issuer: string;
   date: string;
-  url?: string;
+  // url?: string;
 }
 
 interface Reference {
@@ -129,6 +129,7 @@ interface Reference {
   title: string;
   email: string;
   note?: string;
+  phone?: string;
 }
 
 interface SocialMedia {
@@ -190,13 +191,13 @@ const MultiStepForm: React.FC = () => {
     dateOfBirth: '',
     address: '',
     education: [{ place: '', diploma: '', startDate: '', endDate: '' }],
-    certifications: [{ title: '', issuer: '', date: '', url: '' }],
+    certifications: [{ title: '', issuer: '', date: '' }],
     experience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '', achievements: '', current: false }],
     skills: [''],
     languages: [{ language: '', level: '' }],
     socialMedia: [{ platform: '', url: '' }],
     practicalExperience: '',
-    references: [{ name: '', title: '', email: '', note: '' }],
+    references: [{ name: '', title: '', email: '',phone: '', note: '' }],
     cv: null,
     videoIntroSubmitted: false,
     videoFile: null,
@@ -1005,11 +1006,11 @@ const MultiStepForm: React.FC = () => {
                 </div>
               )}
               {formData.certifications.map((cert, index) => (
-                <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
+                <div key={index} className="group relative grid md:grid-cols-1 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
                   <InputField label="Certificate Title" id={`cert-title-${index}` as keyof FormData} value={cert.title} placeholder="e.g. React Developer" onChange={(_, value) => updateCertificationField(index, 'title', value)} />
                   <InputField label="Issuing Organization" id={`cert-issuer-${index}` as keyof FormData} value={cert.issuer} placeholder="e.g. Coursera" onChange={(_, value) => updateCertificationField(index, 'issuer', value)} />
                   <InputField label="Date Received" id={`cert-date-${index}` as keyof FormData} type="date" value={cert.date} onChange={(_, value) => updateCertificationField(index, 'date', value)} />
-                  <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} />
+                  {/* <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} /> */}
                   {formData.certifications.length > 1 && (
                     <button
                       onClick={() => setFormData({ ...formData, certifications: formData.certifications.filter((_, i) => i !== index) })}
@@ -1090,7 +1091,7 @@ const MultiStepForm: React.FC = () => {
                   </label>
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1 sr-only">Description</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 ">Main Tasks</label>
                   <textarea
                     value={exp.description}
                     onChange={e => updateExperienceField(index, 'description', e.target.value)}
@@ -1123,23 +1124,6 @@ const MultiStepForm: React.FC = () => {
               </div>
             ))}
             
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5" /> Practical Experience
-              </h3>
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                  Practical Experience
-                </label>
-                <textarea
-                  value={formData.practicalExperience}
-                  onChange={e => handleInputChange('practicalExperience', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400 min-h-[120px]"
-                  placeholder="Practical Experience..."
-                  rows={5}
-                />
-              </div>
-            </div>
           </div>
         );
 
@@ -1312,7 +1296,7 @@ const MultiStepForm: React.FC = () => {
                       onChange={e => updateLanguageField(index, 'level', e.target.value)}
                       className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer"
                     >
-                      <option value="">Select proficiency level...</option>
+                      <option value=""></option>
                       <option value="Beginner">Beginner (A1)</option>
                       <option value="Elementary">Elementary (A2)</option>
                       <option value="Intermediate">Intermediate (B1)</option>
@@ -1441,9 +1425,12 @@ const MultiStepForm: React.FC = () => {
             )}
             {formData.references.map((ref, index) => (
               <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
+                <InputField label="Company" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
+                <InputField label="Link of the Company" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
                 <InputField label="Name" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
                 <InputField label="Title/Relationship" id={`ref-title-${index}` as keyof FormData} value={ref.title} placeholder="e.g. Manager" onChange={(_, value) => updateReferenceField(index, 'title', value)} />
                 <InputField label="Email" id={`ref-email-${index}` as keyof FormData} type="email" value={ref.email} placeholder="e.g. jane.smith@company.com" onChange={(_, value) => updateReferenceField(index, 'email', value)} />
+                <InputField label="Phone" id={`ref-email-${index}` as keyof FormData} value={ref.phone} placeholder="e.g. jane.smith@company.com" onChange={(_, value) => updateReferenceField(index, 'phone', value)} />
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1 sr-only">Note (Optional)</label>
                   <textarea
@@ -1470,6 +1457,7 @@ const MultiStepForm: React.FC = () => {
 
       case 8:
         return (
+          <div>
           <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
             <h2 className="text-2xl font-semibold text-teal-600">Supporting Documents</h2>
             <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 bg-white shadow-sm">
@@ -1479,7 +1467,7 @@ const MultiStepForm: React.FC = () => {
                   : 'bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600'
               } text-white`}>
                 <Download className="w-5 h-5 mr-2 inline" />
-                {cvParsing ? 'Processing CV...' : (formData.cv ? 'Change CV' : 'Select CV')}
+                {cvParsing ? 'Processing CV...' : (formData.cv ? 'Edit CV' : 'Select CV')}
               </label>
               <input
                 id="cv-upload"
@@ -1510,6 +1498,45 @@ const MultiStepForm: React.FC = () => {
               <div className="text-gray-500 mt-4 text-sm">Accepted formats: PDF, DOC, DOCX</div>
               {cvParseError && <div className="text-red-600 mt-2 text-sm">{cvParseError}</div>}
             </div>
+          </div>
+              <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
+            <h2 className="text-2xl font-semibold text-teal-600">Other Documents</h2>
+            <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 bg-white shadow-sm">
+              <label htmlFor="cv-upload" className={`cursor-pointer px-6 py-3 rounded-lg font-medium shadow-md transition bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white `}
+                >
+                <Download className="w-5 h-5 mr-2 inline" />
+                Cover Letter , Certifications or Other Documents..
+              </label>
+              <input
+                id="cv-upload"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                className="hidden"
+                disabled={cvParsing}
+                onChange={e => {
+                  const file = e.target.files && e.target.files[0];
+                  if (file && !cvParsing) {
+                    setFormData({ ...formData, cv: file });
+                    handleCvFile(file);
+                  }
+                }}
+              />
+              {formData.cv && !cvParsing && (
+                <div className="mt-4 text-teal-700 font-medium">{formData.cv.name}</div>
+              )}
+              {cvParsing && (
+                <div className="mt-4 flex items-center gap-2 text-teal-600">
+                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span className="font-medium">Parsing CV and filling form...</span>
+                </div>
+              )}
+              <div className="text-gray-500 mt-4 text-sm">Accepted formats: PDF, DOC, DOCX</div>
+              {cvParseError && <div className="text-red-600 mt-2 text-sm">{cvParseError}</div>}
+            </div>
+          </div>
           </div>
         );
 
@@ -1754,6 +1781,7 @@ const MultiStepForm: React.FC = () => {
                           <div><span className="font-semibold">Name:</span> {ref.name || '-'}</div>
                           <div><span className="font-semibold">Title/Relationship:</span> {ref.title || '-'}</div>
                           <div><span className="font-semibold">Email:</span> {ref.email || '-'}</div>
+                          <div><span className="font-semibold">Phone Number:</span> {ref.email || '-'}</div>
                           {ref.note && (
                             <div className="col-span-2">
                               <span className="font-semibold">Note:</span>

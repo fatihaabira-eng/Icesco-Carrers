@@ -43,14 +43,12 @@ const CommitteeEvaluation = () => {
     { id: '1', name: 'Education', maxPoints: 7, score: 6, description: 'Academic qualifications and credentials' },
     { id: '2', name: 'Professional Experience', maxPoints: 10, score: 8, description: 'Relevant work experience and achievements' },
     { id: '3', name: 'Technical Skills', maxPoints: 20, score: 16, description: 'Job-specific technical competencies' },
-    { id: '4', name: 'Strategic Thinking', maxPoints: 10, score: 7, description: 'Ability to think strategically and analytically' },
-    { id: '5', name: 'Leadership', maxPoints: 10, score: 8, description: 'Leadership potential and experience' },
-    { id: '6', name: 'Communication', maxPoints: 9, score: 8, description: 'Verbal and written communication skills' },
-    { id: '7', name: 'Cultural Awareness', maxPoints: 5, score: 4, description: 'Understanding of cultural diversity and sensitivity' },
+    { id: '4', name: 'Management Skills', maxPoints: 10, score: 7, description: 'Job-specific management competencies' },
+    { id: '5', name: 'ICESCO Languages', maxPoints: 9, score: 7, description: 'Arabic, English, French proficiency' },
     { id: '8', name: 'Innovation & Problem Solving', maxPoints: 10, score: 7, description: 'Creative thinking and problem-solving abilities' },
     { id: '9', name: 'Collaboration & Networking', maxPoints: 5, score: 4, description: 'Ability to work in teams and build networks' },
-    { id: '10', name: 'Commitment to ICESCO', maxPoints: 5, score: 5, description: 'Alignment with ICESCO values and mission' },
-    { id: '11', name: 'ICESCO Languages', maxPoints: 9, score: 7, description: 'Arabic, English, French proficiency' }
+    { id: '10', name: 'Alignement with ICESCO', maxPoints: 5, score: 5, description: 'Alignment with ICESCO values and mission' },
+    
   ]);
 
   const [publicComments, setPublicComments] = useState('');

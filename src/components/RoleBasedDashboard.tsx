@@ -293,7 +293,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
                   <SelectValue placeholder="Filter by department..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Departments</SelectItem>
+                  <SelectItem value="all">All {activeTab.slice(0, -1)}s</SelectItem>
                   {getDepartmentsByType(activeTab.slice(0, -1)).map(department => (
                     <SelectItem key={department} value={department}>
                       {department}

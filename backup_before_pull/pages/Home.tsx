@@ -216,7 +216,7 @@ export default function Home() {
       <div className="flex flex-col justify-center space-y-6">
         <div className="space-y-4">
           <h2 className="font-title text-3xl md:text-4xl font-bold text-foreground">
-            Why Choose ICESCO?
+            Why joining ICESCO Family?
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
             At ICESCO, we empower individuals to make a global impact while fostering personal and professional growth. Join a diverse, mission-driven organization where your work contributes to advancing education, science, and culture across the Islamic world.

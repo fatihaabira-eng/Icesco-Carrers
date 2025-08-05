@@ -822,7 +822,7 @@ const MultiStepForm: React.FC = () => {
                 <InputField label="Certificate Title" id={`cert-title-${index}` as keyof FormData} value={cert.title} placeholder="e.g. React Developer" onChange={(_, value) => updateCertificationField(index, 'title', value)} />
                 <InputField label="Issuing Organization" id={`cert-issuer-${index}` as keyof FormData} value={cert.issuer} placeholder="e.g. Coursera" onChange={(_, value) => updateCertificationField(index, 'issuer', value)} />
                 <InputField label="Date Received" id={`cert-date-${index}` as keyof FormData} type="date" value={cert.date} onChange={(_, value) => updateCertificationField(index, 'date', value)} />
-                <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} />
+                {/* <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} /> */}
                 <div className="col-span-2 flex justify-end">
                   <button
                     onClick={() => {
@@ -1081,6 +1081,7 @@ const MultiStepForm: React.FC = () => {
                           <div><span className="font-semibold">Name:</span> {ref.name || '-'}</div>
                           <div><span className="font-semibold">Title/Relationship:</span> {ref.title || '-'}</div>
                           <div><span className="font-semibold">Email:</span> {ref.email || '-'}</div>
+                          <div><span className="font-semibold">Phone Number:</span> {ref.email || '-'}</div>
                           {ref.note && (
                             <div className="col-span-2">
                               <span className="font-semibold">Note:</span>
