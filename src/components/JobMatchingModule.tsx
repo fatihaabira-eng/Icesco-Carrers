@@ -39,8 +39,8 @@ interface Candidate {
   matchingScore: number;
   skills: string[];
   languages: string[];
-  priority: string;
-  status: string;
+  phase: string;
+  decision: string;
   avatar: string;
 }
 
@@ -68,8 +68,8 @@ const JobMatchingModule: React.FC = () => {
       matchingScore: 95,
       skills: ['React', 'Node.js', 'Python', 'AI/ML'],
       languages: ['Arabic', 'English', 'French'],
-      priority: 'high',
-      status: 'Technical Interview',
+      phase: 'Technical Interview',
+      decision: 'hired',
       avatar: '/api/placeholder/40/40'
     },
     {
@@ -85,8 +85,8 @@ const JobMatchingModule: React.FC = () => {
       matchingScore: 92,
       skills: ['Digital Marketing', 'Strategy', 'Analytics'],
       languages: ['Arabic', 'French', 'English'],
-      priority: 'high',
-      status: 'Final Interview',
+      phase: 'Final Interview',
+      decision: 'hired',
       avatar: '/api/placeholder/40/40'
     },
     {
@@ -102,8 +102,8 @@ const JobMatchingModule: React.FC = () => {
       matchingScore: 89,
       skills: ['Curriculum Design', 'Policy Development', 'Research'],
       languages: ['Arabic', 'English'],
-      priority: 'medium',
-      status: 'HR Interview',
+      phase: 'HR Interview',
+      decision: 'rejected',
       avatar: '/api/placeholder/40/40'
     },
     {
@@ -119,8 +119,8 @@ const JobMatchingModule: React.FC = () => {
       matchingScore: 87,
       skills: ['Financial Analysis', 'Risk Management', 'Budgeting'],
       languages: ['Arabic', 'French', 'English'],
-      priority: 'medium',
-      status: 'Screening',
+      phase: 'Screening',
+      decision: 'rejected',
       avatar: '/api/placeholder/40/40'
     },
     {
@@ -136,14 +136,14 @@ const JobMatchingModule: React.FC = () => {
       matchingScore: 85,
       skills: ['Python', 'Machine Learning', 'Statistics', 'SQL'],
       languages: ['Arabic', 'French', 'English'],
-      priority: 'low',
-      status: 'Portfolio Review',
+      phase: 'Portfolio Review',
+      decision: 'hired',
       avatar: '/api/placeholder/40/40'
     }
   ];
 
   const departments = [
-    { value: 'all', label: 'All Departments' },
+    { value: 'all', label: 'All Business Units' },
     { value: 'engineering', label: 'Engineering' },
     { value: 'marketing', label: 'Marketing' },
     { value: 'education', label: 'Education' },
@@ -151,12 +151,14 @@ const JobMatchingModule: React.FC = () => {
     { value: 'research', label: 'Research' }
   ];
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+  const getDecisionColor = (decision: string) => {
+    switch (decision) {
+      case 'hired':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -198,15 +200,7 @@ const JobMatchingModule: React.FC = () => {
     <Card className="mt-6">
       <CardHeader>
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Job Scoring & Candidate Analytics
-            </CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
-              AI-powered candidate matching based on resume analysis and job relevance
-            </p>
-          </div>
+          
           
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
@@ -252,47 +246,6 @@ const JobMatchingModule: React.FC = () => {
       </CardHeader>
       
       <CardContent>
-        {/* Summary Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-medium">Total Candidates</span>
-            </div>
-            <p className="text-2xl font-bold text-blue-600 mt-2">{filteredCandidates.length}</p>
-          </div>
-          
-          <div className="bg-green-50 p-4 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium">High Priority</span>
-            </div>
-            <p className="text-2xl font-bold text-green-600 mt-2">
-              {filteredCandidates.filter(c => c.priority === 'high').length}
-            </p>
-          </div>
-          
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-purple-600" />
-              <span className="text-sm font-medium">90+ Score</span>
-            </div>
-            <p className="text-2xl font-bold text-purple-600 mt-2">
-              {filteredCandidates.filter(c => c.matchingScore >= 90).length}
-            </p>
-          </div>
-          
-          <div className="bg-orange-50 p-4 rounded-lg">
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-orange-600" />
-              <span className="text-sm font-medium">PhD Holders</span>
-            </div>
-            <p className="text-2xl font-bold text-orange-600 mt-2">
-              {filteredCandidates.filter(c => c.degree.includes('PhD')).length}
-            </p>
-          </div>
-        </div>
-
         {/* Candidates Table */}
         <div className="border rounded-lg overflow-hidden">
           <Table>
@@ -302,11 +255,12 @@ const JobMatchingModule: React.FC = () => {
                 <TableHead>Candidate</TableHead>
                 <TableHead className="text-center">Nationality</TableHead>
                 <TableHead className="text-center">Age</TableHead>
+                <TableHead>Degree</TableHead>
                 <TableHead>Education</TableHead>
                 <TableHead className="text-center">Score</TableHead>
                 <TableHead>Position</TableHead>
-                <TableHead className="text-center">Priority</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Phase</TableHead>
+                <TableHead>Decision</TableHead>
                 <TableHead className="text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -342,9 +296,12 @@ const JobMatchingModule: React.FC = () => {
                   </TableCell>
                   
                   <TableCell>
+                    <p className="font-medium text-sm">{candidate.degree}</p>
+                  </TableCell>
+                  
+                  <TableCell>
                     <div>
-                      <p className="font-medium text-sm">{candidate.degree}</p>
-                      <p className="text-xs text-muted-foreground">{candidate.university}</p>
+                      <p className="font-medium text-sm">{candidate.university}</p>
                     </div>
                   </TableCell>
                   
@@ -373,15 +330,15 @@ const JobMatchingModule: React.FC = () => {
                     </div>
                   </TableCell>
                   
-                  <TableCell className="text-center">
-                    <Badge className={getPriorityColor(candidate.priority)}>
-                      {candidate.priority.toUpperCase()}
+                  <TableCell>
+                    <Badge variant="outline">
+                      {candidate.phase}
                     </Badge>
                   </TableCell>
                   
                   <TableCell>
-                    <Badge variant="outline">
-                      {candidate.status}
+                    <Badge className={getDecisionColor(candidate.decision)}>
+                      {candidate.decision === 'hired' ? 'Hired' : candidate.decision}
                     </Badge>
                   </TableCell>
                   

@@ -118,7 +118,7 @@ export default function HeroSection({
                     <SelectValue placeholder="Department" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Departments</SelectItem> {/* Changed from "" to "all" */}
+                    <SelectItem value="all">All Business Units</SelectItem> {/* Changed from "" to "all" */}
                     <SelectItem value="Digital Transformation">Digital Transformation</SelectItem>
                     <SelectItem value="Education">Education</SelectItem>
                     <SelectItem value="Science & Technology">Science & Technology</SelectItem>

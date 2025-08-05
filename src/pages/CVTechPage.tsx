@@ -210,11 +210,11 @@ const CVTechPage = () => {
                 <SelectValue placeholder="Filter by Department" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Departments</SelectItem>
-                <SelectItem value="it">Information Technology</SelectItem>
+                <SelectItem value="all">All Business Units</SelectItem>
+                <SelectItem value="it">Digital Transformation</SelectItem>
                 <SelectItem value="hr">Human Resources</SelectItem>
                 <SelectItem value="finance">Finance</SelectItem>
-                <SelectItem value="marketing">Marketing</SelectItem>
+                <SelectItem value="marketing">Education</SelectItem>
               </SelectContent>
             </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
