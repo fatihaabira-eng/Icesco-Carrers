@@ -271,7 +271,7 @@ const HRDashboard: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      {/* Header with Date Filter */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">HR Dashboard</h1>
@@ -279,58 +279,39 @@ const HRDashboard: React.FC = () => {
             Overview of recruitment activities and candidate pipeline
           </p>
         </div>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Year:</span>
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map(year => (
+                  <SelectItem key={year.value} value={year.value}>
+                    {year.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Range:</span>
+            <Select value={dateRange} onValueChange={setDateRange}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {dateRanges.map(range => (
+                  <SelectItem key={range.value} value={range.value}>
+                    {range.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
-
-      {/* Date Filter */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Filter className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <CardTitle className="text-xl">Date Filter</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Filter dashboard data by year or date range
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">Year:</span>
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map(year => (
-                    <SelectItem key={year.value} value={year.value}>
-                      {year.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">Range:</span>
-              <Select value={dateRange} onValueChange={setDateRange}>
-                <SelectTrigger className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {dateRanges.map(range => (
-                    <SelectItem key={range.value} value={range.value}>
-                      {range.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* ICESCO Vacancies KPIs Section */}
       <Card>

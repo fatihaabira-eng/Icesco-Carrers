@@ -189,7 +189,7 @@ const RecruitmentAnalytics = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      {/* Header with Date Filter */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Recruitment Analytics</h1>
@@ -197,7 +197,46 @@ const RecruitmentAnalytics = () => {
             Comprehensive recruitment performance insights and metrics
           </p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Year:</span>
+            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Nov-19">Nov-19</SelectItem>
+                <SelectItem value="Dec-19">Dec-19</SelectItem>
+                <SelectItem value="Jan-20">Jan-20</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Level:</span>
+            <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Levels</SelectItem>
+                <SelectItem value="junior">Junior</SelectItem>
+                <SelectItem value="senior">Senior</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Recruiter:</span>
+            <Select value={selectedRecruiter} onValueChange={setSelectedRecruiter}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Recruiters</SelectItem>
+                <SelectItem value="hr1">HR Manager 1</SelectItem>
+                <SelectItem value="hr2">HR Manager 2</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
             Export Report
@@ -221,7 +260,7 @@ const RecruitmentAnalytics = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-8">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
             {/* Rates Section */}
             <Card className="border-0 shadow-none">
               <CardContent className="p-6 text-center">
@@ -334,10 +373,7 @@ const RecruitmentAnalytics = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Additional KPIs Row */}
-          <div className="grid gap-4 md:grid-cols-2 mt-6">
             <Card className="border-0 shadow-none">
               <CardContent className="p-6 text-center">
                 <div className="flex flex-col items-center space-y-3">
@@ -387,40 +423,6 @@ const RecruitmentAnalytics = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Filters */}
-            <div className="flex justify-end space-x-4">
-              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Period" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Nov-19">Nov-19</SelectItem>
-                  <SelectItem value="Dec-19">Dec-19</SelectItem>
-                  <SelectItem value="Jan-20">Jan-20</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Level/Band" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Levels</SelectItem>
-                  <SelectItem value="junior">Junior</SelectItem>
-                  <SelectItem value="senior">Senior</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={selectedRecruiter} onValueChange={setSelectedRecruiter}>
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Recruiter" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Recruiters</SelectItem>
-                  <SelectItem value="hr1">HR Manager 1</SelectItem>
-                  <SelectItem value="hr2">HR Manager 2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Timeline Chart */}
