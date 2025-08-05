@@ -20,12 +20,14 @@ import {
   Clock,
   Target,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  X
 } from 'lucide-react';
 import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
+import CreateJobOfferForm from '@/components/CreateJobOfferForm';
 
 interface JobOffer {
   id: string;
@@ -66,6 +68,7 @@ const HRJobOffers: React.FC = () => {
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedOffer, setExpandedOffer] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   // Mock job offers data
   const jobOffers: JobOffer[] = [
@@ -200,8 +203,38 @@ const HRJobOffers: React.FC = () => {
     setExpandedOffer(expandedOffer === offerId ? null : offerId);
   };
 
+  const handleCreateJobOffer = () => {
+    setShowCreateForm(true);
+  };
+
+  const handleCloseCreateForm = () => {
+    setShowCreateForm(false);
+  };
+
   return (
     <div className="space-y-8">
+      {/* Create Job Offer Form Overlay */}
+      {showCreateForm && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-background rounded-lg shadow-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Create New Job Offer</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCloseCreateForm}
+                className="h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="p-4">
+              <CreateJobOfferForm onClose={handleCloseCreateForm} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <DashboardHeader
         title="Job Offers"
@@ -211,7 +244,7 @@ const HRJobOffers: React.FC = () => {
         dateRange={dateRange}
         setDateRange={setDateRange}
       >
-        <Button>
+        <Button onClick={handleCreateJobOffer}>
           <Plus className="h-4 w-4 mr-2" />
           Create Job Offer
         </Button>

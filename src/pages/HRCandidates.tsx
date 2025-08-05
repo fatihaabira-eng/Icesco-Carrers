@@ -24,6 +24,7 @@ import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
+import CandidateProfile from '@/components/CandidateProfile';
 
 interface Candidate {
   id: string;
@@ -36,11 +37,24 @@ interface Candidate {
   avatar?: string;
   email: string;
   phone: string;
+  location: string;
   nationality: string;
   experience: string;
   skills: string[];
   education: string;
   year: number;
+  videoUrl?: string;
+  aiScreeningScore: number;
+  aiRecommendations: string[];
+  resumeUrl?: string;
+  resumeData?: {
+    extractedSkills: string[];
+    workExperience: string[];
+    education: string[];
+    certifications: string[];
+    languages: string[];
+    parsedDate: string;
+  };
 }
 
 const stages = [
@@ -57,6 +71,7 @@ const HRCandidates: React.FC = () => {
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCandidate, setExpandedCandidate] = useState<string | null>(null);
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
 
   // Mock candidate data
   const candidates: Candidate[] = [
@@ -74,7 +89,35 @@ const HRCandidates: React.FC = () => {
       experience: '8 years',
       skills: ['React', 'Node.js', 'Python', 'AI/ML'],
       education: 'PhD Computer Science - Cairo University',
-      year: 2024
+      year: 2024,
+      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+      aiScreeningScore: 92,
+      aiRecommendations: [
+        'Strong technical background',
+        'Excellent communication skills',
+        'Relevant experience in educational technology',
+        'Good cultural fit for ICESCO'
+      ],
+      resumeData: {
+        extractedSkills: ['JavaScript', 'React', 'Node.js', 'Python', 'Machine Learning', 'AWS', 'Docker', 'Git'],
+        workExperience: [
+          'Senior Software Engineer at TechCorp (2020-2024)',
+          'Full Stack Developer at StartupXYZ (2018-2020)',
+          'Software Engineer at BigTech Inc (2016-2018)'
+        ],
+        education: [
+          'PhD Computer Science - Cairo University (2016)',
+          'MSc Software Engineering - Alexandria University (2014)',
+          'BSc Computer Science - Ain Shams University (2012)'
+        ],
+        certifications: [
+          'AWS Certified Solutions Architect',
+          'Google Cloud Professional Developer',
+          'Microsoft Azure Developer Associate'
+        ],
+        languages: ['Arabic (Native)', 'English (Fluent)', 'French (Intermediate)'],
+        parsedDate: '2024-01-15T12:00:00Z'
+      }
     },
     {
       id: 'CAND-002',
@@ -90,7 +133,34 @@ const HRCandidates: React.FC = () => {
       experience: '6 years',
       skills: ['Digital Marketing', 'Strategy', 'Analytics'],
       education: 'Master Marketing - Mohammed V University',
-      year: 2024
+      year: 2024,
+      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+      aiScreeningScore: 88,
+      aiRecommendations: [
+        'Strong marketing expertise',
+        'Excellent analytical skills',
+        'Good understanding of MENA market',
+        'Leadership potential'
+      ],
+      resumeData: {
+        extractedSkills: ['Digital Marketing', 'Social Media Marketing', 'Google Analytics', 'SEO', 'Content Strategy', 'Brand Management'],
+        workExperience: [
+          'Marketing Manager at BrandAgency (2021-2024)',
+          'Digital Marketing Specialist at E-commerceCo (2019-2021)',
+          'Marketing Assistant at RetailCorp (2018-2019)'
+        ],
+        education: [
+          'Master Marketing - Mohammed V University (2018)',
+          'Bachelor Business Administration - Hassan II University (2016)'
+        ],
+        certifications: [
+          'Google Ads Certification',
+          'Facebook Blueprint Certification',
+          'HubSpot Marketing Certification'
+        ],
+        languages: ['Arabic (Native)', 'English (Fluent)', 'French (Fluent)'],
+        parsedDate: '2024-01-14T11:30:00Z'
+      }
     },
     {
       id: 'CAND-003',
@@ -106,7 +176,35 @@ const HRCandidates: React.FC = () => {
       experience: '10 years',
       skills: ['Program Management', 'Educational Design', 'Leadership'],
       education: 'PhD Education - University of Jordan',
-      year: 2024
+      year: 2024,
+      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+      aiScreeningScore: 85,
+      aiRecommendations: [
+        'Extensive education experience',
+        'Strong program management skills',
+        'Excellent stakeholder management',
+        'Proven track record in educational reform'
+      ],
+      resumeData: {
+        extractedSkills: ['Program Management', 'Curriculum Development', 'Educational Technology', 'Stakeholder Management', 'Project Planning'],
+        workExperience: [
+          'Education Program Director at UNESCO (2020-2024)',
+          'Senior Education Consultant at World Bank (2018-2020)',
+          'Education Program Manager at NGO (2016-2018)'
+        ],
+        education: [
+          'PhD Education - University of Jordan (2016)',
+          'Master Educational Leadership - American University (2014)',
+          'Bachelor Education - Jordan University (2012)'
+        ],
+        certifications: [
+          'PMP Certification',
+          'Educational Leadership Certification',
+          'Curriculum Design Certification'
+        ],
+        languages: ['Arabic (Native)', 'English (Fluent)', 'French (Intermediate)'],
+        parsedDate: '2024-01-13T10:15:00Z'
+      }
     },
     {
       id: 'CAND-004',
@@ -122,7 +220,34 @@ const HRCandidates: React.FC = () => {
       experience: '5 years',
       skills: ['Financial Analysis', 'Excel', 'SAP'],
       education: 'MBA Finance - Harvard University',
-      year: 2024
+      year: 2024,
+      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+      aiScreeningScore: 83,
+      aiRecommendations: [
+        'Strong financial background',
+        'Excellent analytical skills',
+        'International experience',
+        'Good technical skills'
+      ],
+      resumeData: {
+        extractedSkills: ['Financial Analysis', 'Excel', 'SAP', 'Budgeting', 'Financial Modeling', 'Risk Assessment'],
+        workExperience: [
+          'Financial Analyst at Fortune500 (2021-2024)',
+          'Junior Analyst at InvestmentBank (2019-2021)',
+          'Finance Intern at ConsultingFirm (2018-2019)'
+        ],
+        education: [
+          'MBA Finance - Harvard University (2019)',
+          'Bachelor Economics - Stanford University (2017)'
+        ],
+        certifications: [
+          'CFA Level 1',
+          'Excel Expert Certification',
+          'SAP Financials Certification'
+        ],
+        languages: ['English (Native)', 'Spanish (Intermediate)'],
+        parsedDate: '2024-01-20T09:45:00Z'
+      }
     }
   ];
 
@@ -199,8 +324,31 @@ const HRCandidates: React.FC = () => {
     setExpandedCandidate(expandedCandidate === candidateId ? null : candidateId);
   };
 
+  const handleViewProfile = (candidate: Candidate) => {
+    setSelectedCandidate(candidate);
+  };
+
+  const handleCloseProfile = () => {
+    setSelectedCandidate(null);
+  };
+
+  const handleStatusChange = (candidateId: string, newStatus: string, reason?: string) => {
+    // Update the candidate status
+    console.log(`Updating candidate ${candidateId} to status ${newStatus}${reason ? ` with reason: ${reason}` : ''}`);
+    // In a real app, this would update the backend and refresh the data
+  };
+
   return (
     <div className="space-y-8">
+      {/* Candidate Profile Modal */}
+      {selectedCandidate && (
+        <CandidateProfile
+          candidate={selectedCandidate}
+          onClose={handleCloseProfile}
+          onStatusChange={handleStatusChange}
+        />
+      )}
+
       {/* Header */}
       <DashboardHeader
         title="Candidates"
@@ -339,7 +487,11 @@ const HRCandidates: React.FC = () => {
                         <TableCell>{candidate.experience}</TableCell>
                         <TableCell>
                           <div className="flex space-x-2">
-                            <Button variant="ghost" size="icon">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => handleViewProfile(candidate)}
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="icon">
