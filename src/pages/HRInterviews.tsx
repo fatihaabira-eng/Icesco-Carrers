@@ -44,7 +44,7 @@ interface Interview {
 }
 
 const HRInterviews: React.FC = () => {
-  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedYear, setSelectedYear] = useState('2025');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedInterview, setExpandedInterview] = useState<string | null>(null);
@@ -55,7 +55,7 @@ const HRInterviews: React.FC = () => {
       id: 'INT-001',
       candidate: 'Ahmed Hassan El-Masri',
       position: 'Senior Software Engineer',
-      date: '2024-01-25',
+      date: '2025-01-25',
       time: '10:00 AM',
       type: 'technical',
       status: 'scheduled',
@@ -64,7 +64,7 @@ const HRInterviews: React.FC = () => {
       notes: 'Technical assessment focusing on React and Node.js',
       outcome: 'pending',
       score: 0,
-      year: 2024
+      year: 2025
     },
     {
       id: 'INT-002',
@@ -79,7 +79,7 @@ const HRInterviews: React.FC = () => {
       notes: 'Final interview with presentation on marketing strategy',
       outcome: 'passed',
       score: 92,
-      year: 2024
+      year: 2025
     },
     {
       id: 'INT-003',

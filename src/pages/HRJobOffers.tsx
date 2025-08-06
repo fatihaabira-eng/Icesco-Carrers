@@ -69,7 +69,7 @@ const stages = [
 
 
 const HRJobOffers: React.FC = () => {
-  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedYear, setSelectedYear] = useState('2025');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedOffer, setExpandedOffer] = useState<string | null>(null);
@@ -91,12 +91,12 @@ const HRJobOffers: React.FC = () => {
       requirements: ['React', 'Node.js', 'TypeScript', 'MongoDB', 'AWS'],
       salary: 'Competitive',
       experience: '5+ years',
-      year: 2024,
+      year: 2025,
       positions: 1, // New field
       candidates: [
-        { id: 'CAND-1', name: 'Alice Smith', jobTitle: 'Senior Software Engineer', stage: 'interview', stageDate: '2024-01-15' },
-        { id: 'CAND-2', name: 'Bob Johnson', jobTitle: 'Senior Software Engineer', stage: 'offer', stageDate: '2024-01-16' },
-        { id: 'CAND-3', name: 'Clara Brown', jobTitle: 'Senior Software Engineer', stage: 'hired', stageDate: '2024-01-17' },
+        { id: 'CAND-1', name: 'Alice Smith', jobTitle: 'Senior Software Engineer', stage: 'interview', stageDate: '2025-01-15' },
+        { id: 'CAND-2', name: 'Bob Johnson', jobTitle: 'Senior Software Engineer', stage: 'offer', stageDate: '2025-01-16' },
+        { id: 'CAND-3', name: 'Clara Brown', jobTitle: 'Senior Software Engineer', stage: 'hired', stageDate: '2025-01-17' },
         { id: 'CAND-6', name: 'Frank White', jobTitle: 'Senior Software Engineer', stage: 'rejected', stageDate: '2024-01-18' },
       ]
     },
@@ -114,7 +114,7 @@ const HRJobOffers: React.FC = () => {
       requirements: ['Digital Marketing', 'Strategy', 'Analytics', 'Arabic', 'French'],
       salary: 'Competitive',
       experience: '3-5 years',
-      year: 2024,
+      year: 2025,
       positions: 1, // New field
       candidates: [
         { id: 'CAND-4', name: 'David Lee', jobTitle: 'Marketing Manager', stage: 'under_review', stageDate: '2024-01-12' },
@@ -136,7 +136,7 @@ const HRJobOffers: React.FC = () => {
       requirements: ['Program Management', 'Educational Design', 'Stakeholder Management'],
       salary: 'Competitive',
       experience: '3-5 years',
-      year: 2024,
+      year: 2025,
       positions: 2, // New field
       candidates: []
     }

@@ -54,7 +54,7 @@ interface CandidateAssessment {
 }
 
 const CandidateAssessmentScore: React.FC = () => {
-  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedYear, setSelectedYear] = useState('2025');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAssessment, setSelectedAssessment] = useState<CandidateAssessment | null>(null);
