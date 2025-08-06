@@ -19,6 +19,11 @@ import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
+import sallyimage from '@/assets/dr-sally-mabrouk.png';
+import nidalimage from '@/assets/dr-nidal.jpg';
+import albanyanimage from '@/assets/dr-ahmed-albanyan.webp';
+import karimovimage from '@/assets/dr-anar.jpg';
+import raheelimage from '@/assets/dr-rahel.jpg';
 
 interface CommitteeMember {
   id: string;
@@ -67,7 +72,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-1',
           name: 'Dr. Sally Mabrouk',
           position: 'Director of the Office of Director General',
-          image: '/src/assets/dr-sally-mabrouk.png',
+          image: sallyimage ,
           score: 88,
           comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
         },
@@ -75,7 +80,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-2',
           name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
           position: 'Director of the Administrative Affairs Department',
-          image: '/src/assets/dr-nidal.jpg',
+          image: nidalimage,
           score: 82,
           comments: 'Good communication skills and team collaboration. Needs some improvement in system architecture knowledge.'
         },
@@ -83,7 +88,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-3',
           name: 'Dr. Ahmed Albanyan',
           position: 'Director of the Center of Translation and Publishing',
-          image: '/src/assets/dr-ahmed-albanyan.webp',
+          image: albanyanimage,
           score: 90,
           comments: 'Outstanding technical expertise and innovative thinking. Highly recommended for the position.'
         },
@@ -91,7 +96,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-4',
           name: 'Mr. ANAR KARIMOV',
           position: 'Chief of Partnerships and International Cooperation Sector',
-          image: '/src/assets/dr-anar.jpg',
+          image: karimovimage,
           score: 85,
           comments: 'Strong cultural fit and excellent interpersonal skills. Demonstrates good leadership potential.'
         },
@@ -99,7 +104,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-5',
           name: 'Prof. Dr. Raheel Qamar',
           position: 'Chief of Sciences and Technologies Sector',
-          image: '/src/assets/dr-rahel.jpg',
+          image: raheelimage,
           score: 87,
           comments: 'Impressive technical background and relevant experience. Good understanding of educational technology.'
         }
@@ -344,6 +349,7 @@ const CandidateAssessmentScore: React.FC = () => {
                         <Dialog.Root>
                           <Dialog.Trigger asChild>
                             <Button 
+                              className="bg-primary text-primary-foreground hover:bg-primary/90"
                               variant="outline" 
                               size="sm"
                               onClick={() => setSelectedAssessment(assessment)}
