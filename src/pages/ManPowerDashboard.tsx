@@ -46,12 +46,12 @@ const timelineData = [
   { week: 'Week 6', applications: 140, hires: 11 }
 ];
 
-const departmentData = [
-  { department: 'Risk Advisory', open: 65, hired: 33 },
-  { department: 'Consulting', open: 38, hired: 27 },
-  { department: 'Financial Advisory', open: 28, hired: 19 },
-  { department: 'Technology', open: 18, hired: 10 },
-  { department: 'Operations', open: 10, hired: 5 }
+const businessUnitData = [
+  { businessUnit: 'Risk Advisory', open: 65, hired: 33 },
+  { businessUnit: 'Consulting', open: 38, hired: 27 },
+  { businessUnit: 'Financial Advisory', open: 28, hired: 19 },
+  { businessUnit: 'Technology', open: 18, hired: 10 },
+  { businessUnit: 'Operations', open: 10, hired: 5 }
 ];
 
 const openDaysData = [
@@ -210,16 +210,16 @@ const ManpowerDashboard = () => {
               </Card>
             </div>
 
-            {/* Department Status */}
+            {/* Business Unit Status */}
             <Card>
               <CardHeader>
-                <CardTitle>Hiring Status by Department</CardTitle>
+                <CardTitle>Hiring Status by Business Unit</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={departmentData}>
+                  <BarChart data={businessUnitData}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="department" />
+                    <XAxis dataKey="businessUnit" />
                     <YAxis />
                     <Tooltip />
                     <Bar dataKey="open" fill="#8884d8" name="Open Positions" />
@@ -261,7 +261,7 @@ const ManpowerDashboard = () => {
                       <tr className="border-b">
                         <th className="text-left p-2">Req ID</th>
                         <th className="text-left p-2">Position</th>
-                        <th className="text-left p-2">Department</th>
+                        <th className="text-left p-2">Business Unit</th>
                         <th className="text-left p-2">Status</th>
                         <th className="text-left p-2">Open Days</th>
                         <th className="text-left p-2">Applications</th>
@@ -274,7 +274,7 @@ const ManpowerDashboard = () => {
                         {
                           id: 'Dec24|RA|Sen|Rab|1',
                           position: 'Senior Risk Analyst',
-                          department: 'Risk Advisory',
+                          businessUnit: 'Risk Advisory',
                           status: 'In Review',
                           openDays: 45,
                           applications: 23,
@@ -283,7 +283,7 @@ const ManpowerDashboard = () => {
                         {
                           id: 'Dec24|Tech|Dev|Cas|2',
                           position: 'Full Stack Developer',
-                          department: 'Technology',
+                          businessUnit: 'Technology',
                           status: 'Active',
                           openDays: 12,
                           applications: 67,
@@ -292,7 +292,7 @@ const ManpowerDashboard = () => {
                         {
                           id: 'Nov24|HR|Spec|Rab|1',
                           position: 'HR Specialist',
-                          department: 'Human Resources',
+                          businessUnit: 'Human Resources',
                           status: 'Closed',
                           openDays: 89,
                           applications: 45,
@@ -302,7 +302,7 @@ const ManpowerDashboard = () => {
                         <tr key={request.id} className="border-b">
                           <td className="p-2 font-mono text-sm">{request.id}</td>
                           <td className="p-2">{request.position}</td>
-                          <td className="p-2">{request.department}</td>
+                          <td className="p-2">{request.businessUnit}</td>
                           <td className="p-2">
                             <Badge 
                               variant={
@@ -436,7 +436,7 @@ const ManpowerDashboard = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span>Technology Department</span>
+                      <span>Technology Business Unit</span>
                       <span>75% of budget used</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">

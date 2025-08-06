@@ -14,7 +14,7 @@ const allJobs = [
   {
     id: "job-001",
     title: "Senior Software Engineer",
-    department: "Digital Transformation",
+    businessUnit: "Digital Transformation",
     location: "Rabat, Morocco",
     type: "Full-time",
     experience: "5+ years",
@@ -25,7 +25,7 @@ const allJobs = [
   {
     id: "job-002",
     title: "Education Program Manager",
-    department: "Education",
+    businessUnit: "Education",
     location: "Rabat, Morocco",
     type: "Full-time",
     experience: "3-5 years",
@@ -35,7 +35,7 @@ const allJobs = [
   {
     id: "job-003",
     title: "Data Analyst",
-    department: "Science & Technology",
+    businessUnit: "Science & Technology",
     location: "Rabat, Morocco",
     type: "Contract",
     experience: "2-4 years",
@@ -45,7 +45,7 @@ const allJobs = [
   {
     id: "job-004",
     title: "Cultural Heritage Specialist",
-    department: "Culture & Heritage",
+    businessUnit: "Culture & Heritage",
     location: "Rabat, Morocco",
     type: "Full-time",
     experience: "4-6 years",
@@ -55,7 +55,7 @@ const allJobs = [
   {
     id: "job-005",
     title: "Communications Coordinator",
-    department: "Communications",
+    businessUnit: "Communications",
     location: "Rabat, Morocco",
     type: "Part-time",
     experience: "2-3 years",
@@ -65,7 +65,7 @@ const allJobs = [
   {
     id: "job-006",
     title: "HR Business Partner",
-    department: "Human Resources",
+    businessUnit: "Human Resources",
     location: "Rabat, Morocco",
     type: "Full-time",
     experience: "5+ years",
@@ -75,7 +75,7 @@ const allJobs = [
   {
     id: "job-007",
     title: "DevOps Engineer",
-    department: "Digital Transformation",
+    businessUnit: "Digital Transformation",
     location: "Rabat, Morocco",
     type: "Full-time",
     experience: "3-5 years",
@@ -86,7 +86,7 @@ const allJobs = [
   {
     id: "job-008",
     title: "Research Scientist",
-    department: "Science & Technology",
+    businessUnit: "Science & Technology",
     location: "Rabat, Morocco",
     type: "Full-time",
     experience: "PhD + 2 years",
@@ -95,7 +95,7 @@ const allJobs = [
   }
 ];
 
-const departments = [
+const businessUnits = [
   "Digital Transformation",
   "Education", 
   "Science & Technology",
@@ -126,7 +126,7 @@ export default function Opportunities() {
   const [searchParams] = useSearchParams();
   const [searchKeyword, setSearchKeyword] = useState(searchParams.get("keyword") || "");
   const [filteredJobs, setFilteredJobs] = useState(allJobs);
-  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>([]);
   const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
@@ -140,15 +140,15 @@ export default function Opportunities() {
     if (searchKeyword) {
       filtered = filtered.filter(job => 
         job.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        job.department.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        job.businessUnit.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         job.description.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         job.skills.some(skill => skill.toLowerCase().includes(searchKeyword.toLowerCase()))
       );
     }
 
-    // Department filter
-    if (selectedDepartments.length > 0) {
-      filtered = filtered.filter(job => selectedDepartments.includes(job.department));
+    // Business Unit filter
+    if (selectedBusinessUnits.length > 0) {
+      filtered = filtered.filter(job => selectedBusinessUnits.includes(job.businessUnit));
     }
 
     // Experience filter
@@ -182,12 +182,12 @@ export default function Opportunities() {
     }
 
     setFilteredJobs(filtered);
-  }, [searchKeyword, selectedDepartments, selectedExperience, selectedTypes, selectedLocations, sortBy]);
+  }, [searchKeyword, selectedBusinessUnits, selectedExperience, selectedTypes, selectedLocations, sortBy]);
 
   const handleFilterChange = (category: string, value: string, checked: boolean) => {
     switch (category) {
-      case "departments":
-        setSelectedDepartments(prev => 
+      case "businessUnits":
+        setSelectedBusinessUnits(prev => 
           checked ? [...prev, value] : prev.filter(item => item !== value)
         );
         break;
@@ -210,7 +210,7 @@ export default function Opportunities() {
   };
 
   const clearAllFilters = () => {
-    setSelectedDepartments([]);
+    setSelectedBusinessUnits([]);
     setSelectedExperience([]);
     setSelectedTypes([]);
     setSelectedLocations([]);
@@ -240,7 +240,7 @@ export default function Opportunities() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input
-                  placeholder="Search by role, department, skills..."
+                  placeholder="Search by role, business unit, skills..."
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
                   className="pl-10 h-12"
@@ -264,10 +264,10 @@ export default function Opportunities() {
           </div>
 
           {/* Active Filters Display */}
-          {(selectedDepartments.length > 0 || selectedExperience.length > 0 || selectedTypes.length > 0 || selectedLocations.length > 0) && (
+          {(selectedBusinessUnits.length > 0 || selectedExperience.length > 0 || selectedTypes.length > 0 || selectedLocations.length > 0) && (
             <div className="mt-4 flex flex-wrap gap-2 items-center">
               <span className="text-sm text-muted-foreground">Active filters:</span>
-              {[...selectedDepartments, ...selectedExperience, ...selectedTypes, ...selectedLocations].map((filter, index) => (
+              {[...selectedBusinessUnits, ...selectedExperience, ...selectedTypes, ...selectedLocations].map((filter, index) => (
                 <span key={index} className="bg-primary/10 text-primary px-2 py-1 rounded text-sm">
                   {filter}
                 </span>
@@ -286,26 +286,26 @@ export default function Opportunities() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Department Filter */}
+              {/* Business Unit Filter */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Briefcase className="w-5 h-5" />
-                    Category
+                    Business Unit
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {departments.map((dept) => (
-                    <div key={dept} className="flex items-center space-x-2">
+                  {businessUnits.map((unit) => (
+                    <div key={unit} className="flex items-center space-x-2">
                       <Checkbox
-                        id={dept}
-                        checked={selectedDepartments.includes(dept)}
+                        id={unit}
+                        checked={selectedBusinessUnits.includes(unit)}
                         onCheckedChange={(checked) => 
-                          handleFilterChange("departments", dept, checked as boolean)
+                          handleFilterChange("businessUnits", unit, checked as boolean)
                         }
                       />
-                      <label htmlFor={dept} className="text-sm cursor-pointer">
-                        {dept}
+                      <label htmlFor={unit} className="text-sm cursor-pointer">
+                        {unit}
                       </label>
                     </div>
                   ))}

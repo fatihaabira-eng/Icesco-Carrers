@@ -1,15 +1,15 @@
 // React hooks for API calls with React Query integration
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { JobService, DepartmentService, UserService, AuthService } from '../services/apiServices';
+import { JobService, BusinessUnitService, UserService, AuthService } from '../services/apiServices';
 import { ApplicationService } from '../services/api';
-import type { JobOffer, Department, Application } from '../services/apiServices';
+import type { JobOffer, BusinessUnit, Application } from '../services/apiServices';
 
 // Query keys for React Query
 export const queryKeys = {
   jobs: ['jobs'] as const,
   job: (id: string) => ['jobs', id] as const,
-  departments: ['departments'] as const,
-  department: (id: string) => ['departments', id] as const,
+  businessUnits: ['businessUnits'] as const,
+  businessUnit: (id: string) => ['businessUnits', id] as const,
   applications: ['applications'] as const,
   userApplications: (userId: string) => ['applications', 'user', userId] as const,
   notifications: ['notifications'] as const,
@@ -17,7 +17,7 @@ export const queryKeys = {
 
 // Job-related hooks
 export const useJobs = (params?: {
-  department?: string;
+  businessUnit?: string;
   location?: string;
   type?: string;
   experience?: string;
@@ -57,28 +57,28 @@ export const useSearchJobs = (query: string) => {
   });
 };
 
-// Department-related hooks
-export const useDepartments = () => {
+// Business Unit-related hooks
+export const useBusinessUnits = () => {
   return useQuery({
-    queryKey: queryKeys.departments,
-    queryFn: () => DepartmentService.getDepartments(),
+    queryKey: queryKeys.businessUnits,
+    queryFn: () => BusinessUnitService.getBusinessUnits(),
     staleTime: 30 * 60 * 1000, // 30 minutes
   });
 };
 
-export const useDepartment = (departmentId: string) => {
+export const useBusinessUnit = (businessUnitId: string) => {
   return useQuery({
-    queryKey: queryKeys.department(departmentId),
-    queryFn: () => DepartmentService.getDepartment(departmentId),
-    enabled: !!departmentId,
+    queryKey: queryKeys.businessUnit(businessUnitId),
+    queryFn: () => BusinessUnitService.getBusinessUnit(businessUnitId),
+    enabled: !!businessUnitId,
   });
 };
 
-export const useDepartmentJobs = (departmentId: string) => {
+export const useBusinessUnitJobs = (businessUnitId: string) => {
   return useQuery({
-    queryKey: [...queryKeys.jobs, 'department', departmentId],
-    queryFn: () => DepartmentService.getDepartmentJobs(departmentId),
-    enabled: !!departmentId,
+    queryKey: [...queryKeys.jobs, 'businessUnit', businessUnitId],
+    queryFn: () => BusinessUnitService.getBusinessUnitJobs(businessUnitId),
+    enabled: !!businessUnitId,
   });
 };
 

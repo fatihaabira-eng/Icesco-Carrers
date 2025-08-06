@@ -28,7 +28,7 @@ interface Resume {
   id: string;
   candidateName: string;
   position: string;
-  department: string;
+  businessUnit: string;
   uploadDate: string;
   status: 'pending' | 'reviewed' | 'approved' | 'rejected';
   qualityScore: number;
@@ -52,7 +52,7 @@ const HRResumeLibrary: React.FC = () => {
       id: 'RES-001',
       candidateName: 'Ahmed Hassan El-Masri',
       position: 'Senior Software Engineer',
-      department: 'Digital Transformation',
+      businessUnit: 'Digital Transformation',
       uploadDate: '2024-01-15',
       status: 'approved',
       qualityScore: 95,
@@ -67,7 +67,7 @@ const HRResumeLibrary: React.FC = () => {
       id: 'RES-002',
       candidateName: 'Fatima Al-Zahra Benali',
       position: 'Marketing Manager',
-      department: 'Communications',
+      businessUnit: 'Communications',
       uploadDate: '2024-01-14',
       status: 'reviewed',
       qualityScore: 88,
@@ -82,7 +82,7 @@ const HRResumeLibrary: React.FC = () => {
       id: 'RES-003',
       candidateName: 'Omar Khalil Al-Rashid',
       position: 'Education Program Manager',
-      department: 'Education',
+      businessUnit: 'Education',
       uploadDate: '2024-01-13',
       status: 'pending',
       qualityScore: 82,
@@ -194,10 +194,7 @@ const HRResumeLibrary: React.FC = () => {
         dateRange={dateRange}
         setDateRange={setDateRange}
       >
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Upload Resume
-        </Button>
+        
       </DashboardHeader>
 
       {/* KPI Cards */}

@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface User {
   name: string;
   email: string;
-  role: 'hr' | 'committee' | 'director';
+  role: 'recruitment' | 'committee' | 'director';
 }
 
 interface AuthContextType {
@@ -16,9 +16,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const demoUsers: User[] = [
-  { name: 'HR Team', email: 'hr@icesco.org', role: 'hr' },
-  { name: 'Naoufal Chaouqi', email: 'naoufal.chaouqi@icesco.org', role: 'committee' },
-  { name: 'Sally Mabrouk', email: 'sally.mabrouk@icesco.org', role: 'director' }
+  { name: 'Recruitment Team', email: 'hr@icesco.org', role: 'recruitment' },
+  { name: 'Naoufal Chaouqi', email: 'naoufal.chaouqi@icesco.org', role: 'director' },
+  { name: 'Sally Mabrouk', email: 'sally.mabrouk@icesco.org', role: 'committee' }
 ];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

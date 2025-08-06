@@ -70,37 +70,28 @@ const ScheduleInterview: React.FC = () => {
   const interviewers = [
     {
       id: 1,
-      name: 'Dr. Mohammed Al-Faisal',
+      name: 'Digital Transformation Team',
       role: 'Technical Lead',
-      department: 'Engineering',
+      businessUnit: 'Engineering',
       email: 'mohammed.faisal@icesco.org',
       avatar: '/api/placeholder/40/40',
       availability: 'Available'
     },
     {
       id: 2,
-      name: 'Ms. Fatima El-Zahra',
+      name: 'Education',
       role: 'HR Director',
-      department: 'Human Resources',
+      businessUnit: 'Human Resources',
       email: 'fatima.zahra@icesco.org',
-      avatar: '/api/placeholder/40/40',
-      availability: 'Busy'
-    },
-    {
-      id: 3,
-      name: 'Dr. Youssef Ben Ahmed',
-      role: 'Department Head',
-      department: 'Education',
-      email: 'youssef.ahmed@icesco.org',
       avatar: '/api/placeholder/40/40',
       availability: 'Available'
     },
     {
-      id: 4,
-      name: 'Ms. Amina Kone',
-      role: 'Senior Manager',
-      department: 'Finance',
-      email: 'amina.kone@icesco.org',
+      id: 3,
+      name: 'Finance',
+      role: 'Business Unit Head',
+      businessUnit: 'Education',
+      email: 'youssef.ahmed@icesco.org',
       avatar: '/api/placeholder/40/40',
       availability: 'Available'
     }
@@ -118,7 +109,7 @@ const ScheduleInterview: React.FC = () => {
 
   const filteredInterviewers = interviewers.filter(interviewer =>
     interviewer.name.toLowerCase().includes(interviewerSearch.toLowerCase()) ||
-    interviewer.department.toLowerCase().includes(interviewerSearch.toLowerCase())
+    interviewer.businessUnit.toLowerCase().includes(interviewerSearch.toLowerCase())
   );
 
   const handleInterviewerSelect = (interviewer: any) => {
@@ -246,7 +237,7 @@ const ScheduleInterview: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                Select Interviewers
+                Select Business Unit
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -307,7 +298,7 @@ const ScheduleInterview: React.FC = () => {
                         <div className="flex-1">
                           <p className="font-medium text-sm">{interviewer.name}</p>
                           <p className="text-xs text-muted-foreground">{interviewer.role}</p>
-                          <p className="text-xs text-muted-foreground">{interviewer.department}</p>
+                          <p className="text-xs text-muted-foreground">{interviewer.businessUnit}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           {interviewer.availability === 'Available' ? (

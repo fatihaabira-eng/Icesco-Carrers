@@ -5,7 +5,7 @@ import apiClient from '../lib/axios';
 export interface JobOffer {
   id: string;
   title: string;
-  department: string;
+  businessUnit: string;
   location: string;
   type: string;
   experience: string;
@@ -30,7 +30,7 @@ export interface Application {
   notes?: string;
 }
 
-export interface Department {
+export interface BusinessUnit {
   id: string;
   name: string;
   description: string;
@@ -55,7 +55,7 @@ export class JobService {
    * Get all job offers with optional filters
    */
   static async getJobs(params?: {
-    department?: string;
+    businessUnit?: string;
     location?: string;
     type?: string;
     experience?: string;
@@ -96,40 +96,40 @@ export class JobService {
   }
 }
 
-export class DepartmentService {
+export class BusinessUnitService {
   /**
-   * Get all departments
+   * Get all business units
    */
-  static async getDepartments(): Promise<ApiResponse<Department[]>> {
+  static async getBusinessUnits(): Promise<ApiResponse<BusinessUnit[]>> {
     try {
-      const response = await apiClient.get('/departments');
+      const response = await apiClient.get('/business-units');
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch departments');
+      throw new Error(error.message || 'Failed to fetch business units');
     }
   }
 
   /**
-   * Get department by ID
+   * Get business unit by ID
    */
-  static async getDepartment(departmentId: string): Promise<ApiResponse<Department>> {
+  static async getBusinessUnit(businessUnitId: string): Promise<ApiResponse<BusinessUnit>> {
     try {
-      const response = await apiClient.get(`/departments/${departmentId}`);
+      const response = await apiClient.get(`/business-units/${businessUnitId}`);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch department');
+      throw new Error(error.message || 'Failed to fetch business unit');
     }
   }
 
   /**
-   * Get jobs by department
+   * Get jobs by business unit
    */
-  static async getDepartmentJobs(departmentId: string): Promise<ApiResponse<JobOffer[]>> {
+  static async getBusinessUnitJobs(businessUnitId: string): Promise<ApiResponse<JobOffer[]>> {
     try {
-      const response = await apiClient.get(`/departments/${departmentId}/jobs`);
+      const response = await apiClient.get(`/business-units/${businessUnitId}/jobs`);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch department jobs');
+      throw new Error(error.message || 'Failed to fetch business unit jobs');
     }
   }
 }

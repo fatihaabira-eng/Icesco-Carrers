@@ -16,7 +16,8 @@ import {
   Award,
   ArrowUpDown,
   Eye,
-  MessageSquare
+  MessageSquare,
+  Target
 } from 'lucide-react';
 import {
   Dialog,
@@ -47,7 +48,7 @@ interface Candidate {
 
 const JobMatchingModule: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedBusinessUnit, setSelectedBusinessUnit] = useState('all');
   const [sortBy, setSortBy] = useState('score');
   
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
@@ -142,7 +143,7 @@ const JobMatchingModule: React.FC = () => {
     }
   ];
 
-  const departments = [
+  const businessUnits = [
     { value: 'all', label: 'All Business Units' },
     { value: 'engineering', label: 'Engineering' },
     { value: 'marketing', label: 'Marketing' },
@@ -180,8 +181,8 @@ const JobMatchingModule: React.FC = () => {
       candidate.position.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .filter(candidate => 
-      selectedDepartment === 'all' || 
-      candidate.position.toLowerCase().includes(selectedDepartment.toLowerCase())
+      selectedBusinessUnit === 'all' || 
+      candidate.position.toLowerCase().includes(selectedBusinessUnit.toLowerCase())
     )
     .sort((a, b) => {
       switch (sortBy) {
@@ -214,16 +215,16 @@ const JobMatchingModule: React.FC = () => {
               />
             </div>
             
-            {/* Department Filter */}
-            <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+            {/* Business Unit Filter */}
+            <Select value={selectedBusinessUnit} onValueChange={setSelectedBusinessUnit}>
               <SelectTrigger className="w-full sm:w-48">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {departments.map(dept => (
-                  <SelectItem key={dept.value} value={dept.value}>
-                    {dept.label}
+                {businessUnits.map(businessUnit => (
+                  <SelectItem key={businessUnit.value} value={businessUnit.value}>
+                    {businessUnit.label}
                   </SelectItem>
                 ))}
               </SelectContent>

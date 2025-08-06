@@ -13,15 +13,15 @@ import {
   Eye,
   Edit,
   Trash2,
-  Calendar,
   Users,
-  Briefcase,
   CheckCircle,
-  Clock,
-  Target,
+  Briefcase,
   ChevronDown,
   ChevronUp,
-  X
+  X,
+  UserCheck,
+  UserX,
+  ListChecks
 } from 'lucide-react';
 import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -29,14 +29,15 @@ import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
 import CreateJobOfferForm from '@/components/CreateJobOfferForm';
 
+// Updated Interfaces
 interface JobOffer {
-  id: string;
+  id: string; // Corresponds to 'Reference'
   title: string;
-  department: string;
+  department: string; // Corresponds to 'Business Unit'
   location: string;
   type: string;
   status: 'active' | 'draft' | 'closed' | 'archived';
-  applications: number;
+  applications: number; // Corresponds to 'N applied candidate'
   publishedDate: string | null;
   closingDate: string | null;
   description: string;
@@ -44,6 +45,7 @@ interface JobOffer {
   salary: string;
   experience: string;
   year: number;
+  positions: number; // Corresponds to 'n positions'
   candidates: Candidate[];
 }
 
@@ -51,7 +53,8 @@ interface Candidate {
   id: string;
   name: string;
   jobTitle: string;
-  stage: 'new' | 'under_review' | 'interview' | 'offer' | 'hired';
+  // Added 'rejected' to the possible stages
+  stage: 'new' | 'under_review' | 'interview' | 'offer' | 'hired' | 'rejected';
   stageDate: string;
 }
 
@@ -61,7 +64,9 @@ const stages = [
   { id: 'interview', title: 'Interview', color: 'bg-purple-100' },
   { id: 'offer', title: 'Offer', color: 'bg-orange-100' },
   { id: 'hired', title: 'Hired', color: 'bg-green-100' },
+  { id: 'rejected', title: 'Rejected', color: 'bg-red-100' }, // Added rejected stage
 ] as const;
+
 
 const HRJobOffers: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState('2024');
@@ -70,10 +75,10 @@ const HRJobOffers: React.FC = () => {
   const [expandedOffer, setExpandedOffer] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  // Mock job offers data
+  // Updated mock job offers data
   const jobOffers: JobOffer[] = [
     {
-      id: 'OFFER-001',
+      id: 'REF-001',
       title: 'Senior Software Engineer',
       department: 'Digital Transformation',
       location: 'Rabat, Morocco',
@@ -87,14 +92,16 @@ const HRJobOffers: React.FC = () => {
       salary: 'Competitive',
       experience: '5+ years',
       year: 2024,
+      positions: 1, // New field
       candidates: [
         { id: 'CAND-1', name: 'Alice Smith', jobTitle: 'Senior Software Engineer', stage: 'interview', stageDate: '2024-01-15' },
         { id: 'CAND-2', name: 'Bob Johnson', jobTitle: 'Senior Software Engineer', stage: 'offer', stageDate: '2024-01-16' },
         { id: 'CAND-3', name: 'Clara Brown', jobTitle: 'Senior Software Engineer', stage: 'hired', stageDate: '2024-01-17' },
+        { id: 'CAND-6', name: 'Frank White', jobTitle: 'Senior Software Engineer', stage: 'rejected', stageDate: '2024-01-18' },
       ]
     },
     {
-      id: 'OFFER-002',
+      id: 'REF-002',
       title: 'Marketing Manager',
       department: 'Communications',
       location: 'Remote',
@@ -108,13 +115,15 @@ const HRJobOffers: React.FC = () => {
       salary: 'Competitive',
       experience: '3-5 years',
       year: 2024,
+      positions: 1, // New field
       candidates: [
         { id: 'CAND-4', name: 'David Lee', jobTitle: 'Marketing Manager', stage: 'under_review', stageDate: '2024-01-12' },
         { id: 'CAND-5', name: 'Emma Wilson', jobTitle: 'Marketing Manager', stage: 'interview', stageDate: '2024-01-14' },
+        { id: 'CAND-7', name: 'Grace Hall', jobTitle: 'Marketing Manager', stage: 'rejected', stageDate: '2024-01-15' },
       ]
     },
     {
-      id: 'OFFER-003',
+      id: 'REF-003',
       title: 'Education Program Manager',
       department: 'Education',
       location: 'Rabat, Morocco',
@@ -128,11 +137,11 @@ const HRJobOffers: React.FC = () => {
       salary: 'Competitive',
       experience: '3-5 years',
       year: 2024,
+      positions: 2, // New field
       candidates: []
     }
   ];
 
-  // Filter data based on selected year
   const filterDataByDate = (data: JobOffer[]) => {
     if (selectedYear === 'all') return data;
     return data.filter(item => item.year === parseInt(selectedYear));
@@ -144,7 +153,6 @@ const HRJobOffers: React.FC = () => {
     offer.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate KPIs
   const totalOffers = filteredJobOffers.length;
   const activeOffers = filteredJobOffers.filter(o => o.status === 'active').length;
   const applicationsReceived = filteredJobOffers.reduce((sum, offer) => sum + offer.applications, 0);
@@ -153,49 +161,13 @@ const HRJobOffers: React.FC = () => {
   );
 
   const kpiCards = [
-    {
-      title: 'Total Offers',
-      value: totalOffers,
-      icon: FileText,
-      description: 'All job postings'
-    },
-    {
-      title: 'Active Offers',
-      value: activeOffers,
-      icon: Briefcase,
-      description: 'Currently open positions'
-    },
-    {
-      title: 'Applications Received',
-      value: applicationsReceived,
-      icon: Users,
-      description: 'Total applications'
-    },
-    {
-      title: 'Positions Filled',
-      value: positionsFilled,
-      icon: CheckCircle,
-      description: 'Successfully hired'
-    }
+    { title: 'Total Offers', value: totalOffers, icon: FileText, description: 'All job postings' },
+    { title: 'Active Offers', value: activeOffers, icon: Briefcase, description: 'Currently open positions' },
+    { title: 'Applications Received', value: applicationsReceived, icon: Users, description: 'Total applications' },
+    { title: 'Positions Filled', value: positionsFilled, icon: CheckCircle, description: 'Successfully hired' }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'draft':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'closed':
-        return 'bg-gray-100 text-gray-800';
-      case 'archived':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   const handleStatusChange = (offerId: string, newStatus: JobOffer['status']) => {
-    // In a real app, this would update the backend
     console.log(`Updating offer ${offerId} to status ${newStatus}`);
   };
 
@@ -203,13 +175,22 @@ const HRJobOffers: React.FC = () => {
     setExpandedOffer(expandedOffer === offerId ? null : offerId);
   };
 
-  const handleCreateJobOffer = () => {
-    setShowCreateForm(true);
-  };
+  const handleCreateJobOffer = () => setShowCreateForm(true);
+  const handleCloseCreateForm = () => setShowCreateForm(false);
 
-  const handleCloseCreateForm = () => {
-    setShowCreateForm(false);
-  };
+  // New calculation functions for table cells
+  const getShortlistedCount = (candidates: Candidate[]) => 
+    candidates.filter(c => ['interview', 'offer', 'hired'].includes(c.stage)).length;
+
+  const getHiredCount = (candidates: Candidate[]) => 
+    candidates.filter(c => c.stage === 'hired').length;
+  
+  const getRejectedCount = (candidates: Candidate[]) => 
+    candidates.filter(c => c.stage === 'rejected').length;
+
+
+  // The number of columns in the table, used for colSpan
+  const TABLE_COL_COUNT = 14;
 
   return (
     <div className="space-y-8">
@@ -219,12 +200,7 @@ const HRJobOffers: React.FC = () => {
           <div className="bg-background rounded-lg shadow-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between">
               <h2 className="text-xl font-semibold">Create New Job Offer</h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleCloseCreateForm}
-                className="h-8 w-8"
-              >
+              <Button variant="ghost" size="icon" onClick={handleCloseCreateForm} className="h-8 w-8">
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -270,7 +246,7 @@ const HRJobOffers: React.FC = () => {
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search job offers..."
+              placeholder="Search job offers by title, unit, or location..."
               className="w-full pl-10"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -282,19 +258,23 @@ const HRJobOffers: React.FC = () => {
           </Button>
         </div>
 
-        {/* Job Offers Table */}
+        {/* --- MODIFIED JOB OFFERS TABLE --- */}
         <Card>
           <CardContent className="p-0">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[50px]"></TableHead>
+                  <TableHead>Reference</TableHead>
                   <TableHead>Job Title</TableHead>
-                  <TableHead>Department</TableHead>
+                  <TableHead>Business Unit</TableHead>
                   <TableHead>Location</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>N° Positions</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Applications</TableHead>
+                  <TableHead>N° Applied</TableHead>
+                  <TableHead>N° Shortlisted</TableHead>
+                  <TableHead>N° Hired</TableHead>
+                  <TableHead>N° Rejected</TableHead>
                   <TableHead>Published Date</TableHead>
                   <TableHead>Closing Date</TableHead>
                   <TableHead>Actions</TableHead>
@@ -303,7 +283,7 @@ const HRJobOffers: React.FC = () => {
               <TableBody>
                 {filteredJobOffers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={10} className="text-center text-muted-foreground">
+                    <TableCell colSpan={TABLE_COL_COUNT} className="text-center text-muted-foreground h-24">
                       No job offers found.
                     </TableCell>
                   </TableRow>
@@ -312,29 +292,18 @@ const HRJobOffers: React.FC = () => {
                     <React.Fragment key={offer.id}>
                       <TableRow>
                         <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleExpanded(offer.id)}
-                            aria-label={expandedOffer === offer.id ? 'Collapse details' : 'Expand details'}
-                          >
-                            {expandedOffer === offer.id ? (
-                              <ChevronUp className="h-4 w-4" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4" />
-                            )}
+                          <Button variant="ghost" size="sm" onClick={() => toggleExpanded(offer.id)}>
+                            {expandedOffer === offer.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                           </Button>
                         </TableCell>
+                        <TableCell className="font-mono text-xs">{offer.id}</TableCell>
                         <TableCell className="font-medium">{offer.title}</TableCell>
                         <TableCell>{offer.department}</TableCell>
                         <TableCell>{offer.location}</TableCell>
-                        <TableCell>{offer.type}</TableCell>
+                        <TableCell className="text-center">{offer.positions}</TableCell>
                         <TableCell>
-                          <Select
-                            value={offer.status}
-                            onValueChange={(value) => handleStatusChange(offer.id, value as JobOffer['status'])}
-                          >
-                            <SelectTrigger className="w-24">
+                          <Select value={offer.status} onValueChange={(value) => handleStatusChange(offer.id, value as JobOffer['status'])}>
+                            <SelectTrigger className="w-28 text-xs">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -346,34 +315,42 @@ const HRJobOffers: React.FC = () => {
                           </Select>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-2 justify-center">
                             <Users className="h-4 w-4 text-muted-foreground" />
                             <span>{offer.applications}</span>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          {offer.publishedDate ? format(new Date(offer.publishedDate), 'PPP') : 'Not published'}
+                         <TableCell>
+                          <div className="flex items-center space-x-2 justify-center">
+                            <ListChecks className="h-4 w-4 text-muted-foreground" />
+                            <span>{getShortlistedCount(offer.candidates)}</span>
+                          </div>
                         </TableCell>
                         <TableCell>
-                          {offer.closingDate ? format(new Date(offer.closingDate), 'PPP') : 'Not set'}
+                          <div className="flex items-center space-x-2 justify-center">
+                            <UserCheck className="h-4 w-4 text-muted-foreground" />
+                            <span>{getHiredCount(offer.candidates)}</span>
+                          </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex space-x-2">
-                            <Button variant="ghost" size="icon">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                          <div className="flex items-center space-x-2 justify-center">
+                            <UserX className="h-4 w-4 text-muted-foreground" />
+                            <span>{getRejectedCount(offer.candidates)}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>{offer.publishedDate ? format(new Date(offer.publishedDate), 'MMM d, yyyy') : 'N/A'}</TableCell>
+                        <TableCell>{offer.closingDate ? format(new Date(offer.closingDate), 'MMM d, yyyy') : 'N/A'}</TableCell>
+                        <TableCell>
+                          <div className="flex space-x-1">
+                            <Button variant="ghost" size="icon" className="h-8 w-8"><Eye className="h-4 w-4" /></Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8"><Edit className="h-4 w-4" /></Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>
                           </div>
                         </TableCell>
                       </TableRow>
                       {expandedOffer === offer.id && (
                         <TableRow>
-                          <TableCell colSpan={10} className="p-0">
+                          <TableCell colSpan={TABLE_COL_COUNT} className="p-0">
                             <div className="p-4 bg-muted/20">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -385,32 +362,30 @@ const HRJobOffers: React.FC = () => {
                                     <div><strong>Requirements:</strong></div>
                                     <div className="flex flex-wrap gap-1 mt-1">
                                       {offer.requirements.map((req, index) => (
-                                        <Badge key={index} variant="secondary" className="text-xs">
-                                          {req}
-                                        </Badge>
+                                        <Badge key={index} variant="secondary" className="text-xs">{req}</Badge>
                                       ))}
                                     </div>
                                   </div>
                                 </div>
                                 <div>
                                   <h4 className="font-semibold mb-3">Candidate Pipeline</h4>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2">
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
                                     {stages.map((stage) => (
                                       <div key={stage.id} className="flex flex-col">
                                         <div className={`p-2 rounded-t-md text-xs font-semibold ${stage.color}`}>
-                                          {stage.title}
+                                          {stage.title} ({offer.candidates.filter(c => c.stage === stage.id).length})
                                         </div>
-                                        <div className="space-y-1 p-2">
+                                        <div className="space-y-1 p-2 bg-slate-50 border rounded-b-md min-h-[50px]">
                                           {offer.candidates
                                             .filter((candidate) => candidate.stage === stage.id)
                                             .map((candidate) => (
-                                              <div key={candidate.id} className="text-xs p-1 bg-white rounded border">
+                                              <div key={candidate.id} className="text-xs p-1.5 bg-white rounded border shadow-sm">
                                                 {candidate.name}
                                               </div>
                                             ))}
                                           {offer.candidates.filter((candidate) => candidate.stage === stage.id).length === 0 && (
-                                            <div className="text-xs text-muted-foreground text-center">
-                                              No candidates
+                                            <div className="text-xs text-muted-foreground text-center pt-2">
+                                              Empty
                                             </div>
                                           )}
                                         </div>
@@ -435,4 +410,4 @@ const HRJobOffers: React.FC = () => {
   );
 };
 
-export default HRJobOffers; 
+export default HRJobOffers;

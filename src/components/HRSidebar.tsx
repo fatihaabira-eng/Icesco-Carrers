@@ -8,12 +8,13 @@ import {
   Database, 
   Calendar, 
   FileText, 
-  Building,
   Settings,
   LogOut,
   Bell,
   User,
-  Shield
+  Shield,
+  Award,
+  Building
 } from 'lucide-react';
 import {
   Sidebar,
@@ -52,6 +53,20 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       path: '/manpower/hr'
     },
     {
+      id: 'assessment-scores',
+      label: 'Assessment Scores',
+      icon: Award,
+      description: 'Candidate evaluation scores',
+      path: '/manpower/hr/assessment-scores'
+    },
+    {
+      id: 'bu-manpower',
+      label: 'BU Manpower Management',
+      icon: Building,
+      description: 'Manage recruitment across business units',
+      path: '/manpower/hr/bu-manpower'
+    },
+    {
       id: 'analytics',
       label: 'Analytics',
       icon: BarChart3,
@@ -66,8 +81,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       path: '/manpower/hr/candidates',
       subItems: [
         { id: 'pipeline', label: 'Pipeline View', path: '/manpower/hr/candidates/pipeline' },
-        { id: 'matching', label: 'Job Matching', path: '/manpower/hr/candidates/matching' },
-        { id: 'evaluation', label: 'Evaluations', path: '/manpower/hr/candidates/evaluation' }
+        { id: 'matching', label: 'Job Matching', path: '/manpower/hr/candidates/matching' }
       ]
     },
     {
@@ -86,7 +100,6 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       subItems: [
         { id: 'schedule', label: 'Schedule Interview', path: '/manpower/hr/interviews/schedule' },
         { id: 'management', label: 'Interview Management', path: '/manpower/hr/interviews/management' },
-        { id: 'feedback', label: 'Interview Feedback', path: '/manpower/hr/interviews/feedback' }
       ]
     },
     {
@@ -96,13 +109,8 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       description: 'Create & manage offers',
       path: '/manpower/hr/job-offers'
     },
-    {
-      id: 'departments',
-      label: 'Departments',
-      icon: Building,
-      description: 'Department management',
-      path: '/manpower/hr/departments'
-    }
+    
+
   ];
 
   const isActive = (path: string) => {
@@ -117,17 +125,17 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
     <Sidebar>
       <SidebarHeader className="border-b border-border p-4">
         <div className="flex items-center space-x-3">
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/manpower" className="flex items-center space-x-3">
             <img 
               src={icescoLogo} 
               alt="ICESCO" 
-              className="h-8 w-auto"
+              className="h-12 w-auto"
             />
           </Link>
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <Shield className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-primary">HR Portal</span>
-          </div>
+          </div> */}
         </div>
       </SidebarHeader>
 
@@ -144,6 +152,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
                         asChild
                         isActive={isActive(item.path)}
                         tooltip={item.description}
+                        className={`${isActive(item.path) ? 'bg-[#0F7378] text-white !important' : ''} py-6 px-2.5 my-0.5 font-normal`}
                       >
                         <Link to={item.path}>
                           <item.icon className="h-4 w-4" />
@@ -170,6 +179,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
                       asChild
                       isActive={isActive(item.path)}
                       tooltip={item.description}
+                      className={`${isActive(item.path) ? 'bg-[#0F7378] text-white !important' : ''} py-6 px-2.5 my-0.5 font-normal`}
                     >
                       <Link to={item.path}>
                         <item.icon className="h-4 w-4" />

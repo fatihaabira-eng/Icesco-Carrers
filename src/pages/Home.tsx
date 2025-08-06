@@ -30,7 +30,7 @@ import {
 const featuredJobs = [
   {
     title: "Senior Software Engineer",
-    department: "Digital Transformation",
+    businessUnit: "Digital Transformation",
     location: "Rabat, Morocco",
     type: "Full-time",
     experience: "5+ years",
@@ -40,7 +40,7 @@ const featuredJobs = [
   },
   {
     title: "Education Program Manager",
-    department: "Education",
+    businessUnit: "Education",
     location: "Remote",
     type: "Full-time", 
     experience: "3-5 years",
@@ -49,7 +49,7 @@ const featuredJobs = [
   },
   {
     title: "Data Analyst",
-    department: "Science & Technology",
+    businessUnit: "Science & Technology",
     location: "Rabat, Morocco",
     type: "Contract",
     experience: "2-4 years",
@@ -135,14 +135,14 @@ const careerPaths = [
 
 export default function Home() {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedBusinessUnit, setSelectedBusinessUnit] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (searchKeyword) params.set("keyword", searchKeyword);
-    if (selectedDepartment) params.set("department", selectedDepartment);
+    if (selectedBusinessUnit) params.set("businessUnit", selectedBusinessUnit);
     navigate(`/opportunities?${params.toString()}`);
   };
 

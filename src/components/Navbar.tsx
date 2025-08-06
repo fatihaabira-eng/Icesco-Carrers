@@ -21,13 +21,13 @@ import fatihaabira from "@/assets/abira-fatiha.jpeg"; // Ensure this path is cor
 import NotificationCenter from "@/components/NotificationCenter"
 import { useNotificationContext } from "@/contexts/NotificationContext"
 
-const departments = [
-  { name: "Digital Transformation", path: "/departments/digital-transformation" },
-  { name: "Human Resources", path: "/departments/hr" },
-  { name: "Education", path: "/departments/education" },
-  { name: "Science & Technology", path: "/departments/science" },
-  { name: "Culture & Heritage", path: "/departments/culture" },
-  { name: "Communications", path: "/departments/communications" },
+const businessUnits = [
+  { name: "Digital Transformation", path: "/business-units/digital-transformation" },
+  { name: "Human Resources", path: "/business-units/hr" },
+  { name: "Education", path: "/business-units/education" },
+  { name: "Science & Technology", path: "/business-units/science" },
+  { name: "Culture & Heritage", path: "/business-units/culture" },
+  { name: "Communications", path: "/business-units/communications" },
 ]
 
 const languages = [
@@ -117,7 +117,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
             <img 
               src={icescoLogo} 
               alt="ICESCO" 
-              className="h-12 w-auto"
+              className="h-14 w-auto"
             />
           </Link>
 
@@ -288,22 +288,22 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
                       ))}
                     </div>
 
-                    {/* Mobile Departments */}
+                    {/* Mobile Business Units */}
                     {/* <div className="mt-6">
                       <h3 className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                        Departments
+                        Business Units
                       </h3>
                       <div className="space-y-1">
-                        {departments.map((dept) => (
+                        {businessUnits.map((unit) => (
                           <Link
-                            key={dept.path}
-                            to={dept.path}
+                            key={unit.path}
+                            to={unit.path}
                             onClick={() => setIsOpen(false)}
                             className={`block w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                              isActive(dept.path) ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                              isActive(unit.path) ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                             }`}
                           >
-                            {dept.name}
+                            {unit.name}
                           </Link>
                         ))}
                       </div>

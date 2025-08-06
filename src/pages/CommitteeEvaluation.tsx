@@ -473,37 +473,45 @@ const CommitteeEvaluation = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-4">
-                {[
-                  {
-                    author: 'Dr. Sarah Ahmed',
-                    role: 'Technical Committee',
-                    time: '2 hours ago',
-                    comment: 'Strong technical background and excellent problem-solving skills demonstrated during the technical assessment.',
-                    avatar: '/api/placeholder/32/32'
-                  },
-                  {
-                    author: 'Mr. Hassan El Fassi',
-                    role: 'Department Head',
-                    time: '4 hours ago',
-                    comment: 'Impressive experience in risk management. The candidate shows good understanding of regulatory requirements.',
-                    avatar: '/api/placeholder/32/32'
-                  }
-                ].map((comment, index) => (
-                  <div key={index} className="flex space-x-3 p-4 bg-muted rounded-lg">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={comment.avatar} />
-                      <AvatarFallback>{comment.author.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className="font-medium text-sm">{comment.author}</span>
-                        <Badge variant="outline" className="text-xs">{comment.role}</Badge>
-                        <span className="text-xs text-muted-foreground">{comment.time}</span>
-                      </div>
-                      <p className="text-sm">{comment.comment}</p>
-                    </div>
-                  </div>
-                ))}
+               {[
+  {
+    author: 'Dr Sally MABROUK',
+    role: 'Director  of the Office of Director General ',
+    time: '2h ago',
+    comment: 'Great profile!',
+    avatar: '/src/assets/dr-sally-mabrouk.png',
+  },
+  {
+    author: 'Dr. Ahmed Albanyan',
+    role: 'Director of the Center of Translation and Publishing',
+    time: '3h ago',
+    comment: 'Very experienced.',
+    avatar: '/src/assets/dr-ahmed-albanyan.webp',
+  },
+].map((comment, index) => (
+  <div key={index} className="flex space-x-3 p-4 bg-muted rounded-lg">
+    <Avatar className="h-12 w-12">
+      <AvatarImage src={comment.avatar} alt={comment.author} />
+      <AvatarFallback>
+        {comment.author
+          .split(' ')
+          .map((n) => n[0])
+          .join('')}
+      </AvatarFallback>
+    </Avatar>
+    <div className="flex-1">
+      <div className="flex items-center space-x-2 mb-1">
+        <span className="font-medium text-sm">{comment.author}</span>
+        <Badge variant="outline" className="text-xs">
+          {comment.role}
+        </Badge>
+        <span className="text-xs text-muted-foreground">{comment.time}</span>
+      </div>
+      <p className="text-sm">{comment.comment}</p>
+    </div>
+  </div>
+))}
+
               </div>
             </CardContent>
           </Card>

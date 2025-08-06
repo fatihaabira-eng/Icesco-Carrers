@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 
 const formSchema = z.object({
   jobTitle: z.string().min(1, 'Job title is required'),
-  department: z.string().min(1, 'Department is required'),
+  businessUnit: z.string().min(1, 'Business Unit is required'),
   reportingLine: z.string().min(1, 'Reporting line is required'),
   justification: z.string().min(50, 'Justification must be at least 50 characters'),
   responsibilities: z.string().min(100, 'Responsibilities must be at least 100 characters'),
@@ -53,7 +53,7 @@ const RecruitmentRequestForm = () => {
   });
 
   const steps = [
-    { number: 1, title: 'Basic Information', description: 'Job title, department, and reporting' },
+    { number: 1, title: 'Basic Information', description: 'Job title, business unit, and reporting' },
     { number: 2, title: 'Position Details', description: 'Justification and responsibilities' },
     { number: 3, title: 'Requirements', description: 'Skills and qualifications' },
     { number: 4, title: 'Contract & Budget', description: 'Contract type and budget details' },
@@ -192,14 +192,14 @@ const RecruitmentRequestForm = () => {
 
                   <FormField
                     control={form.control}
-                    name="department"
+                    name="businessUnit"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Department/Direction</FormLabel>
+                        <FormLabel>Business Unit/Direction</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select department" />
+                              <SelectValue placeholder="Select business unit" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -528,8 +528,8 @@ const RecruitmentRequestForm = () => {
                       <p className="text-muted-foreground">{form.watch('jobTitle')}</p>
                     </div>
                     <div>
-                      <h4 className="font-medium">Department</h4>
-                      <p className="text-muted-foreground">{form.watch('department')}</p>
+                      <h4 className="font-medium">Business Unit</h4>
+                      <p className="text-muted-foreground">{form.watch('businessUnit')}</p>
                     </div>
                     <div>
                       <h4 className="font-medium">Contract Type</h4>

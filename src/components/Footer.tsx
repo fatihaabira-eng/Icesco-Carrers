@@ -74,8 +74,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/departments" className="text-accent-foreground/80 hover:text-primary transition-colors">
-                  Departments
+                <Link to="/business-units" className="text-accent-foreground/80 hover:text-primary transition-colors">
+                  Business Units
                 </Link>
               </li>
               <li>
@@ -91,32 +91,32 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Departments */}
+          {/* Business Units */}
           <div className="space-y-4">
-            <h3 className="text-secondary font-semibold text-lg text-accent-foreground">Departments</h3>
+            <h3 className="text-secondary font-semibold text-lg text-accent-foreground">Business Units</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/departments/digital-transformation" className="text-accent-foreground/80 hover:text-primary transition-colors">
+                <Link to="/business-units/digital-transformation" className="text-accent-foreground/80 hover:text-primary transition-colors">
                   Digital Transformation
                 </Link>
               </li>
               <li>
-                <Link to="/departments/hr" className="text-accent-foreground/80 hover:text-primary transition-colors">
+                <Link to="/business-units/hr" className="text-accent-foreground/80 hover:text-primary transition-colors">
                   Human Resources
                 </Link>
               </li>
               <li>
-                <Link to="/departments/education" className="text-accent-foreground/80 hover:text-primary transition-colors">
+                <Link to="/business-units/education" className="text-accent-foreground/80 hover:text-primary transition-colors">
                   Education
                 </Link>
               </li>
               <li>
-                <Link to="/departments/science" className="text-accent-foreground/80 hover:text-primary transition-colors">
+                <Link to="/business-units/science" className="text-accent-foreground/80 hover:text-primary transition-colors">
                   Science & Technology
                 </Link>
               </li>
               <li>
-                <Link to="/departments/culture" className="text-accent-foreground/80 hover:text-primary transition-colors">
+                <Link to="/business-units/culture" className="text-accent-foreground/80 hover:text-primary transition-colors">
                   Culture & Heritage
                 </Link>
               </li>

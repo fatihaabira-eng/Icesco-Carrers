@@ -28,8 +28,8 @@ interface AnalyticsData {
     hires: number;
     conversionRate: number;
   }[];
-  departmentPerformance: {
-    department: string;
+  businessUnitPerformance: {
+    businessUnit: string;
     positions: number;
     filled: number;
     timeToFill: number;
@@ -61,11 +61,11 @@ const HRAnalytics: React.FC = () => {
       { source: 'Referrals', applications: 45, hires: 6, conversionRate: 13.3 },
       { source: 'Job Boards', applications: 120, hires: 9, conversionRate: 7.5 }
     ],
-    departmentPerformance: [
-      { department: 'Digital Transformation', positions: 8, filled: 6, timeToFill: 25, costPerHire: 5200 },
-      { department: 'Communications', positions: 5, filled: 4, timeToFill: 22, costPerHire: 4100 },
-      { department: 'Education', positions: 6, filled: 5, timeToFill: 30, costPerHire: 3800 },
-      { department: 'Finance', positions: 4, filled: 3, timeToFill: 28, costPerHire: 4500 }
+    businessUnitPerformance: [
+      { businessUnit: 'Digital Transformation', positions: 8, filled: 6, timeToFill: 25, costPerHire: 5200 },
+      { businessUnit: 'Communications', positions: 5, filled: 4, timeToFill: 22, costPerHire: 4100 },
+      { businessUnit: 'Education', positions: 6, filled: 5, timeToFill: 30, costPerHire: 3800 },
+      { businessUnit: 'Finance', positions: 4, filled: 3, timeToFill: 28, costPerHire: 4500 }
     ],
     monthlyTrends: [
       { month: 'Jan', applications: 45, interviews: 12, hires: 3 },
@@ -90,14 +90,14 @@ const HRAnalytics: React.FC = () => {
       value: `${analyticsData.timeToHire} days`,
       icon: Clock,
       description: 'Average time to fill positions',
-      trend: { value: -3, isPositive: true }
+      trend: { value: 3, isPositive: true }
     },
     {
       title: 'Cost per Hire',
       value: `$${analyticsData.costPerHire.toLocaleString()}`,
       icon: DollarSign,
       description: 'Average cost per successful hire',
-      trend: { value: -8, isPositive: true }
+      trend: { value: 8, isPositive: true }
     },
     {
       title: 'Quality of Hire',
@@ -140,7 +140,7 @@ const HRAnalytics: React.FC = () => {
           <SelectContent>
             <SelectItem value="overview">Overview</SelectItem>
             <SelectItem value="sources">Source Analysis</SelectItem>
-            <SelectItem value="departments">Department Performance</SelectItem>
+            <SelectItem value="businessUnits">Business Unit Performance</SelectItem>
             <SelectItem value="trends">Monthly Trends</SelectItem>
           </SelectContent>
         </Select>
@@ -190,10 +190,10 @@ const HRAnalytics: React.FC = () => {
         </div>
       </DashboardSection>
 
-      {/* Department Performance */}
+      {/* Business Unit Performance */}
       <DashboardSection
-        title="Department Performance"
-        description="Recruitment performance metrics by department"
+        title="Business Unit Performance"
+        description="Recruitment performance metrics by business unit"
         icon={Activity}
       >
         <Card>
@@ -202,7 +202,7 @@ const HRAnalytics: React.FC = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left p-4 font-medium">Department</th>
+                    <th className="text-left p-4 font-medium">Business Unit</th>
                     <th className="text-left p-4 font-medium">Positions</th>
                     <th className="text-left p-4 font-medium">Filled</th>
                     <th className="text-left p-4 font-medium">Fill Rate</th>
@@ -211,20 +211,20 @@ const HRAnalytics: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {analyticsData.departmentPerformance.map((dept, index) => {
-                    const fillRate = Math.round((dept.filled / dept.positions) * 100);
+                  {analyticsData.businessUnitPerformance.map((businessUnit, index) => {
+                    const fillRate = Math.round((businessUnit.filled / businessUnit.positions) * 100);
                     return (
                       <tr key={index} className="border-b hover:bg-muted/50">
-                        <td className="p-4 font-medium">{dept.department}</td>
-                        <td className="p-4">{dept.positions}</td>
-                        <td className="p-4">{dept.filled}</td>
+                        <td className="p-4 font-medium">{businessUnit.businessUnit}</td>
+                        <td className="p-4">{businessUnit.positions}</td>
+                        <td className="p-4">{businessUnit.filled}</td>
                         <td className="p-4">
                           <Badge className={getPerformanceColor(fillRate)}>
                             {fillRate}%
                           </Badge>
                         </td>
-                        <td className="p-4">{dept.timeToFill} days</td>
-                        <td className="p-4">${dept.costPerHire.toLocaleString()}</td>
+                        <td className="p-4">{businessUnit.timeToFill} days</td>
+                        <td className="p-4">${businessUnit.costPerHire.toLocaleString()}</td>
                       </tr>
                     );
                   })}

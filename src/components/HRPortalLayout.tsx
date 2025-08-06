@@ -39,16 +39,16 @@ const HRPortalLayout: React.FC<HRPortalLayoutProps> = ({ children }) => {
             <div className="flex items-center space-x-4">
               <SidebarTrigger />
               <div className="text-sm text-muted-foreground">
-                HR Management Portal
+                Manpower Management Portal
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
+              {/* <Button variant="ghost" size="icon">
                 <Bell className="h-4 w-4" />
-              </Button>
+              </Button> */}
               
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/api/placeholder/32/32" />
                   <AvatarFallback>
@@ -63,7 +63,7 @@ const HRPortalLayout: React.FC<HRPortalLayoutProps> = ({ children }) => {
 
               <Button variant="ghost" size="icon">
                 <Settings className="h-4 w-4" />
-              </Button>
+              </Button> */}
             </div>
           </div>
         </header>

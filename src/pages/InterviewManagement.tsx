@@ -28,7 +28,7 @@ import { format, addDays, startOfWeek, addWeeks } from 'date-fns';
 const InterviewManagement: React.FC = () => {
   const [selectedWeek, setSelectedWeek] = useState(0);
   const [filterStatus, setFilterStatus] = useState('all');
-  const [filterDepartment, setFilterDepartment] = useState('all');
+  const [filterBusinessUnit, setFilterBusinessUnit] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
   const currentWeek = addWeeks(startOfWeek(new Date()), selectedWeek);
@@ -53,7 +53,7 @@ const InterviewManagement: React.FC = () => {
       mode: 'video',
       location: 'Google Meet',
       status: 'scheduled',
-      department: 'Engineering',
+      businessUnit: 'Engineering',
       round: 'Technical Interview'
     },
     {
@@ -73,7 +73,7 @@ const InterviewManagement: React.FC = () => {
       mode: 'in-person',
       location: 'Conference Room A',
       status: 'confirmed',
-      department: 'Marketing',
+      businessUnit: 'Marketing',
       round: 'Final Interview'
     },
     {
@@ -94,7 +94,7 @@ const InterviewManagement: React.FC = () => {
       mode: 'video',
       location: 'Zoom Meeting',
       status: 'pending',
-      department: 'Education',
+      businessUnit: 'Education',
       round: 'HR Interview'
     },
     {
@@ -114,7 +114,7 @@ const InterviewManagement: React.FC = () => {
       mode: 'phone',
       location: 'Phone Call',
       status: 'completed',
-      department: 'Finance',
+      businessUnit: 'Finance',
       round: 'Screening Call'
     },
     {
@@ -173,9 +173,9 @@ const InterviewManagement: React.FC = () => {
     const matchesSearch = interview.candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          interview.candidate.position.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || interview.status === filterStatus;
-    const matchesDepartment = filterDepartment === 'all' || interview.department === filterDepartment;
+    const matchesBusinessUnit = filterBusinessUnit === 'all' || interview.businessUnit === filterBusinessUnit;
     
-    return matchesSearch && matchesStatus && matchesDepartment;
+    return matchesSearch && matchesStatus && matchesBusinessUnit;
   });
 
   const getWeeklyStats = () => {
@@ -201,7 +201,7 @@ const InterviewManagement: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Interview Management</h1>
           <p className="text-muted-foreground mt-1">
-            Manage and track all interview activities across departments
+            Manage and track all interview activities across business units
           </p>
         </div>
         
@@ -333,7 +333,7 @@ const InterviewManagement: React.FC = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={filterDepartment} onValueChange={setFilterDepartment}>
+              <Select value={filterBusinessUnit} onValueChange={setFilterBusinessUnit}>
                 <SelectTrigger className="w-40">
                   <Users className="h-4 w-4 mr-2" />
                   <SelectValue />
@@ -357,7 +357,7 @@ const InterviewManagement: React.FC = () => {
         <TabsList>
           <TabsTrigger value="list">List View</TabsTrigger>
           <TabsTrigger value="calendar">Calendar View</TabsTrigger>
-          <TabsTrigger value="department">By Department</TabsTrigger>
+          <TabsTrigger value="businessUnit">By Business Unit</TabsTrigger>
         </TabsList>
 
         <TabsContent value="list">
@@ -400,7 +400,7 @@ const InterviewManagement: React.FC = () => {
                       <TableCell>
                         <div>
                           <p className="font-medium text-sm">{interview.candidate.position}</p>
-                          <p className="text-xs text-muted-foreground">{interview.department}</p>
+                          <p className="text-xs text-muted-foreground">{interview.businessUnit}</p>
                         </div>
                       </TableCell>
                       
@@ -482,21 +482,21 @@ const InterviewManagement: React.FC = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="department">
+        <TabsContent value="businessUnit">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {['Engineering', 'Marketing', 'Education', 'Finance'].map(dept => {
-              const deptInterviews = filteredInterviews.filter(i => i.department === dept);
+            {['Engineering', 'Marketing', 'Education', 'Finance'].map(businessUnit => {
+              const businessUnitInterviews = filteredInterviews.filter(i => i.businessUnit === businessUnit);
               return (
-                <Card key={dept}>
+                <Card key={businessUnit}>
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
-                      <span>{dept}</span>
-                      <Badge variant="outline">{deptInterviews.length} interviews</Badge>
+                      <span>{businessUnit}</span>
+                      <Badge variant="outline">{businessUnitInterviews.length} interviews</Badge>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {deptInterviews.slice(0, 3).map(interview => (
+                      {businessUnitInterviews.slice(0, 3).map(interview => (
                         <div key={interview.id} className="flex items-center gap-3 p-3 border rounded-lg">
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={interview.candidate.avatar} />
@@ -515,9 +515,9 @@ const InterviewManagement: React.FC = () => {
                           </Badge>
                         </div>
                       ))}
-                      {deptInterviews.length > 3 && (
+                      {businessUnitInterviews.length > 3 && (
                         <p className="text-sm text-muted-foreground text-center">
-                          +{deptInterviews.length - 3} more interviews
+                          +{businessUnitInterviews.length - 3} more interviews
                         </p>
                       )}
                     </div>

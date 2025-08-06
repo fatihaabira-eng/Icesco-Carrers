@@ -135,25 +135,25 @@ const HRInterviews: React.FC = () => {
 
   const kpiCards = [
     {
-      title: 'Total Interviews',
+      title: 'Total Scheduled Interviews',
       value: totalInterviews,
       icon: Calendar,
       description: 'All scheduled interviews'
     },
     {
-      title: 'Scheduled Today',
+      title: 'Interviewed candidates',
       value: scheduledInterviews,
       icon: Clock,
-      description: 'Interviews scheduled'
+      description: 'Number of candidates interviewed'
     },
     {
-      title: 'Completed',
+      title: 'Total Hours for Interviews',
       value: completedInterviews,
       icon: CheckCircle,
-      description: 'Interviews completed'
+      description: 'Number of completed interviews'
     },
     {
-      title: 'Success Rate',
+      title: 'Total Selected',
       value: `${successRate}%`,
       icon: Target,
       description: 'Candidates passed'

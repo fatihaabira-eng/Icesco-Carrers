@@ -34,7 +34,7 @@ import {
 interface JobPosition {
   id: string;
   title: string;
-  department: string;
+  businessUnit: string;
   applied: number;
   shortlist: number;
   status: 'Open' | 'In Progress' | 'Closed';
@@ -86,16 +86,16 @@ const organizationUnits = [
   { name: "Center of Translation and Publishing", type: "center" },
   { name: "Director General Office", type: "support unit" },
   { name: "General Secretariat of National Commissions and Conferences", type: "support unit" },
-  { name: "Department of legal affairs and international standards", type: "support unit" },
+  { name: "Business Unit of legal affairs and international standards", type: "support unit" },
   { name: "Deputy Director General for Programs", type: "support unit" },
   { name: "Federation of Universities of the Islamic World", type: "support unit" },
-  { name: "Department of Administrative Operations", type: "support unit" },
-  { name: "Department of Digital Transformation", type: "support unit" },
-  { name: "Department of Financial Operations", type: "support unit" },
-  { name: "Internal Audit Department", type: "support unit" },
-  { name: "Department of Public Relations and Protocol", type: "support unit" },
-  { name: "Department of Design and Printing", type: "support unit" },
-  { name: "Department of Human Capital Management", type: "support unit" },
+  { name: "Business Unit of Administrative Operations", type: "support unit" },
+  { name: "Business Unit of Digital Transformation", type: "support unit" },
+  { name: "Business Unit of Financial Operations", type: "support unit" },
+  { name: "Internal Audit Business Unit", type: "support unit" },
+  { name: "Business Unit of Public Relations and Protocol", type: "support unit" },
+  { name: "Business Unit of Design and Printing", type: "support unit" },
+  { name: "Business Unit of Human Capital Management", type: "support unit" },
 ];
 
 const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => {
@@ -105,14 +105,14 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
   const [activeTab, setActiveTab] = useState(userRole === 'hr' ? 'sectors' : 'positions');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
-  const [departmentFilter, setDepartmentFilter] = useState('all');
+  const [businessUnitFilter, setBusinessUnitFilter] = useState('all');
 
   // Mock data
   const mockPositions: JobPosition[] = [
     {
       id: 'POS-001',
       title: 'Senior Education Specialist',
-      department: 'Education Sector',
+      businessUnit: 'Education Sector',
       applied: 45,
       shortlist: 12,
       status: 'Open',
@@ -123,7 +123,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
     {
       id: 'POS-002',
       title: 'Digital Transformation Manager',
-      department: 'Department of Digital Transformation',
+      businessUnit: 'Business Unit of Digital Transformation',
       applied: 32,
       shortlist: 8,
       status: 'In Progress',
@@ -134,7 +134,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
     {
       id: 'POS-003',
       title: 'Research Coordinator',
-      department: 'Center of Foresight and Artificial Intelligence',
+      businessUnit: 'Center of Foresight and Artificial Intelligence',
       applied: 28,
       shortlist: 15,
       status: 'Open',
@@ -202,7 +202,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
         ];
       case 'director':
         return [
-          { title: 'Department Positions', value: 8, icon: Briefcase, color: 'text-blue-600' },
+          { title: 'Business Unit Positions', value: 8, icon: Briefcase, color: 'text-blue-600' },
           { title: 'Applications', value: 124, icon: Users, color: 'text-green-600' },
           { title: 'Shortlisted', value: 23, icon: UserCheck, color: 'text-purple-600' },
           { title: 'Interviews Pending', value: 5, icon: Calendar, color: 'text-orange-600' }
@@ -233,7 +233,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
     // Handle interview acceptance/decline logic
   };
 
-  const getDepartmentsByType = (type: string) => {
+  const getBusinessUnitsByType = (type: string) => {
     return organizationUnits
       .filter(unit => unit.type === type)
       .map(unit => unit.name);
@@ -241,7 +241,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
 
   const filteredPositions = mockPositions.filter(position => {
     const matchesSearch = position.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         position.department.toLowerCase().includes(searchTerm.toLowerCase());
+                         position.businessUnit.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesFilter = userRole === 'hr' ? 
       (filterValue === 'all' || 
@@ -249,15 +249,15 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
        position.status.toLowerCase() === filterValue.toLowerCase()) : 
       true;
     
-    const matchesDepartment = departmentFilter === 'all' || 
-                            position.department === departmentFilter;
+      const matchesBusinessUnit = businessUnitFilter === 'all' ||
+    position.businessUnit === businessUnitFilter;
     
     if (userRole === 'hr' && activeTab !== 'positions') {
-      return matchesSearch && matchesFilter && matchesDepartment && 
+      return matchesSearch && matchesFilter && matchesBusinessUnit && 
              position.type === activeTab.slice(0, -1) as any;
     }
     
-    return matchesSearch && matchesFilter && matchesDepartment;
+    return matchesSearch && matchesFilter && matchesBusinessUnit;
   });
 
   const renderPositionsTable = () => (
@@ -287,16 +287,16 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
                   <SelectItem value="closed">Closed</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <Select value={businessUnitFilter} onValueChange={setBusinessUnitFilter}>
                 <SelectTrigger className="w-64">
                   <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Filter by department..." />
+                  <SelectValue placeholder="Filter by business unit..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All {activeTab.slice(0, -1)}s</SelectItem>
-                  {getDepartmentsByType(activeTab.slice(0, -1)).map(department => (
-                    <SelectItem key={department} value={department}>
-                      {department}
+                  {getBusinessUnitsByType(activeTab.slice(0, -1)).map(businessUnit => (
+                    <SelectItem key={businessUnit} value={businessUnit}>
+                      {businessUnit}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -326,7 +326,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
               <TableCell>
                 <div>
                   <p className="font-medium">{position.title}</p>
-                  <p className="text-sm text-muted-foreground">{position.department}</p>
+                                          <p className="text-sm text-muted-foreground">{position.businessUnit}</p>
                 </div>
               </TableCell>
               <TableCell>{position.applied}</TableCell>
@@ -365,7 +365,7 @@ const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ userRole }) => 
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold">{selectedJob.title}</h3>
-            <p className="text-muted-foreground">{selectedJob.department}</p>
+                              <p className="text-muted-foreground">{selectedJob.businessUnit}</p>
           </div>
           <Button variant="outline" onClick={() => setSelectedJob(null)}>
             Back to Positions

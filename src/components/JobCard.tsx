@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"; // ✅ Add this import
 interface JobCardProps {
   id: string;
   title: string;
-  department: string;
+  businessUnit: string;
   location: string;
   type: string;
   experience: string;
@@ -19,7 +19,7 @@ interface JobCardProps {
 export default function JobCard({
   id,
   title,
-  department,
+  businessUnit,
   location,
   type,
   experience,
@@ -35,7 +35,7 @@ export default function JobCard({
         <h3 className="font-semibold text-lg text-card-foreground group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <p className="text-primary font-medium">{department}</p>
+        <p className="text-primary font-medium">{businessUnit}</p>
       </div>
       {urgent && (
         <Badge className="bg-secondary text-secondary-foreground">

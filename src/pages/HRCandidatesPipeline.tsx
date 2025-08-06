@@ -3,13 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
   Search, 
   Filter,
-  Plus,
   Eye,
   MessageSquare,
   Calendar,
@@ -25,12 +23,13 @@ import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
 import CandidateProfile from '@/components/CandidateProfile';
+import CandidatePipeline from '@/components/CandidatePipeline';
 
 interface Candidate {
   id: string;
   name: string;
   position: string;
-  businessUnit: string;
+  department: string;
   status: 'new' | 'under_review' | 'interview' | 'offer' | 'hired' | 'rejected';
   score: number;
   appliedDate: string;
@@ -57,20 +56,10 @@ interface Candidate {
   };
 }
 
-const stages = [
-  { id: 'new', title: 'New Applications', color: 'bg-blue-100' },
-  { id: 'under_review', title: 'Under Review', color: 'bg-yellow-100' },
-  { id: 'interview', title: 'Interview', color: 'bg-purple-100' },
-  { id: 'offer', title: 'Offer', color: 'bg-orange-100' },
-  { id: 'hired', title: 'Hired', color: 'bg-green-100' },
-  { id: 'rejected', title: 'Rejected', color: 'bg-red-100' },
-] as const;
-
-const HRCandidates: React.FC = () => {
+const HRCandidatesPipeline: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState('2024');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedCandidate, setExpandedCandidate] = useState<string | null>(null);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
 
   // Mock candidate data
@@ -79,7 +68,7 @@ const HRCandidates: React.FC = () => {
       id: 'CAND-001',
       name: 'Ahmed Hassan El-Masri',
       position: 'Senior Software Engineer',
-      businessUnit: 'Digital Transformation',
+      department: 'Digital Transformation',
       status: 'interview',
       score: 95,
       appliedDate: '2024-01-15',
@@ -124,7 +113,7 @@ const HRCandidates: React.FC = () => {
       id: 'CAND-002',
       name: 'Fatima Al-Zahra Benali',
       position: 'Marketing Manager',
-      businessUnit: 'Communications',
+      department: 'Communications',
       status: 'offer',
       score: 92,
       appliedDate: '2024-01-14',
@@ -168,7 +157,7 @@ const HRCandidates: React.FC = () => {
       id: 'CAND-003',
       name: 'Omar Khalil Al-Rashid',
       position: 'Education Program Manager',
-      businessUnit: 'Education',
+      department: 'Education',
       status: 'hired',
       score: 89,
       appliedDate: '2024-01-13',
@@ -213,7 +202,7 @@ const HRCandidates: React.FC = () => {
       id: 'CAND-004',
       name: 'Sarah Johnson',
       position: 'Financial Analyst',
-      businessUnit: 'Finance',
+      department: 'Finance',
       status: 'new',
       score: 87,
       appliedDate: '2024-01-20',
@@ -252,6 +241,51 @@ const HRCandidates: React.FC = () => {
         languages: ['English (Native)', 'Spanish (Intermediate)'],
         parsedDate: '2024-01-20T09:45:00Z'
       }
+    },
+    {
+      id: 'CAND-005',
+      name: 'Mohammed Al-Zahra',
+      position: 'Research Coordinator',
+      department: 'Research',
+      status: 'under_review',
+      score: 91,
+      appliedDate: '2024-01-18',
+      email: 'mohammed.alzahra@email.com',
+      phone: '+966-5-1234-5678',
+      location: 'Riyadh, Saudi Arabia',
+      nationality: 'Saudi',
+      experience: '7 years',
+      skills: ['Research', 'Data Analysis', 'Project Management'],
+      education: 'PhD Research Methods - King Saud University',
+      year: 2024,
+      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+      aiScreeningScore: 87,
+      aiRecommendations: [
+        'Strong research background',
+        'Excellent analytical skills',
+        'Good project management experience',
+        'Relevant international experience'
+      ],
+      resumeData: {
+        extractedSkills: ['Research Methods', 'Data Analysis', 'Project Management', 'Statistical Analysis', 'Report Writing'],
+        workExperience: [
+          'Senior Research Coordinator at Research Institute (2020-2024)',
+          'Research Analyst at University (2018-2020)',
+          'Research Assistant at NGO (2016-2018)'
+        ],
+        education: [
+          'PhD Research Methods - King Saud University (2018)',
+          'Master Statistics - American University (2016)',
+          'Bachelor Mathematics - King Fahd University (2014)'
+        ],
+        certifications: [
+          'Project Management Professional (PMP)',
+          'Statistical Analysis Certification',
+          'Research Ethics Certification'
+        ],
+        languages: ['Arabic (Native)', 'English (Fluent)', 'French (Intermediate)'],
+        parsedDate: '2024-01-18T14:30:00Z'
+      }
     }
   ];
 
@@ -264,7 +298,7 @@ const HRCandidates: React.FC = () => {
   const filteredCandidates = filterDataByDate(candidates).filter(candidate =>
     candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     candidate.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    candidate.businessUnit.toLowerCase().includes(searchTerm.toLowerCase())
+    candidate.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Calculate KPIs
@@ -300,34 +334,6 @@ const HRCandidates: React.FC = () => {
     }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'interview':
-        return 'bg-blue-100 text-blue-800';
-      case 'offer':
-        return 'bg-green-100 text-green-800';
-      case 'hired':
-        return 'bg-green-100 text-green-800';
-      case 'rejected':
-        return 'bg-red-100 text-red-800';
-      case 'new':
-        return 'bg-gray-100 text-gray-800';
-      case 'under_review':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const handleStageChange = (candidateId: string, newStatus: Candidate['status']) => {
-    // In a real app, this would update the backend
-    console.log(`Updating candidate ${candidateId} to status ${newStatus}`);
-  };
-
-  const toggleExpanded = (candidateId: string) => {
-    setExpandedCandidate(expandedCandidate === candidateId ? null : candidateId);
-  };
-
   const handleViewProfile = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
   };
@@ -355,8 +361,8 @@ const HRCandidates: React.FC = () => {
 
       {/* Header */}
       <DashboardHeader
-        title="Candidates"
-        description="Manage and track candidate applications through the recruitment pipeline"
+        title="Candidate Pipeline"
+        description="Visual pipeline view of candidates through the recruitment process"
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         dateRange={dateRange}
@@ -365,17 +371,17 @@ const HRCandidates: React.FC = () => {
 
       {/* KPI Cards */}
       <DashboardSection
-        title="Candidate Overview"
-        description="Key metrics for candidate management and recruitment pipeline"
+        title="Pipeline Overview"
+        description="Key metrics for candidate pipeline management"
         icon={Users}
       >
         <KPICards cards={kpiCards} />
       </DashboardSection>
 
-      {/* Candidates Management */}
+      {/* Pipeline View */}
       <DashboardSection
-        title="Candidate Management"
-        description="Track candidate progress through the recruitment pipeline"
+        title="Pipeline Management"
+        description="Drag and drop candidates through recruitment stages"
         icon={Users}
       >
         {/* Search and Filters */}
@@ -395,155 +401,15 @@ const HRCandidates: React.FC = () => {
           </Button>
         </div>
 
-        {/* Candidates Table */}
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[50px]"></TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Business Unit</TableHead>
-                  <TableHead>Applied Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Score</TableHead>
-                  <TableHead>Experience</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCandidates.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground">
-                      No candidates found.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredCandidates.map((candidate) => (
-                    <React.Fragment key={candidate.id}>
-                      <TableRow>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleExpanded(candidate.id)}
-                            aria-label={expandedCandidate === candidate.id ? 'Collapse details' : 'Expand details'}
-                          >
-                            {expandedCandidate === candidate.id ? (
-                              <ChevronUp className="h-4 w-4" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                              {candidate.avatar ? (
-                                <img
-                                  src={candidate.avatar}
-                                  alt={candidate.name}
-                                  className="w-10 h-10 rounded-full"
-                                />
-                              ) : (
-                                <span className="text-sm font-medium">
-                                  {candidate.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                              )}
-                            </div>
-                            <div>
-                              <div className="font-medium">{candidate.name}</div>
-                              <div className="text-sm text-muted-foreground">{candidate.email}</div>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="font-medium">{candidate.position}</TableCell>
-                        <TableCell>{candidate.businessUnit}</TableCell>
-                        <TableCell>{format(new Date(candidate.appliedDate), 'PPP')}</TableCell>
-                        <TableCell>
-                          <Select
-                            value={candidate.status}
-                            onValueChange={(value) => handleStageChange(candidate.id, value as Candidate['status'])}
-                          >
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {stages.map((stage) => (
-                                <SelectItem key={stage.id} value={stage.id}>
-                                  {stage.title}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getStatusColor(candidate.status)}>
-                            {candidate.score}%
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{candidate.experience}</TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              onClick={() => handleViewProfile(candidate)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                              <MessageSquare className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon">
-                              <Calendar className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                      {expandedCandidate === candidate.id && (
-                        <TableRow>
-                          <TableCell colSpan={9} className="p-0">
-                            <div className="p-4 bg-muted/20">
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div>
-                                  <h4 className="font-semibold mb-2">Contact Information</h4>
-                                  <div className="space-y-1 text-sm">
-                                    <div><strong>Email:</strong> {candidate.email}</div>
-                                    <div><strong>Phone:</strong> {candidate.phone}</div>
-                                    <div><strong>Nationality:</strong> {candidate.nationality}</div>
-                                  </div>
-                                </div>
-                                <div>
-                                  <h4 className="font-semibold mb-2">Education</h4>
-                                  <div className="text-sm">{candidate.education}</div>
-                                </div>
-                                <div>
-                                  <h4 className="font-semibold mb-2">Skills</h4>
-                                  <div className="flex flex-wrap gap-1">
-                                    {candidate.skills.map((skill, index) => (
-                                      <Badge key={index} variant="secondary" className="text-xs">
-                                        {skill}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </React.Fragment>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        {/* Pipeline Component */}
+        <CandidatePipeline
+          candidates={filteredCandidates}
+          onViewProfile={handleViewProfile}
+          onStatusChange={handleStatusChange}
+        />
       </DashboardSection>
     </div>
   );
 };
 
-export default HRCandidates; 
+export default HRCandidatesPipeline; 

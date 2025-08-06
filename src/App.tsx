@@ -19,7 +19,7 @@ import CandidateDashboard from "./pages/CandidateProfile";
 import AuthenticationPage from "./pages/auth";
 import MultiStepForm from "./pages/apply";
 import CandidateProcess from "./pages/RecrutmentProcess";
-import ManpowerDashboard from "./pages/ManPowerDashboard";
+import ManpowerDashboard from "./pages/ManpowerDashboard";
 import ManpowerPortal from "./pages/ManpowerPortal";
 import ManpowerAuth from "./pages/ManpowerAuth";
 import RecruitmentRequestForm from "./pages/RecruitmentRequestForm";
@@ -41,6 +41,19 @@ import HRJobOffers from "./pages/HRJobOffers";
 import HRDepartments from "./pages/HRDepartments";
 import BUInterviews from "./pages/BUInterviews";
 import BUCandidates from "./pages/BUCandidates";
+
+import HRCandidatesPipeline from "./pages/HRCandidatesPipeline";
+import ScheduleInterview from "./pages/ScheduleInterview";
+import InterviewManagement from "./pages/InterviewManagement";
+import JobMatchingModule from "./components/JobMatchingModule";
+import CandidateAssessmentScore from "./components/CandidateAssessmentScore";
+import BUManpowerManagement from "./components/BUManpowerManagement";
+
+// Committee-specific components
+import CommitteePortalLayout from "./components/CommitteePortalLayout";
+import CommitteeDashboard from "./pages/CommitteeDashboard";
+import CommitteeInterviews from "./pages/CommitteeInterviews";
+import CommitteeCandidates from "./pages/CommitteeCandidates";
 
 const queryClient = new QueryClient();
 
@@ -64,7 +77,7 @@ const ManpowerRoleRedirect = () => {
   }
   
   switch (user.role) {
-    case 'hr':
+    case 'recruitment':
       return <Navigate to="/manpower/hr" replace />;
     case 'committee':
       return <Navigate to="/manpower/committee" replace />;
@@ -137,7 +150,7 @@ const AppContent = () => {
           <Route path="/about" element={<About />} />
           <Route path="/record" element={<Record />} />
           <Route path="/opportunities" element={<Opportunities />} />
-          <Route path="/departments/:department" element={<DepartmentPage />} />
+          <Route path="/business-units/:businessUnit" element={<DepartmentPage />} />
           <Route path="/manpower-dashboard" element={<ManpowerDashboard />} />
           <Route path="/recruitment-request" element={<RecruitmentRequestForm />} />
           
@@ -208,11 +221,64 @@ const AppContent = () => {
             } 
           />
           <Route 
-            path="/manpower/hr/departments" 
+            path="/manpower/hr/assessment-scores" 
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
-                  <HRDepartments />
+                  <CandidateAssessmentScore />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/bu-manpower" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <BUManpowerManagement />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+
+          
+          {/* Additional HR Routes for Sub-items */}
+          <Route 
+            path="/manpower/hr/candidates/pipeline" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <HRCandidatesPipeline />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/interviews/schedule" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <ScheduleInterview />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/interviews/management" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <InterviewManagement />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/hr/candidates/matching" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <JobMatchingModule />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
             } 
@@ -225,12 +291,20 @@ const AppContent = () => {
             path="/manpower/committee" 
             element={
               <ProtectedManpowerRoute>
-                <ManpowerPortal defaultRole="committee" />
+                <CommitteePortalLayout />
               </ProtectedManpowerRoute>
             } 
-          />
+          >
+            <Route index element={<CommitteeDashboard />} />
+            <Route path="interviews" element={<CommitteeInterviews />} />
+            <Route path="candidates" element={<CommitteeCandidates />} />
+            <Route path="*" element={<div style={{ padding: '20px', backgroundColor: 'lightblue', border: '2px solid blue' }}>
+              <h2>Committee Fallback Route Hit</h2>
+              <p>This means the route is working but no specific route matched.</p>
+            </div>} />
+          </Route>
           <Route 
-            path="/manpower/director" 
+            path="/manpower/bu" 
             element={
               <ProtectedManpowerRoute>
                 <BUPortalLayout>

@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import ScheduleInterview from '@/pages/ScheduleInterview';
 import { 
   Eye, 
   Mail, 
@@ -45,7 +46,7 @@ interface CandidateProfileProps {
     phone: string;
     location: string;
     position: string;
-    department: string;
+    businessUnit: string;
     status: 'new' | 'under_review' | 'interview' | 'offer' | 'hired' | 'rejected' | 'declined';
     score: number;
     appliedDate: string;
@@ -80,6 +81,7 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectionDialog, setShowRejectionDialog] = useState(false);
+  const [showScheduleInterview, setShowScheduleInterview] = useState(false);
 
   const phases = [
     { id: 'new', title: 'New', color: 'bg-blue-100 text-blue-800', nextPhase: 'under_review' },
@@ -174,8 +176,7 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
         console.log('Sending mail to:', candidate.email);
         break;
       case 'schedule_interview':
-        // Handle schedule interview
-        console.log('Scheduling interview for:', candidate.name);
+        setShowScheduleInterview(true);
         break;
       case 'send_offer':
         onStatusChange(candidate.id, 'offer');
@@ -247,7 +248,7 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
             </Avatar>
             <div>
               <h2 className="text-2xl font-bold">{candidate.name}</h2>
-              <p className="text-muted-foreground">{candidate.position} • {candidate.department}</p>
+                              <p className="text-muted-foreground">{candidate.position} • {candidate.businessUnit}</p>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
@@ -296,7 +297,7 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Education</label>
+                    <label className="text-sm font-medium text-muted-foreground">University</label>
                     <p className="text-sm">{candidate.education}</p>
                   </div>
 
@@ -564,42 +565,59 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
         </div>
       </div>
 
-      {/* Rejection Reason Dialog */}
-      <Dialog open={showRejectionDialog} onOpenChange={setShowRejectionDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reject Candidate</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="rejection-reason">Reason for Rejection</Label>
-              <select
-                id="rejection-reason"
-                className="w-full mt-1 p-2 border rounded-md"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-              >
-                <option value="">Select a reason...</option>
-                {rejectionReasons.map((reason) => (
-                  <option key={reason} value={reason}>
-                    {reason}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setShowRejectionDialog(false)}>
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleRejectWithReason}>
-                Reject Candidate
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-};
+             {/* Rejection Reason Dialog */}
+       <Dialog open={showRejectionDialog} onOpenChange={setShowRejectionDialog}>
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Reject Candidate</DialogTitle>
+           </DialogHeader>
+           <div className="space-y-4">
+             <div>
+               <Label htmlFor="rejection-reason">Reason for Rejection</Label>
+               <select
+                 id="rejection-reason"
+                 className="w-full mt-1 p-2 border rounded-md"
+                 value={rejectionReason}
+                 onChange={(e) => setRejectionReason(e.target.value)}
+               >
+                 <option value="">Select a reason...</option>
+                 {rejectionReasons.map((reason) => (
+                   <option key={reason} value={reason}>
+                     {reason}
+                   </option>
+                 ))}
+               </select>
+             </div>
+             <div className="flex justify-end space-x-2">
+               <Button variant="outline" onClick={() => setShowRejectionDialog(false)}>
+                 Cancel
+               </Button>
+               <Button variant="destructive" onClick={handleRejectWithReason}>
+                 Reject Candidate
+               </Button>
+             </div>
+           </div>
+         </DialogContent>
+       </Dialog>
+
+       {/* Schedule Interview Modal */}
+       {showScheduleInterview && (
+         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+           <div className="bg-background rounded-lg shadow-lg w-full max-w-6xl max-h-[95vh] overflow-hidden">
+             <div className="flex items-center justify-between p-6 border-b">
+               <h2 className="text-xl font-semibold">Schedule Interview for {candidate.name}</h2>
+               <Button variant="ghost" size="icon" onClick={() => setShowScheduleInterview(false)}>
+                 <XCircle className="h-5 w-5" />
+               </Button>
+             </div>
+             <div className="overflow-y-auto max-h-[calc(95vh-120px)]">
+               <ScheduleInterview />
+             </div>
+           </div>
+         </div>
+       )}
+     </div>
+   );
+ };
 
 export default CandidateProfile;

@@ -104,8 +104,8 @@ const ManpowerAuth = () => {
               <p className="font-medium text-foreground">Demo Credentials:</p>
               <div className="space-y-1 text-muted-foreground">
                 <p><strong>HR:</strong> hr@icesco.org</p>
-                <p><strong>Committee:</strong> naoufal.chaouqi@icesco.org</p>
-                <p><strong>Business Unit:</strong> sally.mabrouk@icesco.org</p>
+                <p><strong>Business Unit:</strong> naoufal.chaouqi@icesco.org</p>
+                <p><strong>Committee:</strong> sally.mabrouk@icesco.org</p>
                 <p><strong>Password:</strong> 123456 (for all accounts)</p>
               </div>
             </div>

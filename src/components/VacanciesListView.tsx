@@ -53,7 +53,7 @@ const mockVacancies = [
     id: 'JOB-3',
     reference: 'REF-2025-003',
     jobTitle: 'Financial Analyst',
-    businessUnit: 'Finance Department',
+    businessUnit: 'Finance',
     location: 'Marrakech, Morocco',
     closingDate: '2025-10-01T00:00:00Z',
     publishedDate: '2025-08-03T00:00:00Z',
