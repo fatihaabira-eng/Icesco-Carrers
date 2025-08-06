@@ -29,13 +29,18 @@ import VacanciesListView from "./components/VacanciesListView";
 
 // New HR-specific components
 import HRPortalLayout from "./components/HRPortalLayout";
+import BUPortalLayout from "./components/BUPortalLayout";
 import HRDashboard from "./pages/HRDashboard";
+import BUDashboard from "./pages/BUDashboard";
+import BUOffers from "./pages/BUOffers";
 import HRAnalytics from "./pages/HRAnalytics";
 import HRCandidates from "./pages/HRCandidates";
 import HRResumeLibrary from "./pages/HRResumeLibrary";
 import HRInterviews from "./pages/HRInterviews";
 import HRJobOffers from "./pages/HRJobOffers";
 import HRDepartments from "./pages/HRDepartments";
+import BUInterviews from "./pages/BUInterviews";
+import BUCandidates from "./pages/BUCandidates";
 
 const queryClient = new QueryClient();
 
@@ -124,6 +129,7 @@ const AppContent = () => {
             path="/auth"
             element={<AuthenticationPage onLoginSuccess={handleLoginSuccess} />}
           />
+          <Route path="/offer/:id" element={<OfferDetailPage />} />
           <Route path="/details" element={<OfferDetailPage />} />
           <Route path="/apply" element={<MultiStepForm />} />
           <Route path="/steps" element={<MultiStepForm />} />
@@ -227,7 +233,39 @@ const AppContent = () => {
             path="/manpower/director" 
             element={
               <ProtectedManpowerRoute>
-                <ManpowerPortal defaultRole="director" />
+                <BUPortalLayout>
+                  <BUDashboard />
+                </BUPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+            <Route 
+            path="/manpower/director/interviews" 
+            element={
+              <ProtectedManpowerRoute>
+                <BUPortalLayout>
+                  <BUInterviews/>
+                </BUPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+          <Route 
+            path="/manpower/director/candidates" 
+            element={
+              <ProtectedManpowerRoute>
+                <BUPortalLayout>
+                  <BUCandidates/>
+                </BUPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+            <Route 
+            path="/manpower/director/offers" 
+            element={
+              <ProtectedManpowerRoute>
+                <BUPortalLayout>
+                  <BUOffers/>
+                </BUPortalLayout>
               </ProtectedManpowerRoute>
             } 
           />

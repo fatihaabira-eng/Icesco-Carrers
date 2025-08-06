@@ -10,7 +10,7 @@ import annonce from "@/imgs/annonce-ang.png";
 import sis from "@/imgs/sis.png"; 
 import map1 from "@/imgs/map1.png"; 
 import val from "@/imgs/val.png"; 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface HexagonIconProps {
   icon: React.ReactNode;
@@ -39,6 +39,7 @@ export default function JobDetailPage() {
   const mainRef = useRef(null);
   const valuesRef = useRef(null);
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     // GSAP animation for the entire page sections
@@ -110,7 +111,7 @@ export default function JobDetailPage() {
         </div>
         {/* Apply Button */}
         <Button
-          onClick={() => navigate("/apply")}
+          onClick={() => navigate(`/apply?offre_id=${id}`)}
           className="bg-[#008080] hover:bg-[#008080]/90 text-white mt-4 w-full"
         >
           Apply Now
