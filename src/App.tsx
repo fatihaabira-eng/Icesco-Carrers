@@ -55,6 +55,7 @@ import CommitteePortalLayout from "./components/CommitteePortalLayout";
 import CommitteeDashboard from "./pages/CommitteeDashboard";
 import CommitteeInterviews from "./pages/CommitteeInterviews";
 import CommitteeCandidates from "./pages/CommitteeCandidates";
+import CareerProgram from "./components/CareerProgram";
 
 const queryClient = new QueryClient();
 
@@ -150,6 +151,7 @@ const AppContent = () => {
           <Route path="/process" element={<CandidateProcess />} />
           <Route path="/about" element={<About />} />
           <Route path="/record" element={<Record />} />
+          <Route path="/programs" element={<CareerProgram />} />
           <Route path="/opportunities" element={<Opportunities />} />
           <Route path="/business-units/:businessUnit" element={<DepartmentPage />} />
           <Route path="/manpower-dashboard" element={<ManpowerDashboard />} />

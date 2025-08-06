@@ -85,7 +85,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Life in ICESCO", path: "/about" },
-    { name: "Opportunities", path: "/opportunities" },
+    { name: "Opportunities", path: "/programs" },
   ]
 
   return (
@@ -142,9 +142,9 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
             </Link>
             
             <Link 
-              to="/opportunities" 
+              to="/programs" 
               className={`font-medium font-title transition-colors hover:text-primary ${
-                isActive("/opportunities") ? "text-primary border-b-2 border-primary" : "text-gray-700"
+                isActive("/programs") ? "text-primary border-b-2 border-primary" : "text-gray-700"
               }`}
             >
               Opportunities

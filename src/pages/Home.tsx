@@ -23,7 +23,8 @@ import {
   CheckCircle,
   Briefcase,
   GraduationCap,
-  TrendingUp
+  TrendingUp,
+  Lightbulb
 } from "lucide-react";
 
 // Mock data for featured jobs
@@ -111,25 +112,28 @@ const benefits = [
 
 const careerPaths = [
   {
-    title: "Graduate & Internship Programs",
-    description: "Kickstart your career with structured programs designed for recent graduates and students.",
+    id: "education",
+    title: " Youth Programs",
+    description:
+      "Empowering young leaders through peacebuilding and professional development opportunities.Youth Peace Ambassador Program (YPA) / Youth Professionals Program (YPP).",
     icon: GraduationCap,
-    duration: "6-12 months",
-    openings: "15 positions"
+    color: "bg-blue-500"
   },
   {
-    title: "Professional Development",
-    description: "Advance your expertise with leadership training, cross-cultural assignments, and skill development.",
-    icon: TrendingUp,
-    duration: "Ongoing",
-    openings: "Multiple tracks"
+    id: "science",
+    title: "Full-Time Positions",
+    description:
+      "Fostering your career innovation to address global challenges and opportunities.",
+    icon: Lightbulb,
+    color: "bg-green-500"
   },
   {
-    title: "Leadership Tracks",
-    description: "Shape the future of ICESCO through strategic leadership roles and executive development programs.",
-    icon: Briefcase,
-    duration: "2-3 years",
-    openings: "Senior level"
+    id: "culture",
+    title: " Internship Program",
+    description:
+      "Preserving, promoting, and celebrating the rich cultural heritage and diversity of the Islamic civilization.",
+    icon: Users,
+    color: "bg-purple-500"
   }
 ];
 
@@ -153,12 +157,14 @@ export default function Home() {
   const handleJoinMission = () => {
     navigate("/about");
   };
-
+  const handleProgramSelect = (programId: string) => {
+    navigate(`/opportunities`);
+  };
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <HeroSection
-        title="Shape the Future with ICESCO"
+        title="Welcome to ICESCO Talentrix"
         subtitle="Empowering innovation and excellence in education, science, and culture across the Islamic world."
         primaryButtonText="Explore Opportunities"
         secondaryButtonText="Life in ICESCO"
@@ -352,20 +358,15 @@ export default function Home() {
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                       <path.icon className="w-6 h-6 text-primary" />
                     </div>
-                    <div>
-                      <Badge variant="outline" className="text-xs">
-                        {path.openings}
-                      </Badge>
-                    </div>
+                    
                   </div>
                   <CardTitle className="text-xl">{path.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">{path.description}</p>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">Duration: {path.duration}</span>
-                    <Button variant="outline" size="sm">
-                      Learn More
+                    <Button variant="outline" size="sm" onClick={() => handleProgramSelect(path.id)}>
+                      Explore 
                     </Button>
                   </div>
                 </CardContent>
