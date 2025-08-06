@@ -151,7 +151,7 @@ export default function Home() {
   };
 
   const handleExploreOpportunities = () => {
-    navigate("/opportunities");
+    navigate("/programs");
   };
 
   const handleJoinMission = () => {
@@ -246,7 +246,43 @@ export default function Home() {
     </div>
   </div>
 </section>
+          {/* Career Paths & Programs */}
+      <section className="section-padding bg-muted/30">
+        <div className="max-w-7xl mx-auto container-padding">
+          <div className="text-center space-y-6 mb-16">
+            <h2 className="font-title text-3xl md:text-4xl font-bold text-foreground">
+              Career Paths & Programs
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Whether you're starting your career or advancing to leadership, we have programs designed for your growth.
+            </p>
+          </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {careerPaths.map((path, index) => (
+              <Card key={index} className="card-hover">
+                <CardHeader>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <path.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    
+                  </div>
+                  <CardTitle className="text-xl">{path.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">{path.description}</p>
+                  <div className="flex justify-between items-center text-sm">
+                    <Button variant="outline" size="sm" onClick={() => handleProgramSelect(path.id)}>
+                      Explore 
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* Featured Opportunities */}
       <section className="section-padding bg-muted/30">
         <div className="max-w-7xl mx-auto container-padding">
@@ -331,44 +367,6 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">{benefit.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Career Paths & Programs */}
-      <section className="section-padding bg-muted/30">
-        <div className="max-w-7xl mx-auto container-padding">
-          <div className="text-center space-y-6 mb-16">
-            <h2 className="font-title text-3xl md:text-4xl font-bold text-foreground">
-              Career Paths & Programs
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Whether you're starting your career or advancing to leadership, we have programs designed for your growth.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {careerPaths.map((path, index) => (
-              <Card key={index} className="card-hover">
-                <CardHeader>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <path.icon className="w-6 h-6 text-primary" />
-                    </div>
-                    
-                  </div>
-                  <CardTitle className="text-xl">{path.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">{path.description}</p>
-                  <div className="flex justify-between items-center text-sm">
-                    <Button variant="outline" size="sm" onClick={() => handleProgramSelect(path.id)}>
-                      Explore 
-                    </Button>
-                  </div>
                 </CardContent>
               </Card>
             ))}

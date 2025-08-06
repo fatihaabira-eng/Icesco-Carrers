@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Download, Plus, Link2, CheckCircle, Info, BookOpen, Briefcase, X, GraduationCap } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Plus, Link2, CheckCircle, Info, BookOpen, Briefcase, X } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
 import ReactCountryFlag from 'react-country-flag';
@@ -121,7 +121,7 @@ interface Certification {
   title: string;
   issuer: string;
   date: string;
-  url?: string;
+  // url?: string;
 }
 
 interface Reference {
@@ -129,6 +129,7 @@ interface Reference {
   title: string;
   email: string;
   note?: string;
+  phone?: string;
 }
 
 interface SocialMedia {
@@ -154,8 +155,6 @@ interface FormData {
   certifications: Certification[];
   experience: Experience[];
   skills: string[];
-  skillExperiences: {[skill: string]: number[]};  // Maps skill to experience indices
-  skillEducation: {[skill: string]: number[]};    // Maps skill to education indices
   languages: Language[];
   socialMedia: SocialMedia[];
   practicalExperience: string;
@@ -192,15 +191,13 @@ const MultiStepForm: React.FC = () => {
     dateOfBirth: '',
     address: '',
     education: [{ place: '', diploma: '', startDate: '', endDate: '' }],
-    certifications: [{ title: '', issuer: '', date: '', url: '' }],
+    certifications: [{ title: '', issuer: '', date: '' }],
     experience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '', achievements: '', current: false }],
-    skills: [],
-    skillExperiences: {},
-    skillEducation: {},
+    skills: [''],
     languages: [{ language: '', level: '' }],
     socialMedia: [{ platform: '', url: '' }],
     practicalExperience: '',
-    references: [{ name: '', title: '', email: '', note: '' }],
+    references: [{ name: '', title: '', email: '',phone: '', note: '' }],
     cv: null,
     videoIntroSubmitted: false,
     videoFile: null,
@@ -212,13 +209,9 @@ const MultiStepForm: React.FC = () => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  // Skills input state - LinkedIn-style skills section
-  const [skillInput, setSkillInput] = useState('');
-  const [skillSuggestions, setSkillSuggestions] = useState<string[]>([]);
-  const [showSkillMenu, setShowSkillMenu] = useState(false);
-  const [selectedExperiences, setSelectedExperiences] = useState<number[]>([]);
-  const [selectedEducation, setSelectedEducation] = useState<number[]>([]);
-  const [skillBeingAdded, setSkillBeingAdded] = useState('');
+  // Skills autocomplete state
+  const [skillSuggestions, setSkillSuggestions] = useState<{[key: number]: string[]}>({});
+  const [activeSkillIndex, setActiveSkillIndex] = useState<number | null>(null);
   // Languages autocomplete state
   const [languageSuggestions, setLanguageSuggestions] = useState<{[key: number]: string[]}>({});
   const [activeLanguageIndex, setActiveLanguageIndex] = useState<number | null>(null);
@@ -226,7 +219,7 @@ const MultiStepForm: React.FC = () => {
 
   const steps = [
     { number: 1, title: 'Personal Information' },
-    { number: 2, title: 'Education & Certifications' },
+    { number: 2, title: 'Education & Professional Certifications' },
     { number: 3, title: 'Professional Experience' },
     { number: 4, title: 'Skills' },
     { number: 5, title: 'Languages' },
@@ -560,15 +553,13 @@ const MultiStepForm: React.FC = () => {
     }
   };
 
-  // Function to handle skill input changes and suggestions
-  const handleSkillInputChange = (value: string) => {
-    setSkillInput(value);
-    setSkillBeingAdded(value);
+  const updateSkill = (index: number, value: string) => {
+    const updated = [...formData.skills];
+    updated[index] = value;
+    setFormData({ ...formData, skills: updated });
     
-    // Show menu when user starts typing
+    // Update suggestions based on the input
     if (value.trim().length > 0) {
-      setShowSkillMenu(true);
-      
       const searchTerm = value.toLowerCase();
       
       // Filter and sort suggestions: exact matches first, then starts with, then contains
@@ -595,98 +586,48 @@ const MultiStepForm: React.FC = () => {
           // Alphabetical for the rest
           return a.localeCompare(b);
         })
-        .slice(0, 20); // Show more suggestions
+        .slice(0, 8); // Limit to 8 suggestions
       
-      setSkillSuggestions(filtered);
-    } else {
-      setShowSkillMenu(false);
-      setSkillSuggestions([]);
-      setSkillBeingAdded('');
-    }
-  };
-
-  // Function to add a skill with related experiences and education
-  const addSkillWithRelations = () => {
-    const trimmedSkill = skillBeingAdded.trim();
-    if (trimmedSkill && !formData.skills.some(s => s.toLowerCase() === trimmedSkill.toLowerCase())) {
-      // Validate that at least one experience or education is selected
-      if (selectedExperiences.length === 0 && selectedEducation.length === 0) {
-        alert('Please select at least one experience or education item for this skill.');
-        return;
-      }
-      
-      setFormData(prev => ({
+      setSkillSuggestions(prev => ({
         ...prev,
-        skills: [...prev.skills, trimmedSkill],
-        skillExperiences: {
-          ...prev.skillExperiences,
-          [trimmedSkill]: selectedExperiences
-        },
-        skillEducation: {
-          ...prev.skillEducation,
-          [trimmedSkill]: selectedEducation
-        }
+        [index]: filtered
       }));
-      
-      // Clear all selections
-      setSkillInput('');
-      setSkillBeingAdded('');
-      setSkillSuggestions([]);
-      setShowSkillMenu(false);
-      setSelectedExperiences([]);
-      setSelectedEducation([]);
+    } else {
+      setSkillSuggestions(prev => {
+        const newSuggestions = { ...prev };
+        delete newSuggestions[index];
+        return newSuggestions;
+      });
     }
   };
 
-  // Function to cancel skill addition
-  const cancelSkillAddition = () => {
-    setSkillInput('');
-    setSkillBeingAdded('');
-    setSkillSuggestions([]);
-    setShowSkillMenu(false);
-    setSelectedExperiences([]);
-    setSelectedEducation([]);
-  };
-
-  // Function to select a skill suggestion
-  const selectSkillSuggestion = (skill: string) => {
-    setSkillInput(skill);
-    setSkillBeingAdded(skill);
-  };
-
-  // Function to toggle experience selection
-  const toggleExperienceSelection = (index: number) => {
-    setSelectedExperiences(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
-  };
-
-  // Function to toggle education selection
-  const toggleEducationSelection = (index: number) => {
-    setSelectedEducation(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
-  };
-
-  // Function to remove a skill
-  const removeSkill = (skillToRemove: string) => {
-    setFormData(prev => {
-      const newSkillExperiences = { ...prev.skillExperiences };
-      const newSkillEducation = { ...prev.skillEducation };
-      delete newSkillExperiences[skillToRemove];
-      delete newSkillEducation[skillToRemove];
-      
-      return {
-        ...prev,
-        skills: prev.skills.filter(skill => skill !== skillToRemove),
-        skillExperiences: newSkillExperiences,
-        skillEducation: newSkillEducation
-      };
+  // Function to handle suggestion selection
+  const selectSkillSuggestion = (index: number, skill: string) => {
+    const updated = [...formData.skills];
+    updated[index] = skill;
+    setFormData({ ...formData, skills: updated });
+    
+    // Clear suggestions for this index
+    setSkillSuggestions(prev => {
+      const newSuggestions = { ...prev };
+      delete newSuggestions[index];
+      return newSuggestions;
     });
+    setActiveSkillIndex(null);
+  };
+
+  // Function to clear suggestions when clicking outside
+  const clearSkillSuggestions = (index: number) => {
+    setTimeout(() => {
+      if (activeSkillIndex === index) {
+        setSkillSuggestions(prev => {
+          const newSuggestions = { ...prev };
+          delete newSuggestions[index];
+          return newSuggestions;
+        });
+        setActiveSkillIndex(null);
+      }
+    }, 150); // Small delay to allow for suggestion clicks
   };
 
   // Function to handle language suggestion selection
@@ -914,32 +855,6 @@ const MultiStepForm: React.FC = () => {
         cv: file,
         videoFile: null,
         videoIntroSubmitted: false,
-        
-        // Skill relationships - mapping skills to experiences and education
-        skillExperiences: {
-          "JavaScript": [0, 1], // Used in both Software Engineer and Junior Developer roles
-          "TypeScript": [0], // Used in Software Engineer role
-          "React": [0, 1], // Used in both roles
-          "Node.js": [0], // Used in Software Engineer role
-          "Python": [0], // Used in Software Engineer role
-          "PHP": [1], // Used in Junior Developer role
-          "MySQL": [1], // Used in Junior Developer role
-          "MongoDB": [0], // Used in Software Engineer role
-          "AWS": [0], // Used in Software Engineer role
-          "Git": [0, 1] // Used in both roles
-        },
-        skillEducation: {
-          "JavaScript": [0], // Learned in Computer Science degree
-          "TypeScript": [0], // Learned in Computer Science degree
-          "React": [0], // Learned in Computer Science degree
-          "Node.js": [0], // Learned in Computer Science degree
-          "Python": [0], // Learned in Computer Science degree
-          "PHP": [], // Not specifically covered in education
-          "MySQL": [0], // Learned in Computer Science degree
-          "MongoDB": [], // Not specifically covered in education
-          "AWS": [], // Not specifically covered in education
-          "Git": [0] // Learned in Computer Science degree
-        }
       };
       setFormData(prev => ({ ...prev, ...fakeInfo }));
       setCvParsing(false);
@@ -1035,7 +950,7 @@ const MultiStepForm: React.FC = () => {
       case 2:
         return (
           <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-semibold text-teal-600">Education & Certifications</h2>
+            <h2 className="text-2xl font-semibold text-teal-600">Education & Professional Certifications</h2>
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
@@ -1075,7 +990,7 @@ const MultiStepForm: React.FC = () => {
             <div className="border-t border-gray-200 pt-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" /> Certifications
+                  <BookOpen className="w-5 h-5" />Professional Certifications
                 </h3>
                 <button
                   onClick={() => setFormData((prev) => ({ ...prev, certifications: [...prev.certifications, { title: '', issuer: '', date: '', url: '' }] }))}
@@ -1091,11 +1006,11 @@ const MultiStepForm: React.FC = () => {
                 </div>
               )}
               {formData.certifications.map((cert, index) => (
-                <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
+                <div key={index} className="group relative grid md:grid-cols-1 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
                   <InputField label="Certificate Title" id={`cert-title-${index}` as keyof FormData} value={cert.title} placeholder="e.g. React Developer" onChange={(_, value) => updateCertificationField(index, 'title', value)} />
                   <InputField label="Issuing Organization" id={`cert-issuer-${index}` as keyof FormData} value={cert.issuer} placeholder="e.g. Coursera" onChange={(_, value) => updateCertificationField(index, 'issuer', value)} />
                   <InputField label="Date Received" id={`cert-date-${index}` as keyof FormData} type="date" value={cert.date} onChange={(_, value) => updateCertificationField(index, 'date', value)} />
-                  <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} />
+                  {/* <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} /> */}
                   {formData.certifications.length > 1 && (
                     <button
                       onClick={() => setFormData({ ...formData, certifications: formData.certifications.filter((_, i) => i !== index) })}
@@ -1176,7 +1091,7 @@ const MultiStepForm: React.FC = () => {
                   </label>
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1 sr-only">Description</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 ">Main Tasks</label>
                   <textarea
                     value={exp.description}
                     onChange={e => updateExperienceField(index, 'description', e.target.value)}
@@ -1209,262 +1124,106 @@ const MultiStepForm: React.FC = () => {
               </div>
             ))}
             
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5" /> Practical Experience
-              </h3>
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                  Practical Experience
-                </label>
-                <textarea
-                  value={formData.practicalExperience}
-                  onChange={e => handleInputChange('practicalExperience', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400 min-h-[120px]"
-                  placeholder="Practical Experience..."
-                  rows={5}
-                />
-              </div>
-            </div>
           </div>
         );
 
       case 4:
         return (
-          <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
+          <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
             <h2 className="text-2xl font-semibold text-teal-600">Skills</h2>
 
-            {/* Add Skill Card */}
-            <div className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
-                <Plus className="w-5 h-5" /> Add Skill
-              </h3>
-              
-              {/* Skill Input */}
-              <div className="relative mb-4">
-                <input
-                  type="text"
-                  value={skillInput}
-                  onChange={(e) => handleSkillInputChange(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400"
-                  placeholder="Type a skill name (e.g. JavaScript, Project Management, Communication...)"
-                />
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5" /> Skills
+                </h3>
+                <button
+                  onClick={() => setFormData((prev) => ({ ...prev, skills: [...prev.skills, ''] }))}
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
+                >
+                  <Plus className="w-4 h-4 mr-2" /> Add
+                </button>
               </div>
-
-              {/* Inline Menu */}
-              {showSkillMenu && (
-                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                  {/* Current Skill Being Added */}
-                  {skillBeingAdded && (
-                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <span className="font-medium text-blue-700">Adding skill: "{skillBeingAdded}"</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Skill Suggestions */}
-                  {skillSuggestions.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">Suggested skills:</h4>
-                      <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
-                        {skillSuggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            type="button"
-                            onClick={() => selectSkillSuggestion(suggestion)}
-                            className="text-left px-3 py-2 text-sm bg-white border border-gray-200 rounded-md hover:bg-teal-50 hover:border-teal-300 transition-colors"
-                          >
-                            {suggestion}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Experience and Education Side by Side */}
-                  {(formData.experience.filter(exp => exp.company.trim() !== '').length > 0 || 
-                    formData.education.filter(edu => edu.place.trim() !== '').length > 0) && (
-                    <div className="grid md:grid-cols-2 gap-6 mb-4">
-                      {/* Experiences Section - Left Side */}
-                      {formData.experience.filter(exp => exp.company.trim() !== '').length > 0 && (
-                        <div className="h-full">
-                          <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                            <Briefcase className="w-4 h-4" />
-                            Where have you used this skill?
-                          </h4>
-                          <div className="space-y-2">
-                            {formData.experience.map((exp, index) => (
-                              exp.company.trim() !== '' && (
-                                <label key={index} className="flex items-start gap-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedExperiences.includes(index)}
-                                    onChange={() => toggleExperienceSelection(index)}
-                                    className="mt-1 w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
-                                  />
-                                  <div className="text-sm">
-                                    <div className="font-medium text-gray-900">{exp.jobTitle}</div>
-                                    <div className="text-gray-600">{exp.company}</div>
-                                    <div className="text-gray-500">
-                                      {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
-                                    </div>
-                                  </div>
-                                </label>
-                              )
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Education Section - Right Side */}
-                      {formData.education.filter(edu => edu.place.trim() !== '').length > 0 && (
-                        <div className="h-full">
-                          <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                            <GraduationCap className="w-4 h-4" />
-                            Where did you learn this skill?
-                          </h4>
-                          <div className="space-y-2">
-                            {formData.education.map((edu, index) => (
-                              edu.place.trim() !== '' && (
-                                <label key={index} className="flex items-start gap-3 p-2 hover:bg-gray-100 rounded cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedEducation.includes(index)}
-                                    onChange={() => toggleEducationSelection(index)}
-                                    className="mt-1 w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
-                                  />
-                                  <div className="text-sm">
-                                    <div className="font-medium text-gray-900">{edu.diploma}</div>
-                                    <div className="text-gray-600">{edu.place}</div>
-                                    <div className="text-gray-500">
-                                      {new Date(edu.startDate).getFullYear()} - {new Date(edu.endDate).getFullYear()}
-                                    </div>
-                                  </div>
-                                </label>
-                              )
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Action Buttons */}
-                  <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-                    <button
-                      type="button"
-                      onClick={cancelSkillAddition}
-                      className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={addSkillWithRelations}
-                      disabled={!skillBeingAdded.trim() || (selectedExperiences.length === 0 && selectedEducation.length === 0)}
-                      className="px-6 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
-                    >
-                      Add Skill
-                    </button>
-                  </div>
+              
+              {formData.skills.filter(skill => skill.trim() !== '').length === 0 && (
+                <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
+                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-500">No skills added yet. Click "Add" to start.</p>
                 </div>
               )}
-            </div>
-
-            {/* Skills Display Card */}
-            <div className="bg-white p-6 rounded-lg border shadow-sm">
-              <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5" />
-                Your Skills ({formData.skills.length})
-              </h3>
               
-              {formData.skills.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                  <p>No skills added yet. Add your first skill above to get started.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {formData.skills.map((skill, index) => (
-                    <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          {/* Skill Badge */}
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-teal-100 text-teal-800">
-                              {skill}
-                            </span>
-                          </div>
-                          
-                          {/* Related Experiences and Education */}
-                          <div className="space-y-3">
-                            {/* Show related experiences */}
-                            {formData.skillExperiences[skill] && formData.skillExperiences[skill].length > 0 && (
-                              <div className="text-sm">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Briefcase className="w-3 h-3 text-teal-600" />
-                                  <span className="font-medium text-gray-700">Experience:</span>
-                                </div>
-                                <div className="ml-5 space-y-1">
-                                  {formData.skillExperiences[skill].map(expIndex => {
-                                    const exp = formData.experience[expIndex];
-                                    if (!exp || exp.company.trim() === '') return null;
-                                    return (
-                                      <div key={expIndex} className="text-gray-600 text-xs">
-                                        <div className="font-medium">{exp.jobTitle}</div>
-                                        <div className="text-gray-500">{exp.company} • {exp.startDate} - {exp.current ? 'Present' : exp.endDate}</div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                            
-                            {/* Show related education */}
-                            {formData.skillEducation[skill] && formData.skillEducation[skill].length > 0 && (
-                              <div className="text-sm">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <GraduationCap className="w-3 h-3 text-teal-600" />
-                                  <span className="font-medium text-gray-700">Education:</span>
-                                </div>
-                                <div className="ml-5 space-y-1">
-                                  {formData.skillEducation[skill].map(eduIndex => {
-                                    const edu = formData.education[eduIndex];
-                                    if (!edu || edu.place.trim() === '') return null;
-                                    return (
-                                      <div key={eduIndex} className="text-gray-600 text-xs">
-                                        <div className="font-medium">{edu.diploma}</div>
-                                        <div className="text-gray-500">{edu.place} • {new Date(edu.startDate).getFullYear()} - {new Date(edu.endDate).getFullYear()}</div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                            
-                            {/* Show message if no relationships exist */}
-                            {(!formData.skillExperiences[skill] || formData.skillExperiences[skill].length === 0) && 
-                             (!formData.skillEducation[skill] || formData.skillEducation[skill].length === 0) && (
-                              <div className="text-xs text-gray-400 italic">
-                                No experience or education linked to this skill
-                              </div>
-                            )}
-                          </div>
+              {/* Skills Input Fields */}
+              {formData.skills.map((skill, index) => (
+                <div key={index} className="group relative mb-4">
+                  <div className="flex items-center gap-4 p-4 rounded-lg border bg-white shadow-sm">
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        value={skill}
+                        onChange={e => updateSkill(index, e.target.value)}
+                        onBlur={() => clearSkillSuggestions(index)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400"
+                        placeholder="e.g. JavaScript, React, Python..."
+                      />
+                      {/* Autocomplete Suggestions */}
+                      {skillSuggestions[index] && skillSuggestions[index].length > 0 && (
+                        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                          {skillSuggestions[index].map((suggestion, suggestionIndex) => (
+                            <button
+                              key={suggestionIndex}
+                              type="button"
+                              onClick={() => selectSkillSuggestion(index, suggestion)}
+                              className="w-full text-left px-4 py-2 hover:bg-teal-50 hover:text-teal-700 focus:bg-teal-50 focus:text-teal-700 focus:outline-none transition-colors"
+                            >
+                              <span className="font-medium">{suggestion}</span>
+                            </button>
+                          ))}
                         </div>
-                        
-                        {/* Remove Button */}
-                        <button
-                          onClick={() => removeSkill(skill)}
-                          className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                          title="Remove skill"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
+                      )}
                     </div>
-                  ))}
+                    {formData.skills.length > 1 && (
+                      <button
+                        onClick={() => setFormData({ ...formData, skills: formData.skills.filter((_, i) => i !== index) })}
+                        className="opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200"
+                        title="Remove skill"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              {/* Skills Badges */}
+              {formData.skills.filter(skill => skill.trim() !== '').length > 0 && (
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                  <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4" />
+                    Your Skills
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.skills
+                      .filter(skill => skill.trim() !== '')
+                      .map((skill, index) => (
+                        <div
+                          key={index}
+                          className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm"
+                        >
+                          <span>{skill}</span>
+                          <button
+                            onClick={() => {
+                              const newSkills = formData.skills.filter(s => s !== skill);
+                              if (newSkills.length === 0) newSkills.push('');
+                              setFormData({ ...formData, skills: newSkills });
+                            }}
+                            className="text-teal-600 hover:text-teal-800 transition-colors"
+                            title="Remove skill"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -1537,7 +1296,7 @@ const MultiStepForm: React.FC = () => {
                       onChange={e => updateLanguageField(index, 'level', e.target.value)}
                       className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer"
                     >
-                      <option value="">Select proficiency level...</option>
+                      <option value=""></option>
                       <option value="Beginner">Beginner (A1)</option>
                       <option value="Elementary">Elementary (A2)</option>
                       <option value="Intermediate">Intermediate (B1)</option>
@@ -1666,9 +1425,12 @@ const MultiStepForm: React.FC = () => {
             )}
             {formData.references.map((ref, index) => (
               <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
+                <InputField label="Company" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
+                <InputField label="Link of the Company" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
                 <InputField label="Name" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
                 <InputField label="Title/Relationship" id={`ref-title-${index}` as keyof FormData} value={ref.title} placeholder="e.g. Manager" onChange={(_, value) => updateReferenceField(index, 'title', value)} />
                 <InputField label="Email" id={`ref-email-${index}` as keyof FormData} type="email" value={ref.email} placeholder="e.g. jane.smith@company.com" onChange={(_, value) => updateReferenceField(index, 'email', value)} />
+                <InputField label="Phone" id={`ref-email-${index}` as keyof FormData} value={ref.phone} placeholder="e.g. jane.smith@company.com" onChange={(_, value) => updateReferenceField(index, 'phone', value)} />
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1 sr-only">Note (Optional)</label>
                   <textarea
@@ -1695,6 +1457,7 @@ const MultiStepForm: React.FC = () => {
 
       case 8:
         return (
+          <div>
           <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
             <h2 className="text-2xl font-semibold text-teal-600">Supporting Documents</h2>
             <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 bg-white shadow-sm">
@@ -1704,7 +1467,7 @@ const MultiStepForm: React.FC = () => {
                   : 'bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600'
               } text-white`}>
                 <Download className="w-5 h-5 mr-2 inline" />
-                {cvParsing ? 'Processing CV...' : (formData.cv ? 'Change CV' : 'Select CV')}
+                {cvParsing ? 'Processing CV...' : (formData.cv ? 'Edit CV' : 'Select CV')}
               </label>
               <input
                 id="cv-upload"
@@ -1735,6 +1498,45 @@ const MultiStepForm: React.FC = () => {
               <div className="text-gray-500 mt-4 text-sm">Accepted formats: PDF, DOC, DOCX</div>
               {cvParseError && <div className="text-red-600 mt-2 text-sm">{cvParseError}</div>}
             </div>
+          </div>
+              <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
+            <h2 className="text-2xl font-semibold text-teal-600">Other Documents</h2>
+            <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 bg-white shadow-sm">
+              <label htmlFor="cv-upload" className={`cursor-pointer px-6 py-3 rounded-lg font-medium shadow-md transition bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white `}
+                >
+                <Download className="w-5 h-5 mr-2 inline" />
+                Cover Letter , Certifications or Other Documents..
+              </label>
+              <input
+                id="cv-upload"
+                type="file"
+                accept=".pdf,.doc,.docx"
+                className="hidden"
+                disabled={cvParsing}
+                onChange={e => {
+                  const file = e.target.files && e.target.files[0];
+                  if (file && !cvParsing) {
+                    setFormData({ ...formData, cv: file });
+                    handleCvFile(file);
+                  }
+                }}
+              />
+              {formData.cv && !cvParsing && (
+                <div className="mt-4 text-teal-700 font-medium">{formData.cv.name}</div>
+              )}
+              {cvParsing && (
+                <div className="mt-4 flex items-center gap-2 text-teal-600">
+                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span className="font-medium">Parsing CV and filling form...</span>
+                </div>
+              )}
+              <div className="text-gray-500 mt-4 text-sm">Accepted formats: PDF, DOC, DOCX</div>
+              {cvParseError && <div className="text-red-600 mt-2 text-sm">{cvParseError}</div>}
+            </div>
+          </div>
           </div>
         );
 
@@ -1979,6 +1781,7 @@ const MultiStepForm: React.FC = () => {
                           <div><span className="font-semibold">Name:</span> {ref.name || '-'}</div>
                           <div><span className="font-semibold">Title/Relationship:</span> {ref.title || '-'}</div>
                           <div><span className="font-semibold">Email:</span> {ref.email || '-'}</div>
+                          <div><span className="font-semibold">Phone Number:</span> {ref.email || '-'}</div>
                           {ref.note && (
                             <div className="col-span-2">
                               <span className="font-semibold">Note:</span>
