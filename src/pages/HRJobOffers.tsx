@@ -78,7 +78,7 @@ const HRJobOffers: React.FC = () => {
   // Updated mock job offers data
   const jobOffers: JobOffer[] = [
     {
-      id: 'REF-001',
+      id: 'SHS25001',
       title: 'Senior Software Engineer',
       department: 'Digital Transformation',
       location: 'Rabat, Morocco',
@@ -101,7 +101,7 @@ const HRJobOffers: React.FC = () => {
       ]
     },
     {
-      id: 'REF-002',
+      id: 'SHS25002',
       title: 'Marketing Manager',
       department: 'Communications',
       location: 'Remote',
@@ -123,7 +123,7 @@ const HRJobOffers: React.FC = () => {
       ]
     },
     {
-      id: 'REF-003',
+      id: 'SHS25003',
       title: 'Education Program Manager',
       department: 'Education',
       location: 'Rabat, Morocco',
