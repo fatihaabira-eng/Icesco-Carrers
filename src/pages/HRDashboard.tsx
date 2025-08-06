@@ -137,10 +137,11 @@ const HRDashboard: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <KpiCard icon={<Briefcase className="h-6 w-6 text-primary" />} title="Open Positions" value={icescoVacanciesData.openPositions} />
+            
             <KpiCard icon={<FileText className="h-6 w-6 text-primary" />} title="Requested Positions" value={icescoVacanciesData.requestedPositions} />
             <KpiCard icon={<CheckCircle className="h-6 w-6 text-primary" />} title="Approved Positions" value={icescoVacanciesData.approvedPositions} />
-            <KpiCard icon={<Users className="h-6 w-6 text-primary" />} title="Total Candidates" value={icescoVacanciesData.totalCandidates} />
+            <KpiCard icon={<Briefcase className="h-6 w-6 text-primary" />} title="Published Positions" value={icescoVacanciesData.openPositions} />
+            <KpiCard icon={<Users className="h-6 w-6 text-primary" />} title="Applied Candidates" value={icescoVacanciesData.totalCandidates} />
           </div>
         </CardContent>
       </Card>

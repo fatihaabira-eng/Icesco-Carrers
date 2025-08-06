@@ -58,6 +58,38 @@ interface Candidate {
   education: string;
 }
 
+const allUnits = [
+  { name: "Education Sector", type: "sector" },
+  { name: "Sector of Strategy and Institutional Excellence", type: "sector" },
+  { name: "Sector of Partnerships and International Cooperation", type: "sector" },
+  { name: "Science and Environment Sector", type: "sector" },
+  { name: "Culture and Communication Sector", type: "sector" },
+  { name: "Social and Human Sciences Sector", type: "sector" },
+  { name: "Media and Communication Sector", type: "sector" },
+  { name: "External Specialized Offices and Centers", type: "center" },
+  { name: "Center of Chairs, Scholarships and Prizes", type: "center" },
+  { name: "Poetry and Literature Center", type: "center" },
+  { name: "Calligraphie and Manuscript Center", type: "center" },
+  { name: "Training Center", type: "center" },
+  { name: "Center of Foresight and Artificial Intelligence", type: "center" },
+  { name: "Civilizational Dialogue Center", type: "center" },
+  { name: "Arabic Language Center for Non-Arabic Speakers", type: "center" },
+  { name: "Islamic World Heritage Center", type: "center" },
+  { name: "Center of Translation and Publishing", type: "center" },
+  { name: "Director General Office", type: "support" },
+  { name: "General Secretariat of National Commissions and Conferences", type: "support" },
+  { name: "Department of legal affairs and international standards", type: "support" },
+  { name: "Deputy Director General for Programs", type: "support" },
+  { name: "Federation of Universities of the Islamic World", type: "support" },
+  { name: "Department of Administrative Operations", type: "support" },
+  { name: "Department of Digital Transformation", type: "support" },
+  { name: "Department of Financial Operations", type: "support" },
+  { name: "Internal Audit Department", type: "support" },
+  { name: "Department of Public Relations and Protocol", type: "support" },
+  { name: "Department of Design and Printing", type: "support" },
+  { name: "Department of Human Capital Management", type: "support" },
+];
+
 const BUManpowerManagement: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState('2024');
   const [dateRange, setDateRange] = useState('year');
@@ -65,6 +97,7 @@ const BUManpowerManagement: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'sectors' | 'centers' | 'support'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
 
   // Mock data for positions
   const positions: Position[] = [
@@ -219,14 +252,22 @@ const BUManpowerManagement: React.FC = () => {
     return data.filter(item => new Date(item.requestedDate || item.stageDate).getFullYear() === parseInt(selectedYear));
   };
 
+  const unitTypeMap = {
+    sectors: "sector",
+    centers: "center",
+    support: "support"
+  };
+  const currentUnitType = unitTypeMap[selectedFilter] || null;
+  const unitsOfCurrentType = selectedFilter !== 'all' ? allUnits.filter(u => u.type === currentUnitType) : [];
+
   const filterDataByUnitType = (data: any[]) => {
     if (selectedFilter === 'all') return data;
-    const unitTypeMap = {
-      'sectors': 'sector',
-      'centers': 'center',
-      'support': 'support'
-    };
-    return data.filter(item => item.unitType === unitTypeMap[selectedFilter]);
+    const unitType = unitTypeMap[selectedFilter];
+    let filtered = data.filter(item => item.unitType === unitType);
+    if (selectedUnit) {
+      filtered = filtered.filter(item => item.businessUnit === selectedUnit);
+    }
+    return filtered;
   };
 
   const filteredPositions = filterDataByDate(filterDataByUnitType(positions));
@@ -337,12 +378,11 @@ const BUManpowerManagement: React.FC = () => {
         dateRange={dateRange}
         setDateRange={setDateRange}
       />
-
       {/* Filter Buttons */}
       <div className="flex gap-2">
         <Button
           variant={selectedFilter === 'all' ? 'default' : 'outline'}
-          onClick={() => setSelectedFilter('all')}
+          onClick={() => { setSelectedFilter('all'); setSelectedUnit(null); }}
           className="flex items-center gap-2"
         >
           <Building className="h-4 w-4" />
@@ -350,7 +390,7 @@ const BUManpowerManagement: React.FC = () => {
         </Button>
         <Button
           variant={selectedFilter === 'sectors' ? 'default' : 'outline'}
-          onClick={() => setSelectedFilter('sectors')}
+          onClick={() => { setSelectedFilter('sectors'); setSelectedUnit(null); }}
           className="flex items-center gap-2"
         >
           <Target className="h-4 w-4" />
@@ -358,7 +398,7 @@ const BUManpowerManagement: React.FC = () => {
         </Button>
         <Button
           variant={selectedFilter === 'centers' ? 'default' : 'outline'}
-          onClick={() => setSelectedFilter('centers')}
+          onClick={() => { setSelectedFilter('centers'); setSelectedUnit(null); }}
           className="flex items-center gap-2"
         >
           <Building className="h-4 w-4" />
@@ -366,13 +406,29 @@ const BUManpowerManagement: React.FC = () => {
         </Button>
         <Button
           variant={selectedFilter === 'support' ? 'default' : 'outline'}
-          onClick={() => setSelectedFilter('support')}
+          onClick={() => { setSelectedFilter('support'); setSelectedUnit(null); }}
           className="flex items-center gap-2"
         >
           <Settings className="h-4 w-4" />
           Support Units
         </Button>
       </div>
+      {/* Unit Selector */}
+      {selectedFilter !== 'all' && (
+        <div className="flex items-center gap-4 mt-2">
+          <span className="font-medium">Select {selectedFilter.slice(0, -1)}:</span>
+          <select
+            className="border rounded px-3 py-2 min-w-[250px]"
+            value={selectedUnit || ''}
+            onChange={e => setSelectedUnit(e.target.value || null)}
+          >
+            <option value="">All {selectedFilter.charAt(0).toUpperCase() + selectedFilter.slice(1)}</option>
+            {unitsOfCurrentType.map(unit => (
+              <option key={unit.name} value={unit.name}>{unit.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* KPI Cards */}
       <DashboardSection

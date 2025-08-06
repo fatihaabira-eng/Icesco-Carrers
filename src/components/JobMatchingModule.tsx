@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/dialog';
 import CommitteeEvaluation from '@/pages/CommitteeEvaluation';
 
+
 interface Candidate {
   id: number;
   name: string;
@@ -60,7 +61,7 @@ const JobMatchingModule: React.FC = () => {
       id: 1,
       name: 'Ahmed Hassan El-Masri',
       nationality: 'Egypt',
-      flag: '🇪🇬',
+      flag: 'https://flagcdn.com/w320/eg.png',
       age: 32,
       degree: 'PhD Computer Science',
       university: 'Cairo University',
@@ -77,7 +78,7 @@ const JobMatchingModule: React.FC = () => {
       id: 2,
       name: 'Fatima Al-Zahra Benali',
       nationality: 'Morocco',
-      flag: '🇲🇦',
+      flag: 'https://flagcdn.com/w40/ma.png',
       age: 29,
       degree: 'Master Marketing',
       university: 'Mohammed V University',
@@ -94,7 +95,7 @@ const JobMatchingModule: React.FC = () => {
       id: 3,
       name: 'Omar Khalil Al-Rashid',
       nationality: 'Jordan',
-      flag: '🇯🇴',
+      flag: 'https://flagcdn.com/w40/jo.png',
       age: 35,
       degree: 'PhD Education',
       university: 'University of Jordan',
@@ -111,7 +112,7 @@ const JobMatchingModule: React.FC = () => {
       id: 4,
       name: 'Amina Kone Diabate',
       nationality: 'Mali',
-      flag: '🇲🇱',
+      flag: 'https://flagcdn.com/w40/ml.png',
       age: 31,
       degree: 'Master Finance',
       university: 'University of Bamako',
@@ -128,7 +129,7 @@ const JobMatchingModule: React.FC = () => {
       id: 5,
       name: 'Youssef Ben Mohamed',
       nationality: 'Tunisia',
-      flag: '🇹🇳',
+      flag: 'https://flagcdn.com/w40/tn.png',
       age: 28,
       degree: 'Master Data Science',
       university: 'University of Tunis',
@@ -198,178 +199,183 @@ const JobMatchingModule: React.FC = () => {
     });
 
   return (
-    <Card className="mt-6">
-      <CardHeader>
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          
-          
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search candidates..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full sm:w-64"
-              />
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Job Matching Module</h1>
+        <p className="text-muted-foreground">Find the best candidate matches for your open positions.</p>
+      </div>
+      <Card className="mt-6">
+        <CardHeader>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search candidates..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-full sm:w-64"
+                />
+              </div>
+              
+              {/* Business Unit Filter */}
+              <Select value={selectedBusinessUnit} onValueChange={setSelectedBusinessUnit}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {businessUnits.map(businessUnit => (
+                    <SelectItem key={businessUnit.value} value={businessUnit.value}>
+                      {businessUnit.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              {/* Sort By */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-full sm:w-40">
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="score">Match Score</SelectItem>
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="age">Age</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            
-            {/* Business Unit Filter */}
-            <Select value={selectedBusinessUnit} onValueChange={setSelectedBusinessUnit}>
-              <SelectTrigger className="w-full sm:w-48">
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {businessUnits.map(businessUnit => (
-                  <SelectItem key={businessUnit.value} value={businessUnit.value}>
-                    {businessUnit.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
-            {/* Sort By */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full sm:w-40">
-                <ArrowUpDown className="h-4 w-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="score">Match Score</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-                <SelectItem value="age">Age</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent>
-        {/* Candidates Table */}
-        <div className="border rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="w-12">#</TableHead>
-                <TableHead>Candidate</TableHead>
-                <TableHead className="text-center">Nationality</TableHead>
-                <TableHead className="text-center">Age</TableHead>
-                <TableHead>Degree</TableHead>
-                <TableHead>Education</TableHead>
-                <TableHead className="text-center">Score</TableHead>
-                <TableHead>Position</TableHead>
-                <TableHead>Phase</TableHead>
-                <TableHead>Decision</TableHead>
-                <TableHead className="text-center">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredCandidates.map((candidate, index) => (
-                <TableRow key={candidate.id} className="hover:bg-muted/30">
-                  <TableCell className="font-medium">{index + 1}</TableCell>
-                  
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={candidate.avatar} />
-                        <AvatarFallback>
-                          {candidate.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium text-sm">{candidate.name}</p>
-                        <p className="text-xs text-muted-foreground">{candidate.experience} experience</p>
+        </CardHeader>
+        
+        <CardContent>
+          {/* Candidates Table */}
+          <div className="border rounded-lg overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="w-12">#</TableHead>
+                  <TableHead>Candidate</TableHead>
+                  <TableHead className="text-center">Nationality</TableHead>
+                  <TableHead className="text-center">Age</TableHead>
+                  <TableHead>Degree</TableHead>
+                  <TableHead>University</TableHead>
+                  <TableHead className="text-center"> Matching</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead>Phase</TableHead>
+                  <TableHead>Decision</TableHead>
+                  <TableHead className="text-center">Take Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredCandidates.map((candidate, index) => (
+                  <TableRow key={candidate.id} className="hover:bg-muted/30">
+                    <TableCell className="font-medium">{index + 1}</TableCell>
+                    
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                    
+                        <div>
+                          <p className="font-medium text-sm">{candidate.name}</p>
+                          <p className="text-xs text-muted-foreground">{candidate.experience} experience</p>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  
-                  <TableCell className="text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-lg">{candidate.flag}</span>
+                    </TableCell>
+                    
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-left gap-2">
+                      <img 
+                        src={candidate.flag} 
+                        alt={candidate.nationality + " flag"} 
+                        className="h-5 w-7 object-cover rounded-sm shadow-sm" 
+                      />
                       <span className="text-sm">{candidate.nationality}</span>
                     </div>
-                  </TableCell>
-                  
-                  <TableCell className="text-center font-medium">
-                    {candidate.age}
-                  </TableCell>
-                  
-                  <TableCell>
-                    <p className="font-medium text-sm">{candidate.degree}</p>
-                  </TableCell>
-                  
-                  <TableCell>
-                    <div>
-                      <p className="font-medium text-sm">{candidate.university}</p>
-                    </div>
-                  </TableCell>
-                  
-                  <TableCell className="text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
-                      <span className={`font-bold ${getScoreColor(candidate.matchingScore)}`}>
-                        {candidate.matchingScore}
-                      </span>
-                    </div>
-                  </TableCell>
-                  
-                  <TableCell>
-                    <p className="font-medium text-sm">{candidate.position}</p>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {candidate.skills.slice(0, 2).map(skill => (
-                        <Badge key={skill} variant="outline" className="text-xs">
-                          {skill}
-                        </Badge>
-                      ))}
-                      {candidate.skills.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{candidate.skills.length - 2}
-                        </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  
-                  <TableCell>
-                    <Badge variant="outline">
-                      {candidate.phase}
-                    </Badge>
-                  </TableCell>
-                  
-                  <TableCell>
-                    <Badge className={getDecisionColor(candidate.decision)}>
-                      {candidate.decision === 'hired' ? 'Hired' : candidate.decision}
-                    </Badge>
-                  </TableCell>
-                  
-                  <TableCell>
-                    <div className="flex items-center justify-center gap-2">
-                      <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <MessageSquare className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-      <Dialog open={isEvaluationOpen} onOpenChange={setIsEvaluationOpen}>
-              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Candidate Evaluation</DialogTitle>
-                </DialogHeader>
-                {selectedCandidate && (
-                  <CommitteeEvaluation candidateId={selectedCandidate.id} />
-                )}
-              </DialogContent>
-            </Dialog>
-    </Card>
+                    </TableCell>
+                    
+                    <TableCell className="text-center font-medium">
+                      {candidate.age}
+                    </TableCell>
+                    
+                    <TableCell>
+                      <p className="font-medium text-sm">{candidate.degree}</p>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div>
+                        <p className="font-medium text-sm">{candidate.university}</p>
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
+                        <span className={`font-bold ${getScoreColor(candidate.matchingScore)}`}>
+                          {candidate.matchingScore}
+                        </span>
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <p className="font-medium text-sm">{candidate.position}</p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {candidate.skills.slice(0, 2).map(skill => (
+                          <Badge key={skill} variant="outline" className="text-xs">
+                            {skill}
+                          </Badge>
+                        ))}
+                        {candidate.skills.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{candidate.skills.length - 2}
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <Badge variant="outline">
+                        {candidate.phase}
+                      </Badge>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <Badge className={getDecisionColor(candidate.decision)}>
+                        {candidate.decision === 'hired' ? 'Hired' : candidate.decision}
+                      </Badge>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <div className="flex items-center justify-center gap-2">
+                        <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <MessageSquare className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+        <Dialog open={isEvaluationOpen} onOpenChange={setIsEvaluationOpen}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Candidate Evaluation</DialogTitle>
+                  </DialogHeader>
+                  {selectedCandidate && (
+                    <CommitteeEvaluation candidateId={selectedCandidate.id} />
+                  )}
+                </DialogContent>
+              </Dialog>
+      </Card>
+    </div>
   );
 };
 
