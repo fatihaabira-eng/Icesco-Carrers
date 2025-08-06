@@ -74,7 +74,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       description: 'Manage applications',
       path: '/manpower/hr/candidates',
       subItems: [
-        { id: 'pipeline', label: 'Pipeline View', path: '/manpower/hr/candidates/pipeline' },
+        // { id: 'pipeline', label: 'Pipeline View', path: '/manpower/hr/candidates/pipeline' },
         { id: 'matching', label: 'Job Matching', path: '/manpower/hr/candidates/matching' },
         {
       id: 'assessment-scores',
@@ -85,13 +85,13 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
     },
       ]
     },
-    {
-      id: 'resume-library',
-      label: 'Resume Library',
-      icon: Database,
-      description: 'CV processing & storage',
-      path: '/manpower/hr/resume-library'
-    },
+    // {
+    //   id: 'resume-library',
+    //   label: 'Resume Library',
+    //   icon: Database,
+    //   description: 'CV processing & storage',
+    //   path: '/manpower/hr/resume-library'
+    // },
     {
       id: 'interviews',
       label: 'Interviews',
