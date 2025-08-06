@@ -130,7 +130,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
             <img 
               src={icescoLogo} 
               alt="ICESCO" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </Link>
           {/* <div className="flex items-center space-x-2">

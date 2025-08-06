@@ -112,6 +112,14 @@ const benefits = [
 
 const careerPaths = [
   {
+    id: "science",
+    title: "ICESCO Positions",
+    description:
+      "Fostering your career innovation to address global challenges and opportunities.",
+    icon: Lightbulb,
+    color: "bg-green-500"
+  },
+  {
     id: "education",
     title: " Youth Programs",
     description:
@@ -119,14 +127,7 @@ const careerPaths = [
     icon: GraduationCap,
     color: "bg-blue-500"
   },
-  {
-    id: "science",
-    title: "Full-Time Positions",
-    description:
-      "Fostering your career innovation to address global challenges and opportunities.",
-    icon: Lightbulb,
-    color: "bg-green-500"
-  },
+  
   {
     id: "culture",
     title: " Internship Program",

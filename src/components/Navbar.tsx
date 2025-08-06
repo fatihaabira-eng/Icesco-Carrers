@@ -117,7 +117,7 @@ export default function ImprovedNavbar({ isAuthenticated, mockUser, onLogout }) 
             <img 
               src={icescoLogo} 
               alt="ICESCO" 
-              className="h-14 w-auto"
+              className="h-16 w-auto"
             />
           </Link>
 
