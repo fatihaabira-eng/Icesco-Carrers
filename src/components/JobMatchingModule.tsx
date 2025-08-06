@@ -27,9 +27,8 @@ import {
 } from '@/components/ui/dialog';
 import CommitteeEvaluation from '@/pages/CommitteeEvaluation';
 
-
 interface Candidate {
-  id: number;
+  ref: string;
   name: string;
   nationality: string;
   flag: string;
@@ -46,19 +45,16 @@ interface Candidate {
   avatar: string;
 }
 
-
 const JobMatchingModule: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBusinessUnit, setSelectedBusinessUnit] = useState('all');
   const [sortBy, setSortBy] = useState('score');
-  
-    const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
-    
-      const [isEvaluationOpen, setIsEvaluationOpen] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+  const [isEvaluationOpen, setIsEvaluationOpen] = useState(false);
 
-  const candidatesData = [
+  const candidatesData: Candidate[] = [
     {
-      id: 1,
+      ref: 'SHS25003',
       name: 'Ahmed Hassan El-Masri',
       nationality: 'Egypt',
       flag: 'https://flagcdn.com/w320/eg.png',
@@ -75,7 +71,7 @@ const JobMatchingModule: React.FC = () => {
       avatar: '/api/placeholder/40/40'
     },
     {
-      id: 2,
+      ref: 'SHS25004',
       name: 'Fatima Al-Zahra Benali',
       nationality: 'Morocco',
       flag: 'https://flagcdn.com/w40/ma.png',
@@ -92,7 +88,7 @@ const JobMatchingModule: React.FC = () => {
       avatar: '/api/placeholder/40/40'
     },
     {
-      id: 3,
+      ref: 'SHS25005',
       name: 'Omar Khalil Al-Rashid',
       nationality: 'Jordan',
       flag: 'https://flagcdn.com/w40/jo.png',
@@ -109,7 +105,7 @@ const JobMatchingModule: React.FC = () => {
       avatar: '/api/placeholder/40/40'
     },
     {
-      id: 4,
+      ref: 'SHS25006',
       name: 'Amina Kone Diabate',
       nationality: 'Mali',
       flag: 'https://flagcdn.com/w40/ml.png',
@@ -126,7 +122,7 @@ const JobMatchingModule: React.FC = () => {
       avatar: '/api/placeholder/40/40'
     },
     {
-      id: 5,
+      ref: 'SHS25007',
       name: 'Youssef Ben Mohamed',
       nationality: 'Tunisia',
       flag: 'https://flagcdn.com/w40/tn.png',
@@ -146,11 +142,10 @@ const JobMatchingModule: React.FC = () => {
 
   const businessUnits = [
     { value: 'all', label: 'All Business Units' },
-    { value: 'engineering', label: 'Engineering' },
-    { value: 'marketing', label: 'Marketing' },
+    { value: 'digital transformation', label: 'Digital Transformation' },
     { value: 'education', label: 'Education' },
-    { value: 'finance', label: 'Finance' },
-    { value: 'research', label: 'Research' }
+    { value: 'human resources', label: 'Human Resources' },
+    { value: 'finance', label: 'Finance' }
   ];
 
   const getDecisionColor = (decision: string) => {
@@ -207,8 +202,6 @@ const JobMatchingModule: React.FC = () => {
       <Card className="mt-6">
         <CardHeader>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            
-            
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Search */}
               <div className="relative">
@@ -258,68 +251,23 @@ const JobMatchingModule: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
-                  <TableHead className="w-12">#</TableHead>
+                  <TableHead className="w-24">Ref</TableHead>
+                  <TableHead>Job Position</TableHead>
                   <TableHead>Candidate</TableHead>
                   <TableHead className="text-center">Nationality</TableHead>
                   <TableHead className="text-center">Age</TableHead>
                   <TableHead>Degree</TableHead>
                   <TableHead>University</TableHead>
-                  <TableHead className="text-center"> Matching</TableHead>
-                  <TableHead>Job Position</TableHead>
                   <TableHead>Phase</TableHead>
                   <TableHead>Decision</TableHead>
+                  <TableHead className="text-center">Matching</TableHead>
                   <TableHead className="text-center">Take Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredCandidates.map((candidate, index) => (
-                  <TableRow key={candidate.id} className="hover:bg-muted/30">
-                    <TableCell className="font-medium">{index + 1}</TableCell>
-                    
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                    
-                        <div>
-                          <p className="font-medium text-sm">{candidate.name}</p>
-                          <p className="text-xs text-muted-foreground">{candidate.experience} experience</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    
-                    <TableCell className="text-center">
-                      <div className="flex items-center justify-left gap-2">
-                      <img 
-                        src={candidate.flag} 
-                        alt={candidate.nationality + " flag"} 
-                        className="h-5 w-7 object-cover rounded-sm shadow-sm" 
-                      />
-                      <span className="text-sm">{candidate.nationality}</span>
-                    </div>
-                    </TableCell>
-                    
-                    <TableCell className="text-center font-medium">
-                      {candidate.age}
-                    </TableCell>
-                    
-                    <TableCell>
-                      <p className="font-medium text-sm">{candidate.degree}</p>
-                    </TableCell>
-                    
-                    <TableCell>
-                      <div>
-                        <p className="font-medium text-sm">{candidate.university}</p>
-                      </div>
-                    </TableCell>
-                    
-                    <TableCell className="text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
-                        <span className={`font-bold ${getScoreColor(candidate.matchingScore)}`}>
-                          {candidate.matchingScore}
-                        </span>
-                      </div>
-                    </TableCell>
-                    
+                {filteredCandidates.map((candidate) => (
+                  <TableRow key={candidate.ref} className="hover:bg-muted/30">
+                    <TableCell className="font-medium">{candidate.ref}</TableCell>
                     <TableCell>
                       <p className="font-medium text-sm">{candidate.position}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
@@ -335,19 +283,53 @@ const JobMatchingModule: React.FC = () => {
                         )}
                       </div>
                     </TableCell>
-                    
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <p className="font-medium text-sm">{candidate.name}</p>
+                          <p className="text-xs text-muted-foreground">{candidate.experience} experience</p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-left gap-2">
+                        <img 
+                          src={candidate.flag} 
+                          alt={candidate.nationality + " flag"} 
+                          className="h-5 w-7 object-cover rounded-sm shadow-sm" 
+                        />
+                        <span className="text-sm">{candidate.nationality}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center font-medium">
+                      {candidate.age}
+                    </TableCell>
+                    <TableCell>
+                      <p className="font-medium text-sm">{candidate.degree}</p>
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium text-sm">{candidate.university}</p>
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline">
                         {candidate.phase}
                       </Badge>
                     </TableCell>
-                    
                     <TableCell>
                       <Badge className={getDecisionColor(candidate.decision)}>
                         {candidate.decision === 'hired' ? 'Hired' : candidate.decision}
                       </Badge>
                     </TableCell>
-                    
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
+                        <span className={`font-bold ${getScoreColor(candidate.matchingScore)}`}>
+                          {candidate.matchingScore}
+                        </span>
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2">
                         <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
@@ -365,15 +347,15 @@ const JobMatchingModule: React.FC = () => {
           </div>
         </CardContent>
         <Dialog open={isEvaluationOpen} onOpenChange={setIsEvaluationOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>Candidate Evaluation</DialogTitle>
-                  </DialogHeader>
-                  {selectedCandidate && (
-                    <CommitteeEvaluation candidateId={selectedCandidate.id} />
-                  )}
-                </DialogContent>
-              </Dialog>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Candidate Evaluation</DialogTitle>
+            </DialogHeader>
+            {selectedCandidate && (
+              <CommitteeEvaluation candidateId={selectedCandidate.ref} />
+            )}
+          </DialogContent>
+        </Dialog>
       </Card>
     </div>
   );

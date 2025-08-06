@@ -12,10 +12,9 @@ import {
   Users,
   UserCheck,
   Award,
-  ChevronDown,
-  ChevronUp,
   X
 } from 'lucide-react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
@@ -53,7 +52,7 @@ const CandidateAssessmentScore: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState('2024');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedAssessment, setExpandedAssessment] = useState<string | null>(null);
+  const [selectedAssessment, setSelectedAssessment] = useState<CandidateAssessment | null>(null);
 
   // Mock data for candidate assessments
   const candidateAssessments: CandidateAssessment[] = [
@@ -67,7 +66,7 @@ const CandidateAssessmentScore: React.FC = () => {
         {
           id: 'CM-1',
           name: 'Dr. Sally Mabrouk',
-          position: 'Director  of the Office of Director General',
+          position: 'Director of the Office of Director General',
           image: '/src/assets/dr-sally-mabrouk.png',
           score: 88,
           comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
@@ -121,30 +120,6 @@ const CandidateAssessmentScore: React.FC = () => {
           image: '/src/assets/icesco-team-3.jfif',
           score: 89,
           comments: 'Very good system design skills and architecture knowledge. Shows strong analytical thinking.'
-        },
-        {
-          id: 'TI-3',
-          name: 'Mr. Hassan Tazi',
-          position: 'Lead Developer',
-          image: '/src/assets/icesco-leadership.jfif',
-          score: 86,
-          comments: 'Good practical experience and hands-on skills. Needs some improvement in advanced concepts.'
-        },
-        {
-          id: 'TI-4',
-          name: 'Ms. Zineb Fassi',
-          position: 'Senior Developer',
-          image: '/src/assets/icesco-team.jfif',
-          score: 88,
-          comments: 'Strong technical foundation and good coding practices. Excellent communication of technical concepts.'
-        },
-        {
-          id: 'TI-5',
-          name: 'Eng. Mehdi Alami',
-          position: 'Technical Lead',
-          image: '/src/assets/icesco-team-2.jfif',
-          score: 91,
-          comments: 'Outstanding technical skills and innovative solutions. Excellent understanding of scalability and performance.'
         }
       ]
     },
@@ -156,44 +131,44 @@ const CandidateAssessmentScore: React.FC = () => {
       assessmentDate: '2024-01-12',
       committeeMembers: [
         {
-          id: 'CM-6',
-          name: 'Dr. Samira Bouchra',
-          position: 'Director of Communications',
-          image: '/src/assets/icesco-team-3.jfif',
-          score: 80,
-          comments: 'Good understanding of marketing strategies and excellent communication skills.'
+          id: 'CM-1',
+          name: 'Dr. Sally Mabrouk',
+          position: 'Director of the Office of Director General',
+          image: '/src/assets/dr-sally-mabrouk.png',
+          score: 88,
+          comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
         },
         {
-          id: 'CM-7',
-          name: 'Prof. Khalid Al-Rashid',
-          position: 'Head of External Relations',
-          image: '/src/assets/icesco-leadership.jfif',
-          score: 75,
-          comments: 'Reasonable experience but needs more exposure to international marketing campaigns.'
-        },
-        {
-          id: 'CM-8',
-          name: 'Ms. Amina Benjelloun',
-          position: 'Senior Communications Officer',
-          image: '/src/assets/icesco-team.jfif',
+          id: 'CM-2',
+          name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
+          position: 'Director of the Administrative Affairs Department',
+          image: '/src/assets/dr-nidal.jpg',
           score: 82,
-          comments: 'Strong creative thinking and good understanding of target audiences.'
+          comments: 'Good communication skills and team collaboration. Needs some improvement in system architecture knowledge.'
         },
         {
-          id: 'CM-9',
-          name: 'Dr. Omar El-Fassi',
-          position: 'Strategic Planning Director',
-          image: '/src/assets/icesco-team-2.jfif',
-          score: 79,
-          comments: 'Good strategic thinking but needs improvement in digital marketing skills.'
+          id: 'CM-3',
+          name: 'Dr. Ahmed Albanyan',
+          position: 'Director of the Center of Translation and Publishing',
+          image: '/src/assets/dr-ahmed-albanyan.webp',
+          score: 90,
+          comments: 'Outstanding technical expertise and innovative thinking. Highly recommended for the position.'
         },
         {
-          id: 'CM-10',
-          name: 'Mr. Youssef Mansouri',
-          position: 'HR Manager',
-          image: '/src/assets/icesco-team-3.jfif',
-          score: 76,
-          comments: 'Good team player and cultural fit. Shows potential for growth.'
+          id: 'CM-4',
+          name: 'Mr. ANAR KARIMOV',
+          position: 'Chief of Partnerships and International Cooperation Sector',
+          image: '/src/assets/dr-anar.jpg',
+          score: 85,
+          comments: 'Strong cultural fit and excellent interpersonal skills. Demonstrates good leadership potential.'
+        },
+        {
+          id: 'CM-5',
+          name: 'Prof. Dr. Raheel Qamar',
+          position: 'Chief of Sciences and Technologies Sector',
+          image: '/src/assets/dr-rahel.jpg',
+          score: 87,
+          comments: 'Impressive technical background and relevant experience. Good understanding of educational technology.'
         }
       ],
       technicalInterviewers: [
@@ -265,10 +240,6 @@ const CandidateAssessmentScore: React.FC = () => {
     { title: 'Committee Reviews', value: committeeAssessments, icon: Users, description: 'Total evaluations' }
   ];
 
-  const toggleExpanded = (assessmentId: string) => {
-    setExpandedAssessment(expandedAssessment === assessmentId ? null : assessmentId);
-  };
-
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-600 bg-green-100';
     if (score >= 80) return 'text-blue-600 bg-blue-100';
@@ -276,11 +247,47 @@ const CandidateAssessmentScore: React.FC = () => {
     return 'text-red-600 bg-red-100';
   };
 
+  const getCommitteeAverage = (members: CommitteeMember[]) => {
+    return members.length > 0 
+      ? Math.round(members.reduce((sum, member) => sum + member.score, 0) / members.length)
+      : 0;
+  };
+
+  const getTechnicalAverage = (interviewers: TechnicalInterviewer[]) => {
+    return interviewers.length > 0 
+      ? Math.round(interviewers.reduce((sum, interviewer) => sum + interviewer.score, 0) / interviewers.length)
+      : 0;
+  };
+
+  const getFinalDecision = (score: number) => {
+    return score >= 80 ? (
+      <span className="text-green-600">To be hired</span>
+    ) : (
+      <span className="text-red-600">Not Recommended</span>
+    );
+  };
+
+  const getApplicationStatus = (score: number) => {
+    return score >= 80 ? 'Interviewed' : 'Rejected';
+  };
+
   const TABLE_COL_COUNT = 5;
 
   return (
     <div className="space-y-8">
-      {/* Header */}
+      <style>
+        {`
+          .dialog-overlay {
+            z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+          }
+        `}
+      </style>
       <DashboardHeader
         title="Candidate Assessment Scores"
         description="Track and evaluate candidate performance across different assessment stages"
@@ -290,22 +297,11 @@ const CandidateAssessmentScore: React.FC = () => {
         setDateRange={setDateRange}
       />
 
-      {/* KPI Cards */}
-      {/* <DashboardSection
-        title="Assessment Overview"
-        description="Key metrics for candidate evaluation and scoring"
-        icon={Award}
-      >
-        <KPICards cards={kpiCards} />
-      </DashboardSection> */}
-
-      {/* Assessment Scores Management */}
       <DashboardSection
         title="Assessment Scores"
         description="Detailed view of candidate assessments with committee and technical evaluations"
         icon={Award}
       >
-        {/* Search and Filters */}
         <div className="flex gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -322,13 +318,12 @@ const CandidateAssessmentScore: React.FC = () => {
           </Button>
         </div>
 
-        {/* Assessment Scores Table */}
         <Card>
           <CardContent className="p-0">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead className="w-[100px]">Actions</TableHead>
                   <TableHead>Position</TableHead>
                   <TableHead>Candidate Name</TableHead>
                   <TableHead>Total Score</TableHead>
@@ -344,102 +339,146 @@ const CandidateAssessmentScore: React.FC = () => {
                   </TableRow>
                 ) : (
                   filteredAssessments.map((assessment) => (
-                    <React.Fragment key={assessment.id}>
-                      <TableRow className="cursor-pointer hover:bg-muted/50" onClick={() => toggleExpanded(assessment.id)}>
-                        <TableCell>
-                          <Button variant="ghost" size="sm">
-                            {expandedAssessment === assessment.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                          </Button>
-                        </TableCell>
-                        <TableCell className="font-medium">{assessment.position}</TableCell>
-                        <TableCell>{assessment.candidateName}</TableCell>
-                        <TableCell>
-                          <Badge className={`${getScoreColor(assessment.overallScore)}`}>
-                            {assessment.overallScore}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{format(new Date(assessment.assessmentDate), 'MMM d, yyyy')}</TableCell>
-                      </TableRow>
-                      {expandedAssessment === assessment.id && (
-                        <TableRow>
-                          <TableCell colSpan={TABLE_COL_COUNT} className="p-0">
-                            <div className="p-6 bg-muted/20">
-                              <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
-                                {/* Committee Score Section */}
-                                <div>
-                                   <div className="flex items-start gap-4">
-                                  <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                                    <Users className="h-5 w-5" />
-                                    Committee Score
-                                  </h4>
-                                  <Badge className='bg-primary text-primary-foreground mb-4'>
-                                     86
-                                  </Badge></div>
-                                  
-                                  <div className="space-y-4">
-                                    {assessment.committeeMembers.map((member) => (
-                                      <Card key={member.id} className="p-4">
-                                        <div className="flex items-start gap-4">
-                                          <Avatar className="h-12 w-12">
-                                            <AvatarImage src={member.image} alt={member.name} />
-                                            <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                          </Avatar>
-                                          <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-2">
-                                              <div>
-                                                <h5 className="font-semibold">{member.name}</h5>
-                                                <p className="text-sm text-muted-foreground">{member.position}</p>
-                                              </div>
-                                              <Badge className={`${getScoreColor(member.score)}`}>
-                                                {member.score}
-                                              </Badge>
-                                            </div>
-                                            <h6 className='font-bold text-primary'>Comment</h6>
-                                            <p className="text-sm text-muted-foreground">{member.comments}</p>
-                                          </div>
-                                        </div>
-                                      </Card>
-                                    ))}
+                    <TableRow key={assessment.id}>
+                      <TableCell>
+                        <Dialog.Root>
+                          <Dialog.Trigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => setSelectedAssessment(assessment)}
+                            >
+                              View Scores
+                            </Button>
+                          </Dialog.Trigger>
+                          {selectedAssessment?.id === assessment.id && (
+                            <Dialog.Portal>
+                              <Dialog.Overlay className="dialog-overlay" />
+                              <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto z-[1001]">
+                                <div className="space-y-6">
+                                  {/* Header Section */}
+                                  <div className="flex justify-between items-start">
+                                    <div>
+                                      <h2 className="text-2xl font-bold">{assessment.candidateName}</h2>
+                                      <p className="text-muted-foreground">{assessment.position}</p>
+                                    </div>
+                                    
+                                    <Badge className={`${getScoreColor(assessment.overallScore)} text-lg`}>
+                                      TOTAL SCORE : {assessment.overallScore} 
+                                    </Badge>
                                   </div>
-                                </div>
 
-                                {/* Technical Interview Score Section */}
-                                <div>
-                                  <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                                    <Award className="h-5 w-5" />
-                                    Technical Interview Score
-                                  </h4>
-                                  <div className="space-y-4">
-                                    {assessment.technicalInterviewers.map((interviewer) => (
-                                      <Card key={interviewer.id} className="p-4">
-                                        <div className="flex items-start gap-4">
-                                          <Avatar className="h-12 w-12">
-                                            <AvatarImage src={interviewer.image} alt={interviewer.name} />
-                                            <AvatarFallback>{interviewer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                          </Avatar>
-                                          <div className="flex-1">
-                                            <div className="flex items-center justify-between mb-2">
-                                              <div>
-                                                <h5 className="font-semibold">{interviewer.name}</h5>
-                                                <p className="text-sm text-muted-foreground">{interviewer.position}</p>
+                                  {/* Summary Info */}
+                                  <div className="grid grid-cols-3 gap-4 bg-muted/20 p-4 rounded-lg">
+                                    <div>
+                                      <p className="text-sm text-muted-foreground">Final Decision</p>
+                                      <p className="font-semibold">{getFinalDecision(assessment.overallScore)}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm text-muted-foreground">Application Status</p>
+                                      <p className="font-semibold">{getApplicationStatus(assessment.overallScore)}</p>
+                                    </div>
+                                    <div>
+                                      <p className="text-sm text-muted-foreground">Total Score</p>
+                                      <p className="font-semibold">{assessment.overallScore}</p>
+                                    </div>
+                                  </div>
+
+                                  {/* Committee Score Section */}
+                                  <div>
+                                    <div className="flex items-start gap-4">
+                                      <h3 className="text-lg font-semibold flex items-center gap-2">
+                                        <Users className="h-5 w-5" />
+                                        Committee Score
+                                      </h3>
+                                      <Badge className='bg-primary text-primary-foreground'>
+                                        {getCommitteeAverage(assessment.committeeMembers)}
+                                      </Badge>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                      {assessment.committeeMembers.map((member) => (
+                                        <Card key={member.id} className="p-4">
+                                          <div className="flex items-start gap-4">
+                                            <Avatar className="h-12 w-12">
+                                              <AvatarImage src={member.image} alt={member.name} />
+                                              <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex-1">
+                                              <div className="flex items-center justify-between mb-2">
+                                                <div>
+                                                  <h5 className="font-semibold">{member.name}</h5>
+                                                  <p className="text-sm text-muted-foreground">{member.position}</p>
+                                                </div>
+                                                <Badge className={`${getScoreColor(member.score)}`}>
+                                                  {member.score}
+                                                </Badge>
                                               </div>
-                                              <Badge className={`${getScoreColor(interviewer.score)}`}>
-                                                {interviewer.score}
-                                              </Badge>
+                                              <h6 className='font-bold text-primary'>Comment</h6>
+                                              <p className="text-sm text-muted-foreground">{member.comments}</p>
                                             </div>
-                                            <p className="text-sm text-muted-foreground">{interviewer.comments}</p>
                                           </div>
-                                        </div>
-                                      </Card>
-                                    ))}
+                                        </Card>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  {/* Technical Interview Score Section */}
+                                  <div>
+                                    <div className="flex items-start gap-4">
+                                      <h3 className="text-lg font-semibold flex items-center gap-2">
+                                        <Award className="h-5 w-5" />
+                                        Technical Interview Score
+                                      </h3>
+                                      <Badge className='bg-primary text-primary-foreground'>
+                                        {getTechnicalAverage(assessment.technicalInterviewers)}
+                                      </Badge>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                      {assessment.technicalInterviewers.map((interviewer) => (
+                                        <Card key={interviewer.id} className="p-4">
+                                          <div className="flex items-start gap-4">
+                                            <Avatar className="h-12 w-12">
+                                              <AvatarImage src={interviewer.image} alt={interviewer.name} />
+                                              <AvatarFallback>{interviewer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex-1">
+                                              <div className="flex items-center justify-between mb-2">
+                                                <div>
+                                                  <h5 className="font-semibold">{interviewer.name}</h5>
+                                                  <p className="text-sm text-muted-foreground">{interviewer.position}</p>
+                                                </div>
+                                                <Badge className={`${getScoreColor(interviewer.score)}`}>
+                                                  {interviewer.score}
+                                                </Badge>
+                                              </div>
+                                              <h6 className='font-bold text-primary'>Comment</h6>
+                                              <p className="text-sm text-muted-foreground">{interviewer.comments}</p>
+                                            </div>
+                                          </div>
+                                        </Card>
+                                      ))}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </React.Fragment>
+                                <Dialog.Close asChild>
+                                  <Button variant="ghost" className="absolute top-4 right-4">
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </Dialog.Close>
+                              </Dialog.Content>
+                            </Dialog.Portal>
+                          )}
+                        </Dialog.Root>
+                      </TableCell>
+                      <TableCell className="font-medium">{assessment.position}</TableCell>
+                      <TableCell>{assessment.candidateName}</TableCell>
+                      <TableCell>
+                        <Badge className={`${getScoreColor(assessment.overallScore)}`}>
+                          {assessment.overallScore}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{format(new Date(assessment.assessmentDate), 'MMM d, yyyy')}</TableCell>
+                    </TableRow>
                   ))
                 )}
               </TableBody>
@@ -451,4 +490,4 @@ const CandidateAssessmentScore: React.FC = () => {
   );
 };
 
-export default CandidateAssessmentScore; 
+export default CandidateAssessmentScore;
