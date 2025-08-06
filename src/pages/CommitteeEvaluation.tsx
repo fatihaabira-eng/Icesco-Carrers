@@ -519,7 +519,7 @@ const CommitteeEvaluation = () => {
       </Tabs>
 
       {/* Action Buttons */}
-      <div className="flex justify-between items-center pt-6 border-t">
+      {/* <div className="flex justify-between items-center pt-6 border-t">
         <div className="space-x-2">
           <Button variant="outline">
             <Calendar className="h-4 w-4 mr-2" />
@@ -560,7 +560,7 @@ const CommitteeEvaluation = () => {
             Approve
           </Button>
         </div>
-        </div>
+      </div> */}
 
         {/* Proposed Interview Dates Section */}
         <Card className="mt-6">

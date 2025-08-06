@@ -250,7 +250,7 @@ const CommitteeCandidates: React.FC = () => {
                   <TableHead>Application Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Score</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Take Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

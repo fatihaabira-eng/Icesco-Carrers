@@ -49,7 +49,7 @@ interface Recruitment {
 }
 
 const HRDepartments: React.FC = () => {
-  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedYear, setSelectedYear] = useState('2025');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedDepartment, setExpandedDepartment] = useState<string | null>(null);

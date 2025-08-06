@@ -50,7 +50,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       label: 'Dashboard',
       icon: Briefcase,
       description: 'Overview and KPIs',
-      path: '/manpower/hr'
+      path: '/manpower/hr/dashboard'
     },
     
     {
@@ -58,7 +58,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       label: 'BU Manpower Management',
       icon: Building,
       description: 'Manage recruitment across business units',
-      path: '/manpower/hr/bu-manpower'
+      path: '/manpower/hr'
     },
     // {
     //   id: 'analytics',

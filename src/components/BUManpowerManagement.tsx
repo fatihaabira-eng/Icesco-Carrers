@@ -301,7 +301,7 @@ const BUManpowerManagement: React.FC = () => {
     <div className="p-4 md:p-8 space-y-8 bg-gray-50 min-h-screen font-sans">
       {/* Header */}
       <DashboardHeader
-        title="BU Manpower Management"
+        title="B.U Manpower Management"
         description="Manage recruitment across all business units, sectors, centers, and support units"
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}

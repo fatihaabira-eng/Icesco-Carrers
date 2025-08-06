@@ -165,7 +165,7 @@ const AppContent = () => {
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
-                  <HRDashboard />
+                  <BUManpowerManagement />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
             } 
@@ -231,11 +231,11 @@ const AppContent = () => {
             } 
           />
           <Route 
-            path="/manpower/hr/bu-manpower" 
+            path="/manpower/hr/dashboard" 
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
-                  <BUManpowerManagement />
+                  <HRDashboard />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
             } 
@@ -295,7 +295,7 @@ const AppContent = () => {
               </ProtectedManpowerRoute>
             } 
           >
-            <Route index element={<CommitteeDashboard />} />
+            <Route index element={<BUManpowerManagement />} />
             <Route path="interviews" element={<CommitteeInterviews />} />
             <Route path="candidates" element={<CommitteeCandidates />} />
             <Route path="*" element={<div style={{ padding: '20px', backgroundColor: 'lightblue', border: '2px solid blue' }}>

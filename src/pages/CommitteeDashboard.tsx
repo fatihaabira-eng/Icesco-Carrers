@@ -47,7 +47,7 @@ interface Position {
 
 const CommitteeDashboard: React.FC = () => {
   console.log('CommitteeDashboard component rendering');
-  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedYear, setSelectedYear] = useState('2025');
   const [dateRange, setDateRange] = useState('year');
 
   // Mock data for proposed interviews
