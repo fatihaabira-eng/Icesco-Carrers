@@ -19,7 +19,7 @@ import CandidateDashboard from "./pages/CandidateProfile";
 import AuthenticationPage from "./pages/auth";
 import MultiStepForm from "./pages/apply";
 import CandidateProcess from "./pages/RecrutmentProcess";
-import ManpowerDashboard from "./pages/ManpowerDashboard";
+import ManpowerDashboard from "./pages/ManPowerDashboard";
 import ManpowerPortal from "./pages/ManpowerPortal";
 import ManpowerAuth from "./pages/ManpowerAuth";
 import RecruitmentRequestForm from "./pages/RecruitmentRequestForm";

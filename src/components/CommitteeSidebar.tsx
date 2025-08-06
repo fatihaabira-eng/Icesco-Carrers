@@ -66,7 +66,6 @@ const CommitteeSidebar: React.FC<CommitteeSidebarProps> = ({ onLogout }) => {
       subItems: [
         { id: 'proposed', label: 'Proposed Interviews', component: <ProposedInterviews /> },
         { id: 'scheduled', label: 'Scheduled Interviews', component: <ScheduledInterviews /> },
-        { id: 'completed', label: 'Completed Interviews', component: <CompletedInterviews /> }
       ]
     },
     {
@@ -83,13 +82,6 @@ const CommitteeSidebar: React.FC<CommitteeSidebarProps> = ({ onLogout }) => {
       description: 'Review candidate profiles',
       component: <CommitteeCandidates />
     },
-    {
-      id: 'evaluations',
-      label: 'Evaluations',
-      icon: Award,
-      description: 'Candidate assessments',
-      component: <CommitteeEvaluations />
-    }
   ];
 
   return (
