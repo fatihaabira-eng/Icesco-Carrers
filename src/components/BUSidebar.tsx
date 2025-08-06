@@ -42,6 +42,14 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
   const location = useLocation();
 
   const menuItems = [
+    
+    {
+      id: 'bu-manpower-management',
+      label: 'BU Manpower Management',
+      icon: FileText,
+      description: 'Manage BU Manpower',
+      path: '/manpower/director/bu-manpower-management'
+    },
     {
       id: 'dashboard',
       label: 'Dashboard',
@@ -92,10 +100,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
               className="h-8 w-auto"
             />
           </Link>
-          <div className="flex items-center space-x-2">
-            <Shield className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">BU Portal</span>
-          </div>
+         
         </div>
       </SidebarHeader>
 

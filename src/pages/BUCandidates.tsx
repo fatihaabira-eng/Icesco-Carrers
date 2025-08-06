@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import CommitteeEvaluation from '@/components/CommitteeEvaluation';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -21,54 +22,124 @@ import {
 // Sample data for candidates
 const candidatesData = [
   {
-    id: 1,
+    id: 'CAND-001',
     name: "Alice Thompson",
+    email: "alice.thompson@example.com",
+    position: "Senior Frontend Developer",
     jobOffer: "Senior Frontend Developer",
     status: "Shortlisted",
-    applyingDate: "2024-02-10",
+    applyingDate: "2025-02-10",
+    appliedDate: "2025-02-10",
+    currentStage: "Committee Evaluation",
     cvUrl: "/sample-cv.pdf",
     phase: "Technical Interview",
-    score: 85
+    score: 85,
+    avatar: "/api/placeholder/80/80",
+    introVideo: "/api/placeholder/video.mp4",
+    cv: "/api/placeholder/cv.pdf",
+    coverLetter: "/api/placeholder/cover.pdf",
+    qualifications: "Bachelor's in Computer Science, 5+ years experience",
+    totalExperience: "5 years",
+    currentCtc: "75,000 MAD",
+    expectedCtc: "95,000 MAD",
+    languages: ["English (Fluent)", "French (Intermediate)", "Arabic (Basic)"],
+    keySkills: ["React", "TypeScript", "Node.js", "UI/UX Design"],
+    education: [
+      { degree: "Bachelor in Computer Science", institution: "MIT University", year: "2019" },
+      { degree: "Frontend Development Certificate", institution: "Google", year: "2020" }
+    ],
+    experience: [
+      { 
+        role: "Frontend Developer", 
+        company: "Tech Corp", 
+        duration: "2020-Present", 
+        description: "Developed responsive web applications using React and TypeScript"
+      },
+      { 
+        role: "Junior Developer", 
+        company: "StartupXYZ", 
+        duration: "2019-2020", 
+        description: "Built user interfaces and improved user experience"
+      }
+    ]
   },
   {
-    id: 2,
+    id: 'CAND-002',
     name: "Bob Wilson",
+    email: "bob.wilson@example.com",
+    position: "Product Manager",
     jobOffer: "Product Manager",
     status: "Under Review",
-    applyingDate: "2024-02-12",
+    applyingDate: "2025-02-12",
+    appliedDate: "2025-02-12",
+    currentStage: "Committee Evaluation",
     cvUrl: "/sample-cv.pdf",
     phase: "Initial Review",
-    score: 78
+    score: 78,
+    avatar: "/api/placeholder/80/80",
+    introVideo: "/api/placeholder/video.mp4",
+    cv: "/api/placeholder/cv.pdf",
+    coverLetter: "/api/placeholder/cover.pdf",
+    qualifications: "MBA, 8+ years in product management",
+    totalExperience: "8 years",
+    currentCtc: "95,000 MAD",
+    expectedCtc: "120,000 MAD",
+    languages: ["English (Native)", "French (Fluent)", "Arabic (Intermediate)"],
+    keySkills: ["Product Strategy", "Team Leadership", "Data Analysis", "Agile"],
+    education: [
+      { degree: "MBA", institution: "Harvard Business School", year: "2018" },
+      { degree: "Bachelor in Business", institution: "UCLA", year: "2016" }
+    ],
+    experience: [
+      { 
+        role: "Senior Product Manager", 
+        company: "BigTech Inc", 
+        duration: "2020-Present", 
+        description: "Led product development for mobile applications"
+      },
+      { 
+        role: "Product Manager", 
+        company: "Growth Co", 
+        duration: "2018-2020", 
+        description: "Managed product roadmap and cross-functional teams"
+      }
+    ]
   },
+  // Add similar structure for other candidates...
   {
-    id: 3,
+    id: 'CAND-003',
     name: "Carol Davis",
+    email: "carol.davis@example.com",
+    position: "UX Designer",
     jobOffer: "UX Designer",
     status: "Interviewed",
-    applyingDate: "2024-02-08",
+    applyingDate: "2025-02-08",
+    appliedDate: "2025-02-08",
+    currentStage: "Committee Evaluation",
     cvUrl: "/sample-cv.pdf",
     phase: "Final Review",
-    score: 92
-  },
-  {
-    id: 4,
-    name: "David Miller",
-    jobOffer: "Senior Frontend Developer",
-    status: "Hired",
-    applyingDate: "2024-01-25",
-    cvUrl: "/sample-cv.pdf",
-    phase: "Completed",
-    score: 95
-  },
-  {
-    id: 5,
-    name: "Emma Garcia",
-    jobOffer: "Product Manager",
-    status: "Rejected",
-    applyingDate: "2024-02-05",
-    cvUrl: "/sample-cv.pdf",
-    phase: "Initial Review",
-    score: 65
+    score: 92,
+    avatar: "/api/placeholder/80/80",
+    introVideo: "/api/placeholder/video.mp4",
+    cv: "/api/placeholder/cv.pdf",
+    coverLetter: "/api/placeholder/cover.pdf",
+    qualifications: "Master's in Design, 6+ years experience",
+    totalExperience: "6 years",
+    currentCtc: "70,000 MAD",
+    expectedCtc: "85,000 MAD",
+    languages: ["English (Fluent)", "French (Native)", "Arabic (Basic)"],
+    keySkills: ["UI/UX Design", "Figma", "User Research", "Prototyping"],
+    education: [
+      { degree: "Master in UX Design", institution: "Design Institute", year: "2019" }
+    ],
+    experience: [
+      { 
+        role: "Senior UX Designer", 
+        company: "Design Studio", 
+        duration: "2021-Present", 
+        description: "Led design projects for web and mobile applications"
+      }
+    ]
   }
 ];
 
@@ -109,6 +180,7 @@ const BUCandidates: React.FC = () => {
   };
 
   const handleCVView = (candidate: any) => {
+    console.log("Opening modal for candidate:", candidate); // Debug log
     setSelectedCV(candidate);
     setIsCVModalOpen(true);
   };
@@ -230,7 +302,7 @@ const BUCandidates: React.FC = () => {
                         className="text-primary hover:text-primary"
                       >
                         <Eye className="h-4 w-4 mr-2" />
-                        View CV
+                     
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -249,36 +321,22 @@ const BUCandidates: React.FC = () => {
       </Card>
 
       {/* CV Modal */}
-      <Dialog open={isCVModalOpen} onOpenChange={setIsCVModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
-          <DialogHeader className="border-b pb-4">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-bold">
-                CV - {selectedCV?.name}
-              </DialogTitle>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const link = document.createElement('a');
-                  link.href = selectedCV?.cvUrl || '';
-                  link.download = `${selectedCV?.name}_CV.pdf`;
-                  link.click();
-                }}
-                className="flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Download CV
-              </Button>
-            </div>
+          <Dialog open={isCVModalOpen} onOpenChange={setIsCVModalOpen}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-hidden p-0">
+          <DialogHeader className="px-6 py-4 border-b">
+            <DialogTitle className="text-xl font-bold">
+              Committee Evaluation - {selectedCV?.name || 'Loading...'}
+            </DialogTitle>
           </DialogHeader>
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="flex items-center justify-center h-[60vh] bg-muted/20 rounded-lg">
-              <div className="text-center">
-                <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
-                <p className="text-xl font-medium text-muted-foreground">CV Preview</p>
+          
+          <div className="overflow-y-auto max-h-[calc(95vh-80px)]">
+            {selectedCV ? (
+              <CommitteeEvaluation candidateData={selectedCV} />
+            ) : (
+              <div className="p-6">
+                <p>Loading candidate data...</p>
               </div>
-            </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

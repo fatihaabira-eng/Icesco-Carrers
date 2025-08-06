@@ -29,9 +29,9 @@ import {
 
 const BUDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedYear, setSelectedYear] = useState('2024');
-  const [dateFrom, setDateFrom] = useState('2024-01-01');
-  const [dateTo, setDateTo] = useState('2024-12-31');
+  const [selectedYear, setSelectedYear] = useState('2025');
+  const [dateFrom, setDateFrom] = useState('2025-01-01');
+  const [dateTo, setDateTo] = useState('2025-12-31');
   const [activeTab, setActiveTab] = useState('dashboard');
 
   // Mock data for offers
@@ -43,8 +43,8 @@ const BUDashboard: React.FC = () => {
       location: 'Rabat, Morocco',
       status: 'Active',
       applied: 45,
-      closingDate: '2024-02-10',
-      createdDate: '2024-01-15'
+      closingDate: '2025-02-10',
+      createdDate: '2025-01-15'
     },
     {
       id: 'OFFER-002',
@@ -53,8 +53,8 @@ const BUDashboard: React.FC = () => {
       location: 'Remote',
       status: 'Active',
       applied: 32,
-      closingDate: '2024-02-08',
-      createdDate: '2024-01-12'
+      closingDate: '2025-02-08',
+      createdDate: '2025-01-12'
     },
     {
       id: 'OFFER-003',
@@ -63,8 +63,8 @@ const BUDashboard: React.FC = () => {
       location: 'Rabat, Morocco',
       status: 'Closed',
       applied: 18,
-      closingDate: '2024-01-20',
-      createdDate: '2024-01-01'
+      closingDate: '2025-01-20',
+      createdDate: '2025-01-01'
     }
   ];
 
@@ -75,7 +75,7 @@ const BUDashboard: React.FC = () => {
       name: 'Ahmed Hassan El-Masri',
       position: 'Senior Software Engineer',
       status: 'In Review',
-      applyingDate: '2024-01-15',
+      applyingDate: '2025-01-15',
       phase: 'Technical Interview',
       score: 95
     },
@@ -84,7 +84,7 @@ const BUDashboard: React.FC = () => {
       name: 'Fatima Al-Zahra Benali',
       position: 'Marketing Manager',
       status: 'Shortlisted',
-      applyingDate: '2024-01-14',
+      applyingDate: '2025-01-14',
       phase: 'Final Interview',
       score: 92
     },
@@ -93,7 +93,7 @@ const BUDashboard: React.FC = () => {
       name: 'Omar Khalil Al-Rashid',
       position: 'Education Program Manager',
       status: 'Hired',
-      applyingDate: '2024-01-13',
+      applyingDate: '2025-01-13',
       phase: 'Completed',
       score: 89
     }
@@ -105,7 +105,7 @@ const BUDashboard: React.FC = () => {
       id: 'INT-001',
       candidate: 'Ahmed Hassan El-Masri',
       position: 'Senior Software Engineer',
-      dateTime: 'Jan 25, 2024 - 10:00 AM',
+      dateTime: 'Jan 25, 2025 - 10:00 AM',
       status: 'Scheduled',
       interviewer: 'Dr. Mohammed'
     },
@@ -113,7 +113,7 @@ const BUDashboard: React.FC = () => {
       id: 'INT-002',
       candidate: 'Fatima Al-Zahra Benali',
       position: 'Marketing Manager',
-      dateTime: 'Jan 26, 2024 - 2:00 PM',
+      dateTime: 'Jan 26, 2025 - 2:00 PM',
       status: 'Scheduled',
       interviewer: 'Ms. Fatima'
     },
@@ -121,13 +121,14 @@ const BUDashboard: React.FC = () => {
       id: 'INT-003',
       candidate: 'Omar Khalil Al-Rashid',
       position: 'Education Program Manager',
-      dateTime: 'Jan 20, 2024 - 11:00 AM',
+      dateTime: 'Jan 20, 2025 - 11:00 AM',
       status: 'Completed',
       interviewer: 'Mr. Hassan'
     }
   ];
 
   const years = [
+    { value: '2025', label: '2025' },
     { value: '2024', label: '2024' },
     { value: '2023', label: '2023' },
     { value: '2022', label: '2022' },
@@ -203,7 +204,7 @@ const BUDashboard: React.FC = () => {
       </div>
 
       {/* KPI Cards */}
-      <Card>
+       <Card>
         <CardHeader>
           <div className="flex items-center space-x-3">
             <div className="p-2 rounded-lg bg-primary/10">
@@ -218,15 +219,29 @@ const BUDashboard: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card className="border-0 shadow-none">
               <CardContent className="p-6 text-center">
                 <div className="flex flex-col items-center space-y-3">
                   <div className="p-3 rounded-lg bg-primary/10">
-                    <TrendingUp className="h-6 w-6 text-primary" />
+                    <FileText className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-muted-foreground">Open Positions</p>
+                    <p className="text-lg font-bold text-muted-foreground">Requested Positions</p>
+                    <p className="text-3xl font-bold text-primary">12</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-none">
+              <CardContent className="p-6 text-center">
+                <div className="flex flex-col items-center space-y-3">
+                  <div className="p-3 rounded-lg bg-primary/10">
+                    <Briefcase className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-muted-foreground">Published Positions</p>
                     <p className="text-3xl font-bold text-primary">{offersData.filter(o => o.status === 'Active').length}</p>
                   </div>
                 </div>
@@ -237,11 +252,11 @@ const BUDashboard: React.FC = () => {
               <CardContent className="p-6 text-center">
                 <div className="flex flex-col items-center space-y-3">
                   <div className="p-3 rounded-lg bg-primary/10">
-                    <UserCheck className="h-6 w-6 text-primary" />
+                    <Users className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-muted-foreground">Candidates</p>
-                    <p className="text-3xl font-bold text-primary">{candidatesData.length}</p>
+                    <p className="text-lg font-bold text-muted-foreground">Applied Candidates</p>
+                    <p className="text-3xl font-bold text-primary">{offersData.reduce((sum, o) => sum + o.applied, 0)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -251,10 +266,10 @@ const BUDashboard: React.FC = () => {
               <CardContent className="p-6 text-center">
                 <div className="flex flex-col items-center space-y-3">
                   <div className="p-3 rounded-lg bg-primary/10">
-                    <Clock className="h-6 w-6 text-primary" />
+                    <Calendar className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-lg font-bold text-muted-foreground">Interviews Scheduled</p>
+                    <p className="text-lg font-bold text-muted-foreground">Scheduled Interviews</p>
                     <p className="text-3xl font-bold text-primary">{interviewsData.filter(i => i.status === 'Scheduled').length}</p>
                   </div>
                 </div>
@@ -274,7 +289,7 @@ const BUDashboard: React.FC = () => {
                 <Briefcase className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-xl">Recent Job Offers</CardTitle>
+                <CardTitle className="text-xl">Recent Job Positions</CardTitle>
                 <p className="text-sm text-muted-foreground">Latest position openings</p>
               </div>
             </div>
@@ -314,7 +329,7 @@ const BUDashboard: React.FC = () => {
                 <Users className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-xl">Recent Candidates</CardTitle>
+                <CardTitle className="text-xl">Recent Applied Candidates</CardTitle>
                 <p className="text-sm text-muted-foreground">Latest applications received</p>
               </div>
             </div>

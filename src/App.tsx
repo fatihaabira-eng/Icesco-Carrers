@@ -41,6 +41,7 @@ import HRJobOffers from "./pages/HRJobOffers";
 import HRDepartments from "./pages/HRDepartments";
 import BUInterviews from "./pages/BUInterviews";
 import BUCandidates from "./pages/BUCandidates";
+import BUManPowerManagement from "./pages/BUManPowerManagement";
 
 import HRCandidatesPipeline from "./pages/HRCandidatesPipeline";
 import ScheduleInterview from "./pages/ScheduleInterview";
@@ -82,7 +83,7 @@ const ManpowerRoleRedirect = () => {
     case 'committee':
       return <Navigate to="/manpower/committee" replace />;
     case 'business unit':
-      return <Navigate to="/manpower/bu" replace />;
+      return <Navigate to="/manpower/director/bu-manpower-management" replace />;
     default:
       return <Navigate to="/manpower/auth" replace />;
   }
@@ -333,12 +334,24 @@ const AppContent = () => {
               </ProtectedManpowerRoute>
             } 
           />
+          
             <Route 
             path="/manpower/director/offers" 
             element={
               <ProtectedManpowerRoute>
                 <BUPortalLayout>
                   <BUOffers/>
+                </BUPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+
+          <Route 
+            path="/manpower/director/bu-manpower-management" 
+            element={
+              <ProtectedManpowerRoute>
+                <BUPortalLayout>
+                  <BUManPowerManagement/>
                 </BUPortalLayout>
               </ProtectedManpowerRoute>
             } 
