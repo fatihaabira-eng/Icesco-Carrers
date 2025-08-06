@@ -47,7 +47,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       label: 'Dashboard',
       icon: Briefcase,
       description: 'Overview and KPIs',
-      path: '/manpower/director'
+      path: '/manpower/bu'
     },
     {
       id: 'interviews',
