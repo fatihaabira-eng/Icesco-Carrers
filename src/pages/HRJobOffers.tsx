@@ -227,13 +227,13 @@ const HRJobOffers: React.FC = () => {
       </DashboardHeader>
 
       {/* KPI Cards */}
-      <DashboardSection
+      {/* <DashboardSection
         title="Job Offers Overview"
         description="Key metrics for job offer management and recruitment pipeline"
         icon={FileText}
       >
         <KPICards cards={kpiCards} />
-      </DashboardSection>
+      </DashboardSection> */}
 
       {/* Job Offers Management */}
       <DashboardSection

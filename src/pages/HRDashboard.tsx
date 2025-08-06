@@ -168,7 +168,7 @@ const HRDashboard: React.FC = () => {
             <KpiCard icon={<CheckCircle className="h-6 w-6 text-green-500" />} title="Offers Accepted" value={jobOfferStatusData.accepted} />
             <KpiCard icon={<Clock className="h-6 w-6 text-yellow-500" />} title="Offers Pending" value={jobOfferStatusData.pending} />
             <KpiCard icon={<AlertCircle className="h-6 w-6 text-gray-500" />} title="Offers Neglected" value={jobOfferStatusData.neglected} />
-            <KpiCard icon={<MessageSquare className="h-6 w-6 text-blue-500" />} title="Negotiation" value={jobOfferStatusData.negotiation} />
+            <KpiCard icon={<MessageSquare className="h-6 w-6 text-blue-500" />} title="Ongoing Negotiation" value={jobOfferStatusData.negotiation} />
             <KpiCard icon={<XCircle className="h-6 w-6 text-red-500" />} title="Offers Declined" value={jobOfferStatusData.declined} />
           </div>
         </CardContent>
@@ -243,7 +243,7 @@ const HRDashboard: React.FC = () => {
             <KpiCard icon={<Share2 className="h-6 w-6 text-primary" />} title="Social Media" value={recruitmentOutreachData.socialMedia} />
             <KpiCard icon={<UserPlus className="h-6 w-6 text-primary" />} title="Referral" value={recruitmentOutreachData.referral} />
             <KpiCard icon={<Building className="h-6 w-6 text-primary" />} title="Internal" value={recruitmentOutreachData.internal} />
-            <KpiCard icon={<Globe className="h-6 w-6 text-primary" />} title="External" value={recruitmentOutreachData.external} />
+            <KpiCard icon={<Globe className="h-6 w-6 text-primary" />} title="Member States" value={recruitmentOutreachData.external} />
           </div>
         </CardContent>
       </Card>

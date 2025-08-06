@@ -175,12 +175,14 @@ const CreateJobOfferForm: React.FC<CreateJobOfferFormProps> = ({ onClose }) => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="reference">Reference *</Label>
+              <Label htmlFor="reference">Reference </Label>
               <Input
                 id="reference"
-                placeholder="e.g., JOB-2025-001"
+                placeholder="JOB-2025-001"
+                disabled
                 value={formData.reference}
                 onChange={(e) => handleInputChange('reference', e.target.value)}
+                
               />
             </div>
 
