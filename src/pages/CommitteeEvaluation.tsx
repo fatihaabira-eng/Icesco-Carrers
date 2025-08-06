@@ -47,7 +47,7 @@ const CommitteeEvaluation = () => {
     { id: '5', name: 'ICESCO Languages', maxPoints: 9, score: 7, description: 'Arabic, English, French proficiency' },
     { id: '8', name: 'Innovation & Problem Solving', maxPoints: 10, score: 7, description: 'Creative thinking and problem-solving abilities' },
     { id: '9', name: 'Collaboration & Networking', maxPoints: 5, score: 4, description: 'Ability to work in teams and build networks' },
-    { id: '10', name: 'Alignement with ICESCO', maxPoints: 5, score: 5, description: 'Alignment with ICESCO values and mission' },
+    { id: '10', name: 'Alignement with ICESCO Values', maxPoints: 5, score: 5, description: 'Alignment with ICESCO values and mission' },
     
   ]);
 

@@ -52,13 +52,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       description: 'Overview and KPIs',
       path: '/manpower/hr'
     },
-    {
-      id: 'assessment-scores',
-      label: 'Assessment Scores',
-      icon: Award,
-      description: 'Candidate evaluation scores',
-      path: '/manpower/hr/assessment-scores'
-    },
+    
     {
       id: 'bu-manpower',
       label: 'BU Manpower Management',
@@ -66,13 +60,13 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       description: 'Manage recruitment across business units',
       path: '/manpower/hr/bu-manpower'
     },
-    {
-      id: 'analytics',
-      label: 'Analytics',
-      icon: BarChart3,
-      description: 'Recruitment metrics',
-      path: '/manpower/hr/analytics'
-    },
+    // {
+    //   id: 'analytics',
+    //   label: 'Analytics',
+    //   icon: BarChart3,
+    //   description: 'Recruitment metrics',
+    //   path: '/manpower/hr/analytics'
+    // },
     {
       id: 'candidates',
       label: 'Candidates',
@@ -81,7 +75,14 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       path: '/manpower/hr/candidates',
       subItems: [
         { id: 'pipeline', label: 'Pipeline View', path: '/manpower/hr/candidates/pipeline' },
-        { id: 'matching', label: 'Job Matching', path: '/manpower/hr/candidates/matching' }
+        { id: 'matching', label: 'Job Matching', path: '/manpower/hr/candidates/matching' },
+        {
+      id: 'assessment-scores',
+      label: 'Assessment Scores',
+      icon: Award,
+      description: 'Candidate evaluation scores',
+      path: '/manpower/hr/assessment-scores'
+    },
       ]
     },
     {

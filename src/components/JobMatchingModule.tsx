@@ -265,7 +265,7 @@ const JobMatchingModule: React.FC = () => {
                   <TableHead>Degree</TableHead>
                   <TableHead>University</TableHead>
                   <TableHead className="text-center"> Matching</TableHead>
-                  <TableHead>Position</TableHead>
+                  <TableHead>Job Position</TableHead>
                   <TableHead>Phase</TableHead>
                   <TableHead>Decision</TableHead>
                   <TableHead className="text-center">Take Action</TableHead>

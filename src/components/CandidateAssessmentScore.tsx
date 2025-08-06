@@ -260,8 +260,8 @@ const CandidateAssessmentScore: React.FC = () => {
 
   const kpiCards = [
     { title: 'Total Assessments', value: totalAssessments, icon: Award, description: 'All candidate evaluations' },
-    { title: 'Average Score', value: `${averageScore}%`, icon: Star, description: 'Overall performance' },
-    { title: 'High Performers', value: highScores, icon: UserCheck, description: 'Scores ≥ 85%' },
+    { title: 'Average Score', value: `${averageScore}`, icon: Star, description: 'Overall performance' },
+    { title: 'High Performers', value: highScores, icon: UserCheck, description: 'Scores ≥ 85' },
     { title: 'Committee Reviews', value: committeeAssessments, icon: Users, description: 'Total evaluations' }
   ];
 
@@ -291,13 +291,13 @@ const CandidateAssessmentScore: React.FC = () => {
       />
 
       {/* KPI Cards */}
-      <DashboardSection
+      {/* <DashboardSection
         title="Assessment Overview"
         description="Key metrics for candidate evaluation and scoring"
         icon={Award}
       >
         <KPICards cards={kpiCards} />
-      </DashboardSection>
+      </DashboardSection> */}
 
       {/* Assessment Scores Management */}
       <DashboardSection
@@ -331,7 +331,7 @@ const CandidateAssessmentScore: React.FC = () => {
                   <TableHead className="w-[50px]"></TableHead>
                   <TableHead>Position</TableHead>
                   <TableHead>Candidate Name</TableHead>
-                  <TableHead>Overall Score</TableHead>
+                  <TableHead>Total Score</TableHead>
                   <TableHead>Assessment Date</TableHead>
                 </TableRow>
               </TableHeader>
@@ -355,7 +355,7 @@ const CandidateAssessmentScore: React.FC = () => {
                         <TableCell>{assessment.candidateName}</TableCell>
                         <TableCell>
                           <Badge className={`${getScoreColor(assessment.overallScore)}`}>
-                            {assessment.overallScore}%
+                            {assessment.overallScore}
                           </Badge>
                         </TableCell>
                         <TableCell>{format(new Date(assessment.assessmentDate), 'MMM d, yyyy')}</TableCell>
@@ -364,13 +364,18 @@ const CandidateAssessmentScore: React.FC = () => {
                         <TableRow>
                           <TableCell colSpan={TABLE_COL_COUNT} className="p-0">
                             <div className="p-6 bg-muted/20">
-                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                              <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
                                 {/* Committee Score Section */}
                                 <div>
+                                   <div className="flex items-start gap-4">
                                   <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
                                     <Users className="h-5 w-5" />
                                     Committee Score
                                   </h4>
+                                  <Badge className='bg-primary text-primary-foreground mb-4'>
+                                     86
+                                  </Badge></div>
+                                  
                                   <div className="space-y-4">
                                     {assessment.committeeMembers.map((member) => (
                                       <Card key={member.id} className="p-4">
@@ -386,9 +391,10 @@ const CandidateAssessmentScore: React.FC = () => {
                                                 <p className="text-sm text-muted-foreground">{member.position}</p>
                                               </div>
                                               <Badge className={`${getScoreColor(member.score)}`}>
-                                                {member.score}%
+                                                {member.score}
                                               </Badge>
                                             </div>
+                                            <h6 className='font-bold text-primary'>Comment</h6>
                                             <p className="text-sm text-muted-foreground">{member.comments}</p>
                                           </div>
                                         </div>
@@ -418,7 +424,7 @@ const CandidateAssessmentScore: React.FC = () => {
                                                 <p className="text-sm text-muted-foreground">{interviewer.position}</p>
                                               </div>
                                               <Badge className={`${getScoreColor(interviewer.score)}`}>
-                                                {interviewer.score}%
+                                                {interviewer.score}
                                               </Badge>
                                             </div>
                                             <p className="text-sm text-muted-foreground">{interviewer.comments}</p>
