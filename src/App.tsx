@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import ImprovedNavbar from "@/components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
+import CommitteeHome from "./pages/CommitteeHome";
 import About from "./pages/About";
 import Opportunities from "./pages/Opportunities";
 import DepartmentPage from "./pages/DepartmentPage";
@@ -162,6 +163,17 @@ const AppContent = () => {
           {/* Manpower Portal Routes */}
           <Route path="/manpower/auth" element={<ManpowerAuth />} />
           <Route path="/manpower" element={<ManpowerRoleRedirect />} />
+
+          <Route 
+            path="/manpower/home" 
+            element={
+              <ProtectedManpowerRoute>
+                <CommitteePortalLayout>
+                  <CommitteeHome />
+                </CommitteePortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
           
           {/* HR Portal Routes with Sidebar Layout */}
           <Route 

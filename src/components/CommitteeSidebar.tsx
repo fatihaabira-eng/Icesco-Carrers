@@ -7,11 +7,13 @@ import {
   Calendar, 
   Settings,
   LogOut,
-  Bell
+  Bell,
+  House,
 } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
+
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
@@ -35,6 +37,13 @@ const CommitteeSidebar: React.FC<CommitteeSidebarProps> = ({ onLogout }) => {
   const location = useLocation();
 
   const menuItems = [
+    {
+      id: 'home',
+      label: 'Home',
+      icon: House,
+      description: 'Home',
+      path: '/manpower/home'
+    },
     {
       id: 'dashboard',
       label: 'Dashboard',
