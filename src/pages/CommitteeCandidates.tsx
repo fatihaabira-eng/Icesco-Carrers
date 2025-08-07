@@ -30,6 +30,30 @@ import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
 import CommitteeEvaluations from './CommitteeEvaluation';
 
+// Custom SVG icon for three people with sharing arrows
+const ThreePeopleShare = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {/* Three person silhouettes */}
+    <circle cx="6" cy="6" r="3" />
+    <circle cx="18" cy="6" r="3" />
+    <circle cx="12" cy="12" r="3" />
+    {/* Arrows indicating sharing */}
+    <path d="M6 9v3h6" />
+    <path d="M18 9v3h-6" />
+    <path d="M9 12h3" />
+  </svg>
+);
+
 interface Candidate {
   id: string;
   name: string;
@@ -60,7 +84,6 @@ const CommitteeCandidates: React.FC = () => {
   const [evaluationScore, setEvaluationScore] = useState('');
   const [evaluationComments, setEvaluationComments] = useState('');
   const [showEvaluations, setShowEvaluations] = useState(false);
-
 
   // Mock data for candidates
   const candidates: Candidate[] = [
@@ -98,7 +121,6 @@ const CommitteeCandidates: React.FC = () => {
       interviewDate: '2024-02-15',
       interviewType: 'virtual',
       photoUrl: 'https://images.pexels.com/photos/6409119/pexels-photo-6409119.jpeg'
-      
     },
     {
       id: 'CAND-003',
@@ -145,8 +167,6 @@ const CommitteeCandidates: React.FC = () => {
     return data.filter(item => new Date(item.applicationDate).getFullYear() === parseInt(selectedYear));
   };
 
-  
-
   const filteredCandidates = filterDataByDate(candidates).filter(candidate =>
     candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     candidate.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -166,7 +186,6 @@ const CommitteeCandidates: React.FC = () => {
     { title: 'Pending Evaluations', value: pendingEvaluations, icon: Users, description: 'Candidates to evaluate' },
     { title: 'Evaluated Candidates', value: evaluatedCandidates, icon: Award, description: 'Completed evaluations' },
     { title: 'Shortlisted Candidates', value: shortlistedCandidates, icon: Star, description: 'Top candidates' },
-    // { title: 'Average Score', value: `${Math.round(averageScore)}%`, icon: Award, description: 'Overall performance' }
   ];
 
   const getStatusColor = (status: string) => {
@@ -178,6 +197,7 @@ const CommitteeCandidates: React.FC = () => {
     };
     return colorMap[status] || 'bg-gray-100 text-gray-800';
   };
+  const handleshareCandidate = (candidate: Candidate) => {}
 
   const handleViewCandidate = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
@@ -194,7 +214,6 @@ const CommitteeCandidates: React.FC = () => {
   const handleSubmitEvaluation = () => {
     if (selectedCandidate && evaluationScore && evaluationComments) {
       console.log(`Evaluating candidate ${selectedCandidate.id} with score ${evaluationScore} and comments: ${evaluationComments}`);
-      // Here you would typically make an API call to update the candidate evaluation
       setShowEvaluationDialog(false);
       setSelectedCandidate(null);
       setEvaluationScore('');
@@ -204,7 +223,6 @@ const CommitteeCandidates: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <DashboardHeader
         title="Committee Candidates"
         description="Review candidate profiles and provide evaluations"
@@ -214,7 +232,6 @@ const CommitteeCandidates: React.FC = () => {
         setDateRange={setDateRange}
       />
 
-      {/* KPI Cards */}
       <DashboardSection
         title="Candidates Overview"
         description="Key metrics for candidate evaluations"
@@ -223,13 +240,11 @@ const CommitteeCandidates: React.FC = () => {
         <KPICards cards={kpiCards} />
       </DashboardSection>
 
-      {/* Candidates Management */}
       <DashboardSection
         title="Candidates Management"
         description="View and evaluate candidate profiles"
         icon={Users}
       >
-        {/* Search and Filters */}
         <div className="flex gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -246,7 +261,6 @@ const CommitteeCandidates: React.FC = () => {
           </Button>
         </div>
 
-        {/* Candidates Table */}
         <Card>
           <CardContent className="p-0">
             <Table>
@@ -258,58 +272,69 @@ const CommitteeCandidates: React.FC = () => {
                   <TableHead className="text-center font-bold">Application Date</TableHead>
                   <TableHead className="text-center font-bold">Status</TableHead>
                   <TableHead className="text-center font-bold">Score</TableHead>
+                  <TableHead className="text-center font-bold">Share</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredCandidates.length === 0 ? (
-                   <TableRow>
+                  <TableRow>
                     <TableCell colSpan={7} className="text-center text-muted-foreground h-24">
                       No candidates found.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredCandidates.map((candidate) => (
-                     <TableRow key={candidate.id} className="text-center font-normal">
-          <TableCell className="text-center font-normal">{candidate.businessUnit}</TableCell>
-          <TableCell className="text-center font-normal">{candidate.position}</TableCell>
-          <TableCell className="text-center font-normal">
-            <div className="flex items-center justify-center space-x-3">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleViewCandidate(candidate)}
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
-              <Avatar className="h-8 w-8">
-                <AvatarImage
-                  src={candidate.photoUrl}
-                  alt={candidate.name}
-                />
-              </Avatar>
-              <div>
-                <div className="font-medium">{candidate.name}</div>
-              </div>
-            </div>
-          </TableCell>
-          <TableCell className="text-center font-normal">{format(new Date(candidate.applicationDate), 'MMM d, yyyy')}</TableCell>
-          <TableCell className="text-center font-normal">
-            <Badge className={getStatusColor(candidate.status)}>
-              {candidate.status.charAt(0).toUpperCase() + candidate.status.slice(1)}
-            </Badge>
-          </TableCell>
-          <TableCell className="text-center font-normal">
-            {candidate.committeeScore ? (
-              <div className="flex items-center justify-center space-x-1">
-                <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                <span className="font-medium">{candidate.committeeScore}%</span>
-              </div>
-            ) : (
-              <span className="text-muted-foreground">Not evaluated</span>
-            )}
-          </TableCell>
-        </TableRow>
+                    <TableRow key={candidate.id} className="text-center font-normal">
+                      <TableCell className="text-center font-normal">{candidate.businessUnit}</TableCell>
+                      <TableCell className="text-center font-normal">{candidate.position}</TableCell>
+                      <TableCell className="text-center font-normal">
+                        <div className="flex items-center justify-center space-x-3">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleViewCandidate(candidate)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage
+                              src={candidate.photoUrl}
+                              alt={candidate.name}
+                            />
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{candidate.name}</div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center font-normal">{format(new Date(candidate.applicationDate), 'MMM d, yyyy')}</TableCell>
+                      <TableCell className="text-center font-normal">
+                        <Badge className={getStatusColor(candidate.status)}>
+                          {candidate.status.charAt(0).toUpperCase() + candidate.status.slice(1)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-center font-normal">
+                        {candidate.committeeScore ? (
+                          <div className="flex items-center justify-center space-x-1">
+                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                            <span className="font-medium">{candidate.committeeScore}%</span>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">Not evaluated</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handleshareCandidate(candidate)}
+                        >
+                          <ThreePeopleShare />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))
                 )}
               </TableBody>
@@ -318,10 +343,6 @@ const CommitteeCandidates: React.FC = () => {
         </Card>
       </DashboardSection>
 
-      {/* Candidate Profile Dialog */}
-      
-
-      {/* Evaluation Dialog */}
       <Dialog open={showEvaluationDialog} onOpenChange={setShowEvaluationDialog}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -360,20 +381,19 @@ const CommitteeCandidates: React.FC = () => {
             </div>
           </div>
         </DialogContent>
-        
       </Dialog>
       {showEvaluations && selectedCandidate && (
-  <Dialog open={showEvaluations} onOpenChange={setShowEvaluations}>
-    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-      <DialogHeader>
-        <DialogTitle>Committee Evaluations - {selectedCandidate.name}</DialogTitle>
-      </DialogHeader>
-      <CommitteeEvaluations/>
-    </DialogContent>
-  </Dialog>
-)}
+        <Dialog open={showEvaluations} onOpenChange={setShowEvaluations}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Committee Evaluations - {selectedCandidate.name}</DialogTitle>
+            </DialogHeader>
+            <CommitteeEvaluations/>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
 
-export default CommitteeCandidates; 
+export default CommitteeCandidates;

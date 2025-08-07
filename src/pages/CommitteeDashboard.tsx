@@ -9,7 +9,8 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  
 } from 'lucide-react';
 import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -157,10 +158,15 @@ const CommitteeDashboard: React.FC = () => {
   ];
 
    const kpiCards_reject = [
-    { title: 'Language', value: pendingInterviews, icon: Clock, description: '' },
-    { title: 'Integrity', value: acceptedInterviews, icon: CheckCircle, description: '' },
-    { title: 'Relevant Experience', value: upcomingInterviews, icon: Calendar, description: '' },
-    { title: 'Alignment with ICESCO values', value: completedInterviews, icon: Award, description: '' },
+    { title: 'Language', value: "10%", icon: Clock, description: '' },
+    { title: 'Integrity', value: "50%", icon: CheckCircle, description: '' },
+    { title: 'Relevant Experience', value: "20%", icon: Calendar, description: '' },
+    { title: 'Alignment with ICESCO values', value: "20%", icon: Award, description: '' },
+  ];
+  const kpiCards_status = [
+    { title: 'Rejected', value: pendingInterviews, icon: Clock, description: '' },
+    { title: 'Accepted', value: acceptedInterviews, icon: CheckCircle, description: '' },
+    { title: 'Recommended for another Position', value: upcomingInterviews, icon: Users, description: '' },
   ];
 
   const getStatusColor = (status: string) => {
@@ -200,10 +206,17 @@ const CommitteeDashboard: React.FC = () => {
 
       <DashboardSection
         title="Rejected Candidates Reasons"
-        description="Analysis of reasons for rejecting candidates during the screening process"
+        description="Analysis of reasons for rejecting candidates "
         icon={Award}
       >
         <KPICards cards={kpiCards_reject} />
+      </DashboardSection>
+      <DashboardSection
+        title="Candidates Assessment Status"
+        description=""
+        icon={Award}
+      >
+        <KPICards cards={kpiCards_status} />
       </DashboardSection>
 
       {/* Proposed Interviews */}
