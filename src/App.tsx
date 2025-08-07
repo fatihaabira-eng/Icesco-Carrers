@@ -82,7 +82,7 @@ const ManpowerRoleRedirect = () => {
   
   switch (user.role) {
     case 'recruitment':
-      return <Navigate to="/manpower/hr" replace />;
+      return <Navigate to="/manpower/dashboard" replace />;
     case 'committee':
       return <Navigate to="/manpower/home" replace />;
     case 'business unit':
