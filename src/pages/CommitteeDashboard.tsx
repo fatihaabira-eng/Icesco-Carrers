@@ -156,6 +156,13 @@ const CommitteeDashboard: React.FC = () => {
     { title: 'Total Interviews', value: totalCandidates, icon: Users, description: 'Total candidates to be evaluated' }
   ];
 
+   const kpiCards_reject = [
+    { title: 'Language', value: pendingInterviews, icon: Clock, description: '' },
+    { title: 'Integrity', value: acceptedInterviews, icon: CheckCircle, description: '' },
+    { title: 'Relevant Experience', value: upcomingInterviews, icon: Calendar, description: '' },
+    { title: 'Alignment with ICESCO values', value: completedInterviews, icon: Award, description: '' },
+  ];
+
   const getStatusColor = (status: string) => {
     const colorMap: { [key: string]: string } = {
       'pending': 'bg-yellow-100 text-yellow-800',
@@ -189,6 +196,14 @@ const CommitteeDashboard: React.FC = () => {
         icon={Award}
       >
         <KPICards cards={kpiCards} />
+      </DashboardSection>
+
+      <DashboardSection
+        title="Rejected Candidates Reasons"
+        description="Analysis of reasons for rejecting candidates during the screening process"
+        icon={Award}
+      >
+        <KPICards cards={kpiCards_reject} />
       </DashboardSection>
 
       {/* Proposed Interviews */}

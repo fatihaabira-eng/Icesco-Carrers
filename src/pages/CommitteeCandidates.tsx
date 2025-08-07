@@ -166,7 +166,7 @@ const CommitteeCandidates: React.FC = () => {
     { title: 'Pending Evaluations', value: pendingEvaluations, icon: Users, description: 'Candidates to evaluate' },
     { title: 'Evaluated Candidates', value: evaluatedCandidates, icon: Award, description: 'Completed evaluations' },
     { title: 'Shortlisted Candidates', value: shortlistedCandidates, icon: Star, description: 'Top candidates' },
-    { title: 'Average Score', value: `${Math.round(averageScore)}%`, icon: Award, description: 'Overall performance' }
+    // { title: 'Average Score', value: `${Math.round(averageScore)}%`, icon: Award, description: 'Overall performance' }
   ];
 
   const getStatusColor = (status: string) => {

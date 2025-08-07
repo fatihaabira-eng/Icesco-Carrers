@@ -362,15 +362,9 @@ const HRCandidates: React.FC = () => {
         dateRange={dateRange}
         setDateRange={setDateRange}
       />
-
+  
       {/* KPI Cards */}
-      <DashboardSection
-        title=""
-        description="K"
-        icon={Users}
-      >
-        <KPICards cards={kpiCards} />
-      </DashboardSection>
+      <KPICards cards={kpiCards} />
 
       {/* Candidates Management */}
       <DashboardSection

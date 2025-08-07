@@ -165,7 +165,7 @@ const JobMatchingModule: React.FC = () => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return 'text-green-600';
+    if (  score >= 90) return 'text-green-600';
     if (score >= 80) return 'text-blue-600';
     if (score >= 70) return 'text-yellow-600';
     return 'text-red-600';
@@ -250,26 +250,26 @@ const JobMatchingModule: React.FC = () => {
           <div className="border rounded-lg overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="w-24">Ref</TableHead>
-                  <TableHead>Job Position</TableHead>
-                  <TableHead>Candidate</TableHead>
-                  <TableHead className="text-center">Nationality</TableHead>
-                  <TableHead className="text-center">Age</TableHead>
-                  <TableHead>Degree</TableHead>
-                  <TableHead>University</TableHead>
-                  <TableHead>Phase</TableHead>
-                  <TableHead>Decision</TableHead>
-                  <TableHead className="text-center">Matching</TableHead>
-                  <TableHead className="text-center">Take Action</TableHead>
+                <TableRow className="bg-gray-200">
+                  <TableHead className="w-24 font-bold text-gray-800 py-3">Ref</TableHead>
+                  <TableHead className="font-bold text-gray-800 py-3">Job Position</TableHead>
+                  <TableHead className="font-bold text-gray-800 py-3">Candidate</TableHead>
+                  <TableHead className="text-center font-bold text-gray-800 py-3">Nationality</TableHead>
+                  <TableHead className="text-center font-bold text-gray-800 py-3">Age</TableHead>
+                  <TableHead className="font-bold text-gray-800 py-3">Degree</TableHead>
+                  <TableHead className="font-bold text-gray-800 py-3">University</TableHead>
+                  <TableHead className="font-bold text-gray-800 py-3">Phase</TableHead>
+                  <TableHead className="font-bold text-gray-800 py-3">Decision</TableHead>
+                  <TableHead className="text-center font-bold text-gray-800 py-3">Matching</TableHead>
+                  <TableHead className="text-center font-bold text-gray-800 py-3">Take Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredCandidates.map((candidate) => (
-                  <TableRow key={candidate.ref} className="hover:bg-muted/30">
-                    <TableCell className="font-medium">{candidate.ref}</TableCell>
-                    <TableCell>
-                      <p className="font-medium text-sm">{candidate.position}</p>
+                  <TableRow key={candidate.ref} className="hover:bg-gray-50 transition-colors">
+                    <TableCell className="font-normal text-gray-600 py-3">{candidate.ref}</TableCell>
+                    <TableCell className="font-normal text-gray-600 py-3">
+                      <p className="text-sm">{candidate.position}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {candidate.skills.slice(0, 2).map(skill => (
                           <Badge key={skill} variant="outline" className="text-xs">
@@ -283,15 +283,15 @@ const JobMatchingModule: React.FC = () => {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-normal text-gray-600 py-3">
                       <div className="flex items-center gap-3">
                         <div>
-                          <p className="font-medium text-sm">{candidate.name}</p>
-                          <p className="text-xs text-muted-foreground">{candidate.experience} experience</p>
+                          <p className="text-sm">{candidate.name}</p>
+                          <p className="text-xs text-gray-500">{candidate.experience} experience</p>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center font-normal text-gray-600 py-3">
                       <div className="flex items-center justify-left gap-2">
                         <img 
                           src={candidate.flag} 
@@ -301,36 +301,36 @@ const JobMatchingModule: React.FC = () => {
                         <span className="text-sm">{candidate.nationality}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center font-medium">
+                    <TableCell className="text-center font-normal text-gray-600 py-3">
                       {candidate.age}
                     </TableCell>
-                    <TableCell>
-                      <p className="font-medium text-sm">{candidate.degree}</p>
+                    <TableCell className="font-normal text-gray-600 py-3">
+                      <p className="text-sm">{candidate.degree}</p>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-normal text-gray-600 py-3">
                       <div>
-                        <p className="font-medium text-sm">{candidate.university}</p>
+                        <p className="text-sm">{candidate.university}</p>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-normal text-gray-600 py-3">
                       <Badge variant="outline">
                         {candidate.phase}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-normal text-gray-600 py-3">
                       <Badge className={getDecisionColor(candidate.decision)}>
                         {candidate.decision === 'hired' ? 'Hired' : candidate.decision}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center font-normal text-gray-600 py-3">
                       <div className="flex items-center justify-center gap-1">
                         <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
-                        <span className={`font-bold ${getScoreColor(candidate.matchingScore)}`}>
+                        <span className={`font-semibold ${getScoreColor(candidate.matchingScore)}`}>
                           {candidate.matchingScore}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="font-normal text-gray-600 py-3">
                       <div className="flex items-center justify-center gap-2">
                         <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
                           <Eye className="h-4 w-4" />

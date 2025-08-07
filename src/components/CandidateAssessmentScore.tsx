@@ -4,16 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Search, 
-  Filter,
-  Star,
-  Users,
-  UserCheck,
-  Award,
-  X
-} from 'lucide-react';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Search, Filter, Star, Users, UserCheck, Award, X, Eye } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -58,6 +50,7 @@ const CandidateAssessmentScore: React.FC = () => {
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAssessment, setSelectedAssessment] = useState<CandidateAssessment | null>(null);
+  const [dialogType, setDialogType] = useState<'full' | 'committee' | 'technical' | null>(null);
 
   // Mock data for candidate assessments
   const candidateAssessments: CandidateAssessment[] = [
@@ -72,7 +65,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-1',
           name: 'Dr. Sally Mabrouk',
           position: 'Director of the Office of Director General',
-          image: sallyimage ,
+          image: sallyimage,
           score: 88,
           comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
         },
@@ -240,7 +233,6 @@ const CandidateAssessmentScore: React.FC = () => {
 
   const kpiCards = [
     { title: 'Total Assessments', value: totalAssessments, icon: Award, description: 'All candidate evaluations' },
-    { title: 'Average Score', value: `${averageScore}`, icon: Star, description: 'Overall performance' },
     { title: 'High Performers', value: highScores, icon: UserCheck, description: 'Scores ≥ 85' },
     { title: 'Committee Reviews', value: committeeAssessments, icon: Users, description: 'Total evaluations' }
   ];
@@ -276,7 +268,91 @@ const CandidateAssessmentScore: React.FC = () => {
     return score >= 80 ? 'Interviewed' : 'Rejected';
   };
 
-  const TABLE_COL_COUNT = 5;
+  const TABLE_COL_COUNT = 7;
+
+  const renderScoreSection = (type: 'committee' | 'technical', assessment: CandidateAssessment) => {
+    const isCommittee = type === 'committee';
+    const items = isCommittee ? assessment.committeeMembers : assessment.technicalInterviewers;
+    const average = isCommittee ? getCommitteeAverage(assessment.committeeMembers) : getTechnicalAverage(assessment.technicalInterviewers);
+    const title = isCommittee ? 'Committee Score' : 'Technical Interview Score';
+    const Icon = isCommittee ? Users : Award;
+
+    return (
+      <div>
+        <div className="flex items-start gap-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Icon className="h-5 w-5" />
+            {title}
+          </h3>
+          <Badge className='bg-primary text-primary-foreground'>
+            {average}
+          </Badge>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          {items.map((item) => (
+            <Card key={item.id} className="p-4">
+              <div className="flex items-start gap-4">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src={item.image} alt={item.name} />
+                  <AvatarFallback>{item.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <h5 className="font-semibold">{item.name}</h5>
+                      <p className="text-sm text-muted-foreground">{item.position}</p>
+                    </div>
+                    <Badge className={`${getScoreColor(item.score)}`}>
+                      {item.score}
+                    </Badge>
+                  </div>
+                  <h6 className='font-bold text-primary'>Comment</h6>
+                  <p className="text-sm text-muted-foreground">{item.comments}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderDialogContent = (assessment: CandidateAssessment, dialogType: 'full' | 'committee' | 'technical') => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-start">
+        <div>
+          <h2 className="text-2xl font-bold">{assessment.candidateName}</h2>
+          <p className="text-muted-foreground">{assessment.position}</p>
+        </div>
+        {(dialogType === 'technical' || dialogType === 'committee')  && (
+          <Badge className={`${getScoreColor(assessment.overallScore)} text-lg`}>
+            TOTAL SCORE : {assessment.overallScore}
+          </Badge>
+        )}
+      </div>
+
+      {(dialogType === 'technical' || dialogType === 'committee') && (
+        <div className="grid grid-cols-3 gap-4 bg-muted/20 p-4 rounded-lg">
+          <div>
+            <p className="text-sm text-muted-foreground">Final Decision</p>
+            <p className="font-semibold">{getFinalDecision(assessment.overallScore)}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Application Status</p>
+            <p className="font-semibold">{getApplicationStatus(assessment.overallScore)}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Total Score</p>
+            <p className="font-semibold">{assessment.overallScore}</p>
+          </div>
+        </div>
+      )}
+      
+
+      {(dialogType === 'full' || dialogType === 'committee') && renderScoreSection('committee', assessment)}
+      {(dialogType === 'full' || dialogType === 'technical') && renderScoreSection('technical', assessment)}
+    </div>
+  );
 
   return (
     <div className="space-y-8">
@@ -327,12 +403,13 @@ const CandidateAssessmentScore: React.FC = () => {
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Actions</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Candidate Name</TableHead>
-                  <TableHead>Total Score</TableHead>
-                  <TableHead>Interview Details</TableHead>
+                <TableRow className="bg-muted">
+                  <TableHead className="font-bold text-foreground">Job Position</TableHead>
+                  <TableHead className="font-bold text-foreground">Candidate Name</TableHead>
+                  <TableHead className="font-bold text-foreground">Total Score</TableHead>
+                  <TableHead className="font-bold text-foreground">Committee Score</TableHead>
+                  <TableHead className="font-bold text-foreground">Technical Score</TableHead>
+                  <TableHead className="font-bold text-foreground">Interview Details</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -345,145 +422,61 @@ const CandidateAssessmentScore: React.FC = () => {
                 ) : (
                   filteredAssessments.map((assessment) => (
                     <TableRow key={assessment.id}>
-                      <TableCell>
-                        <Dialog.Root>
-                          <Dialog.Trigger asChild>
-                            <Button 
-                              className="bg-primary text-primary-foreground hover:bg-primary/90"
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => setSelectedAssessment(assessment)}
-                            >
-                              View Scores
-                            </Button>
-                          </Dialog.Trigger>
-                          {selectedAssessment?.id === assessment.id && (
-                            <Dialog.Portal>
-                              <Dialog.Overlay className="dialog-overlay" />
-                              <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto z-[1001]">
-                                <div className="space-y-6">
-                                  {/* Header Section */}
-                                  <div className="flex justify-between items-start">
-                                    <div>
-                                      <h2 className="text-2xl font-bold">{assessment.candidateName}</h2>
-                                      <p className="text-muted-foreground">{assessment.position}</p>
-                                    </div>
-                                    
-                                    <Badge className={`${getScoreColor(assessment.overallScore)} text-lg`}>
-                                      TOTAL SCORE : {assessment.overallScore} 
-                                    </Badge>
-                                  </div>
-
-                                  {/* Summary Info */}
-                                  <div className="grid grid-cols-3 gap-4 bg-muted/20 p-4 rounded-lg">
-                                    <div>
-                                      <p className="text-sm text-muted-foreground">Final Decision</p>
-                                      <p className="font-semibold">{getFinalDecision(assessment.overallScore)}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-sm text-muted-foreground">Application Status</p>
-                                      <p className="font-semibold">{getApplicationStatus(assessment.overallScore)}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-sm text-muted-foreground">Total Score</p>
-                                      <p className="font-semibold">{assessment.overallScore}</p>
-                                    </div>
-                                  </div>
-
-                                  {/* Committee Score Section */}
-                                  <div>
-                                    <div className="flex items-start gap-4">
-                                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                                        <Users className="h-5 w-5" />
-                                        Committee Score
-                                      </h3>
-                                      <Badge className='bg-primary text-primary-foreground'>
-                                        {getCommitteeAverage(assessment.committeeMembers)}
-                                      </Badge>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                      {assessment.committeeMembers.map((member) => (
-                                        <Card key={member.id} className="p-4">
-                                          <div className="flex items-start gap-4">
-                                            <Avatar className="h-12 w-12">
-                                              <AvatarImage src={member.image} alt={member.name} />
-                                              <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex-1">
-                                              <div className="flex items-center justify-between mb-2">
-                                                <div>
-                                                  <h5 className="font-semibold">{member.name}</h5>
-                                                  <p className="text-sm text-muted-foreground">{member.position}</p>
-                                                </div>
-                                                <Badge className={`${getScoreColor(member.score)}`}>
-                                                  {member.score}
-                                                </Badge>
-                                              </div>
-                                              <h6 className='font-bold text-primary'>Comment</h6>
-                                              <p className="text-sm text-muted-foreground">{member.comments}</p>
-                                            </div>
-                                          </div>
-                                        </Card>
-                                      ))}
-                                    </div>
-                                  </div>
-
-                                  {/* Technical Interview Score Section */}
-                                  <div>
-                                    <div className="flex items-start gap-4">
-                                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                                        <Award className="h-5 w-5" />
-                                        Technical Interview Score
-                                      </h3>
-                                      <Badge className='bg-primary text-primary-foreground'>
-                                        {getTechnicalAverage(assessment.technicalInterviewers)}
-                                      </Badge>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                      {assessment.technicalInterviewers.map((interviewer) => (
-                                        <Card key={interviewer.id} className="p-4">
-                                          <div className="flex items-start gap-4">
-                                            <Avatar className="h-12 w-12">
-                                              <AvatarImage src={interviewer.image} alt={interviewer.name} />
-                                              <AvatarFallback>{interviewer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex-1">
-                                              <div className="flex items-center justify-between mb-2">
-                                                <div>
-                                                  <h5 className="font-semibold">{interviewer.name}</h5>
-                                                  <p className="text-sm text-muted-foreground">{interviewer.position}</p>
-                                                </div>
-                                                <Badge className={`${getScoreColor(interviewer.score)}`}>
-                                                  {interviewer.score}
-                                                </Badge>
-                                              </div>
-                                              <h6 className='font-bold text-primary'>Comment</h6>
-                                              <p className="text-sm text-muted-foreground">{interviewer.comments}</p>
-                                            </div>
-                                          </div>
-                                        </Card>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                                <Dialog.Close asChild>
-                                  <Button variant="ghost" className="absolute top-4 right-4">
-                                    <X className="h-4 w-4" />
-                                  </Button>
-                                </Dialog.Close>
-                              </Dialog.Content>
-                            </Dialog.Portal>
-                          )}
-                        </Dialog.Root>
-                      </TableCell>
-                      <TableCell className="font-medium">{assessment.position}</TableCell>
-                      <TableCell>{assessment.candidateName}</TableCell>
-                      <TableCell>
+                      {/* <TableCell className="text-muted-foreground">
+                        <Button 
+                          className="bg-primary text-primary-foreground hover:bg-primary/90"
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedAssessment(assessment);
+                            setDialogType('full');
+                          }}
+                        >
+                          View Scores
+                        </Button>
+                      </TableCell> */}
+                      <TableCell className="font-medium text-muted-foreground">{assessment.position}</TableCell>
+                      <TableCell className="text-muted-foreground">{assessment.candidateName}</TableCell>
+                      <TableCell className="text-muted-foreground">
                         <Badge className={`${getScoreColor(assessment.overallScore)}`}>
                           {assessment.overallScore}
                         </Badge>
                       </TableCell>
-                      <TableCell>{format(new Date(assessment.assessmentDate), 'MMM d, yyyy')}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Badge className={`${getScoreColor(getCommitteeAverage(assessment.committeeMembers))}`}>
+                            {getCommitteeAverage(assessment.committeeMembers)}
+                          </Badge>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedAssessment(assessment);
+                              setDialogType('committee');
+                            }}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Badge className={`${getScoreColor(getTechnicalAverage(assessment.technicalInterviewers))}`}>
+                            {getTechnicalAverage(assessment.technicalInterviewers)}
+                          </Badge>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedAssessment(assessment);
+                              setDialogType('technical');
+                            }}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{format(new Date(assessment.assessmentDate), 'MMM d, yyyy')}</TableCell>
                     </TableRow>
                   ))
                 )}
@@ -492,6 +485,26 @@ const CandidateAssessmentScore: React.FC = () => {
           </CardContent>
         </Card>
       </DashboardSection>
+
+      {/* Single Dialog for all types */}
+      <Dialog.Root open={!!selectedAssessment && !!dialogType} onOpenChange={(open) => {
+        if (!open) {
+          setSelectedAssessment(null);
+          setDialogType(null);
+        }
+      }}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialog-overlay" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto z-[1001]">
+            {selectedAssessment && dialogType && renderDialogContent(selectedAssessment, dialogType)}
+            <Dialog.Close asChild>
+              <Button variant="ghost" className="absolute top-4 right-4">
+                <X className="h-4 w-4" />
+              </Button>
+            </Dialog.Close>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 };

@@ -64,7 +64,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       label: 'Interviews',
       icon: Calendar,
       description: 'Schedule & manage',
-      path: '/manpower/hr/interviews',
+    
       subItems: [
         { id: 'schedule', label: 'Schedule Interview', path: '/manpower/hr/interviews/schedule' },
         { id: 'management', label: 'Interview Management', path: '/manpower/hr/interviews/management' },
