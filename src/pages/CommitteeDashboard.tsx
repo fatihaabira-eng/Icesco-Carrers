@@ -192,7 +192,7 @@ const CommitteeDashboard: React.FC = () => {
       </DashboardSection>
 
       {/* Proposed Interviews */}
-      <DashboardSection
+      {/* <DashboardSection
         title="Proposed Interviews"
         description="Interviews awaiting your response"
         icon={Clock}
@@ -235,10 +235,10 @@ const CommitteeDashboard: React.FC = () => {
             </div>
           )}
         </div>
-      </DashboardSection>
+      </DashboardSection> */}
 
       {/* Upcoming Interviews */}
-      <DashboardSection
+      {/* <DashboardSection
         title="Upcoming Interviews"
         description="Your scheduled interviews"
         icon={Calendar}
@@ -273,7 +273,7 @@ const CommitteeDashboard: React.FC = () => {
             </div>
           )}
         </div>
-      </DashboardSection>
+      </DashboardSection> */}
 
       {/* Assigned Positions */}
       {/* <DashboardSection

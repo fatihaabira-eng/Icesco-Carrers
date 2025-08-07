@@ -266,18 +266,17 @@ const HRJobOffers: React.FC = () => {
                 <TableRow>
                   <TableHead className="w-[50px]"></TableHead>
                   <TableHead>Reference</TableHead>
-                  <TableHead>Job Title</TableHead>
                   <TableHead>Business Unit</TableHead>
+                  <TableHead>Job Offer</TableHead>
                   <TableHead>Location</TableHead>
-                  <TableHead>N° Positions</TableHead>
-                  <TableHead>Status</TableHead>
                   <TableHead>N° Applied</TableHead>
                   <TableHead>N° Shortlisted</TableHead>
                   <TableHead>N° Hired</TableHead>
                   <TableHead>N° Rejected</TableHead>
                   <TableHead>Published Date</TableHead>
                   <TableHead>Closing Date</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Take Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -300,20 +299,6 @@ const HRJobOffers: React.FC = () => {
                         <TableCell className="font-medium">{offer.title}</TableCell>
                         <TableCell>{offer.department}</TableCell>
                         <TableCell>{offer.location}</TableCell>
-                        <TableCell className="text-center">{offer.positions}</TableCell>
-                        <TableCell>
-                          <Select value={offer.status} onValueChange={(value) => handleStatusChange(offer.id, value as JobOffer['status'])}>
-                            <SelectTrigger className="w-28 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="active">Active</SelectItem>
-                              <SelectItem value="draft">Draft</SelectItem>
-                              <SelectItem value="closed">Closed</SelectItem>
-                              <SelectItem value="archived">Archived</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-2 justify-center">
                             <Users className="h-4 w-4 text-muted-foreground" />
@@ -341,8 +326,21 @@ const HRJobOffers: React.FC = () => {
                         <TableCell>{offer.publishedDate ? format(new Date(offer.publishedDate), 'MMM d, yyyy') : 'N/A'}</TableCell>
                         <TableCell>{offer.closingDate ? format(new Date(offer.closingDate), 'MMM d, yyyy') : 'N/A'}</TableCell>
                         <TableCell>
+                          <Select value={offer.status} onValueChange={(value) => handleStatusChange(offer.id, value as JobOffer['status'])}>
+                            <SelectTrigger className="w-28 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active">Active</SelectItem>
+                              <SelectItem value="draft">Draft</SelectItem>
+                              <SelectItem value="closed">Closed</SelectItem>
+                              <SelectItem value="archived">Archived</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
                           <div className="flex space-x-1">
-                            <Button variant="ghost" size="icon" className="h-8 w-8"><Eye className="h-4 w-4" /></Button>
+                            {/* <Button variant="ghost" size="icon" className="h-8 w-8"><Eye className="h-4 w-4" /></Button> */}
                             <Button variant="ghost" size="icon" className="h-8 w-8"><Edit className="h-4 w-4" /></Button>
                             <Button variant="ghost" size="icon" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>
                           </div>

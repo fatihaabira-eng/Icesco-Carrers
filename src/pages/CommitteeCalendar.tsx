@@ -75,7 +75,7 @@ const eventStyleGetter = (event: any) => {
   if (event.status === 'Scheduled') {
     className = 'bg-primary hover:bg-primary/80 border-primary';
   } else if (event.status === 'Proposed') {
-    className = 'bg-orange-500 hover:bg-orange-600 border-orange-500';
+    className = 'bg-secondary hover:bg-secondary-light border-osecondary';
   } else if (event.status === 'Completed') {
     className = 'bg-green-500 hover:bg-green-600 border-green-500';
   }
@@ -90,7 +90,7 @@ const getStatusIcon = (status: string) => {
     case 'Scheduled':
       return <Clock className="h-5 w-5 text-primary " />;
     case 'Proposed':
-      return <HelpCircle className="h-5 w-5 text-orange-500" />;
+      return <HelpCircle className="h-5 w-5 text-secondary" />;
     case 'Completed':
       return <CheckCircle className="h-5 w-5 text-green-500" />;
     default:
@@ -140,32 +140,20 @@ const CommitteeCalendar: React.FC = () => {
     <div className="space-y-8 max-w-7xl mx-auto">
       <style>{calendarStyles}</style>
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight font-sans">Interview Calendar</h1>
           <p className="text-muted-foreground text-sm">
             A visual overview of all your interview schedules.
           </p>
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded-full bg-primary"></div>
-            <span className="text-sm text-muted-foreground font-sans">Scheduled</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-            <span className="text-sm text-muted-foreground font-sans">Proposed</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="text-sm text-muted-foreground font-sans">Completed</span>
-          </div>
-        </div>
-      </div>
+        
+      </div> */}
 
       <Card className="border-0 shadow-sm">
         <CardHeader>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 justify-between">
+            <div className="flex items-center space-x-3">
             <div className="p-2 rounded-lg bg-primary/10">
               <CalendarIcon className="h-6 w-6 text-primary" />
             </div>
@@ -175,6 +163,21 @@ const CommitteeCalendar: React.FC = () => {
                 Schedule and manage candidate interviews
               </p>
             </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-primary"></div>
+                  <span className="text-sm text-muted-foreground font-sans">Scheduled</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-secondary"></div>
+                  <span className="text-sm text-muted-foreground font-sans">Proposed</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-sm text-muted-foreground font-sans">Completed</span>
+                </div>
+              </div>
           </div>
         </CardHeader>
         <CardContent>

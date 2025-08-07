@@ -52,14 +52,31 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       description: 'Overview and KPIs',
       path: '/manpower/hr/dashboard'
     },
-    
     {
-      id: 'bu-manpower',
-      label: 'BU Manpower Management',
-      icon: Building,
-      description: 'Manage recruitment across business units',
-      path: '/manpower/hr'
+      id: 'job-offers',
+      label: 'Job Offers',
+      icon: FileText,
+      description: 'Create & manage offers',
+      path: '/manpower/hr/job-offers'
     },
+    {
+      id: 'interviews',
+      label: 'Interviews',
+      icon: Calendar,
+      description: 'Schedule & manage',
+      path: '/manpower/hr/interviews',
+      subItems: [
+        { id: 'schedule', label: 'Schedule Interview', path: '/manpower/hr/interviews/schedule' },
+        { id: 'management', label: 'Interview Management', path: '/manpower/hr/interviews/management' },
+      ]
+    },
+    // {
+    //   id: 'bu-manpower',
+    //   label: 'BU Manpower Management',
+    //   icon: Building,
+    //   description: 'Manage recruitment across business units',
+    //   path: '/manpower/hr'
+    // },
     // {
     //   id: 'analytics',
     //   label: 'Analytics',
@@ -92,24 +109,8 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
     //   description: 'CV processing & storage',
     //   path: '/manpower/hr/resume-library'
     // },
-    {
-      id: 'interviews',
-      label: 'Interviews',
-      icon: Calendar,
-      description: 'Schedule & manage',
-      path: '/manpower/hr/interviews',
-      subItems: [
-        { id: 'schedule', label: 'Schedule Interview', path: '/manpower/hr/interviews/schedule' },
-        { id: 'management', label: 'Interview Management', path: '/manpower/hr/interviews/management' },
-      ]
-    },
-    {
-      id: 'job-offers',
-      label: 'Job Offers',
-      icon: FileText,
-      description: 'Create & manage offers',
-      path: '/manpower/hr/job-offers'
-    },
+    
+    
     
 
   ];
