@@ -248,7 +248,7 @@ const InterviewManagement: React.FC = () => {
             <Card>
                 <CardContent className="p-4 flex items-center justify-between">
                     <div>
-                        <p className="text-sm font-medium text-muted-foreground">Total This Week</p>
+                        <p className="text-sm font-medium text-muted-foreground">Interviews This Week</p>
                         <p className="text-2xl font-bold text-foreground">{weeklyStats.total}</p>
                     </div>
                     <div className="p-2 bg-blue-100 rounded-lg">
@@ -259,7 +259,7 @@ const InterviewManagement: React.FC = () => {
             <Card>
                 <CardContent className="p-4 flex items-center justify-between">
                     <div>
-                        <p className="text-sm font-medium text-muted-foreground">Confirmed</p>
+                        <p className="text-sm font-medium text-muted-foreground">Completed Interviews</p>
                         <p className="text-2xl font-bold text-green-600">{weeklyStats.confirmed}</p>
                     </div>
                     <div className="p-2 bg-green-100 rounded-lg">
@@ -270,7 +270,7 @@ const InterviewManagement: React.FC = () => {
             <Card>
                 <CardContent className="p-4 flex items-center justify-between">
                     <div>
-                        <p className="text-sm font-medium text-muted-foreground">Pending</p>
+                        <p className="text-sm font-medium text-muted-foreground">Proposed Interviews</p>
                         <p className="text-2xl font-bold text-yellow-600">{weeklyStats.pending}</p>
                     </div>
                     <div className="p-2 bg-yellow-100 rounded-lg">
@@ -394,15 +394,15 @@ const InterviewManagement: React.FC = () => {
                       <TableRow key={interview.id} className="hover:bg-gray-50 transition-colors">
                         <TableCell className="font-normal text-gray-600 py-3">
                           <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
+                            {/* <Avatar className="h-10 w-10">
                               <AvatarImage src={interview.candidate.avatar} alt={interview.candidate.name} />
                               <AvatarFallback>
                                 {interview.candidate.name.split(' ').map(n => n[0]).join('')}
                               </AvatarFallback>
-                            </Avatar>
+                            </Avatar> */}
                             <div>
                               <p className="text-sm">{interview.candidate.name}</p>
-                              <p className="text-xs text-gray-500">{interview.businessUnit}</p>
+                              {/* <p className="text-xs text-gray-500">{interview.businessUnit}</p> */}
                             </div>
                           </div>
                         </TableCell>

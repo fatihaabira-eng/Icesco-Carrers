@@ -21,8 +21,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -64,26 +64,11 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       label: 'Interviews',
       icon: Calendar,
       description: 'Schedule & manage',
-    
       subItems: [
         { id: 'schedule', label: 'Schedule Interview', path: '/manpower/hr/interviews/schedule' },
         { id: 'management', label: 'Interview Management', path: '/manpower/hr/interviews/management' },
       ]
     },
-    // {
-    //   id: 'bu-manpower',
-    //   label: 'BU Manpower Management',
-    //   icon: Building,
-    //   description: 'Manage recruitment across business units',
-    //   path: '/manpower/hr'
-    // },
-    // {
-    //   id: 'analytics',
-    //   label: 'Analytics',
-    //   icon: BarChart3,
-    //   description: 'Recruitment metrics',
-    //   path: '/manpower/hr/analytics'
-    // },
     {
       id: 'candidates',
       label: 'Candidates',
@@ -91,28 +76,16 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       description: 'Manage applications',
       path: '/manpower/hr/candidates',
       subItems: [
-        // { id: 'pipeline', label: 'Pipeline View', path: '/manpower/hr/candidates/pipeline' },
         { id: 'matching', label: 'Job Matching Review', path: '/manpower/hr/candidates/matching' },
         {
-      id: 'assessment-scores',
-      label: 'Assessment Scores',
-      icon: Award,
-      description: 'Candidate evaluation scores',
-      path: '/manpower/hr/assessment-scores'
-    },
+          id: 'assessment-scores',
+          label: 'Assessment Scores',
+          icon: Award,
+          description: 'Candidate evaluation scores',
+          path: '/manpower/hr/assessment-scores'
+        },
       ]
     },
-    // {
-    //   id: 'resume-library',
-    //   label: 'Resume Library',
-    //   icon: Database,
-    //   description: 'CV processing & storage',
-    //   path: '/manpower/hr/resume-library'
-    // },
-    
-    
-    
-
   ];
 
   const isActive = (path: string) => {
@@ -124,49 +97,57 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
   };
 
   return (
-    <Sidebar>
+    <Sidebar className="bg-background shadow-sm">
+      {/* Header with responsive logo */}
       <SidebarHeader className="border-b border-border p-4">
         <div className="flex items-center space-x-3">
           <Link to="/manpower" className="flex items-center space-x-3">
             <img 
               src={icescoLogo} 
               alt="ICESCO" 
-              className="h-16 w-auto"
+              className="h-12 w-auto max-w-[120px] object-contain" // Responsive logo
             />
           </Link>
-          {/* <div className="flex items-center space-x-2">
-            <Shield className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-primary">HR Portal</span>
-          </div> */}
         </div>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground px-4 py-2">
+            Navigation
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   {item.subItems ? (
                     <>
+                      {/* Main menu item with prominent styling */}
                       <SidebarMenuButton
                         asChild
                         isActive={isActive(item.path)}
                         tooltip={item.description}
-                        className={`${isActive(item.path) ? 'bg-[#0F7378] text-white !important' : ''} py-6 px-2.5 my-0.5 font-normal`}
+                        className={`
+                          ${isActive(item.path) ? 'bg-[#0F7378] text-white' : 'text-foreground hover:bg-[#0F7378]/10'}
+                          py-3 px-4 my-0.5 font-medium text-sm transition-colors duration-200 rounded-md
+                        `}
                       >
                         <Link to={item.path}>
-                          <item.icon className="h-4 w-4" />
+                          <item.icon className="h-5 w-5 mr-2" /> {/* Slightly larger icon */}
                           <span>{item.label}</span>
                         </Link>
                       </SidebarMenuButton>
                       <SidebarMenuSub>
                         {item.subItems.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.id}>
+                            {/* Submenu item with lighter styling */}
                             <SidebarMenuSubButton
                               asChild
                               isActive={isSubActive(subItem.path)}
+                              className={`
+                                ${isSubActive(subItem.path) ? 'bg-[#0F7378]/10 text-[#0F7378]' : 'text-muted-foreground hover:bg-[#0F7378]/5'}
+                                pl-8 py-2 text-sm font-normal transition-colors duration-200 rounded-md
+                              `}
                             >
                               <Link to={subItem.path}>
                                 <span>{subItem.label}</span>
@@ -181,10 +162,13 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
                       asChild
                       isActive={isActive(item.path)}
                       tooltip={item.description}
-                      className={`${isActive(item.path) ? 'bg-[#0F7378] text-white !important' : ''} py-6 px-2.5 my-0.5 font-normal`}
+                      className={`
+                        ${isActive(item.path) ? 'bg-[#0F7378] text-white' : 'text-foreground hover:bg-[#0F7378]/10'}
+                        py-3 px-4 my-0.5 font-medium text-sm transition-colors duration-200 rounded-md
+                      `}
                     >
                       <Link to={item.path}>
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className="h-5 w-5 mr-2" />
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -197,12 +181,12 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-border p-4">
-        <div className="space-y-4">
-          {/* User Info */}
+        <div className="space-y-3">
+          {/* User Info with compact layout */}
           <div className="flex items-center space-x-3">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="/api/placeholder/32/32" />
-              <AvatarFallback>
+            <Avatar className="h-9 w-9">
+              <AvatarImage src="/api/placeholder/36/36" />
+              <AvatarFallback className="text-xs">
                 {user?.name.split(' ').map(n => n[0]).join('')}
               </AvatarFallback>
             </Avatar>
@@ -216,18 +200,26 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+          {/* Action Buttons with compact design */}
+          <div className="flex items-center space-x-1">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 hover:bg-[#0F7378]/10"
+            >
               <Bell className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 hover:bg-[#0F7378]/10"
+            >
               <Settings className="h-4 w-4" />
             </Button>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8"
+              className="h-8 w-8 hover:bg-[#0F7378]/10"
               onClick={onLogout}
             >
               <LogOut className="h-4 w-4" />
@@ -239,4 +231,4 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
   );
 };
 
-export default HRSidebar; 
+export default HRSidebar;
