@@ -171,11 +171,11 @@ const HRDashboard: React.FC = () => {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
             <KpiCard icon={<FileText className="h-6 w-6 text-primary" />} title="Offers Sent" value={jobOfferStatusData.sent} />
-            <KpiCard icon={<CheckCircle className="h-6 w-6 text-green-500" />} title="Offers Accepted" value={jobOfferStatusData.accepted} />
-            <KpiCard icon={<Clock className="h-6 w-6 text-yellow-500" />} title="Offers Pending" value={jobOfferStatusData.pending} />
-            <KpiCard icon={<AlertCircle className="h-6 w-6 text-gray-500" />} title="Offers Neglected" value={jobOfferStatusData.neglected} />
-            <KpiCard icon={<MessageSquare className="h-6 w-6 text-blue-500" />} title="Ongoing Negotiation" value={jobOfferStatusData.negotiation} />
-            <KpiCard icon={<XCircle className="h-6 w-6 text-red-500" />} title="Offers Declined" value={jobOfferStatusData.declined} />
+            <KpiCard icon={<CheckCircle className="h-6 w-6 text-primary" />} title="Offers Accepted" value={jobOfferStatusData.accepted} />
+            <KpiCard icon={<Clock className="h-6 w-6 text-primary" />} title="Offers Pending" value={jobOfferStatusData.pending} />
+            <KpiCard icon={<AlertCircle className="h-6 w-6 text-primary" />} title="Offers Neglected" value={jobOfferStatusData.neglected} />
+            <KpiCard icon={<MessageSquare className="h-6 w-6 text-primary" />} title="Ongoing Negotiation" value={jobOfferStatusData.negotiation} />
+            <KpiCard icon={<XCircle className="h-6 w-6 text-primary" />} title="Offers Declined" value={jobOfferStatusData.declined} />
           </div>
         </CardContent>
       </Card>

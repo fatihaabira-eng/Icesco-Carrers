@@ -243,17 +243,17 @@ const HRJobOffers: React.FC = () => {
               <Table className="w-full">
                 <TableHeader>
                   <TableRow className="bg-gray-50 border-b border-gray-200">
-                    <TableHead className="w-[40px] font-semibold text-gray-700 text-xs uppercase tracking-wide py-3"></TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Reference</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Business Unit</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Job Offer</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3 text-center">N° Applied</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3 text-center">N° Shortlisted</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3 text-center">N° Rejected</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Published Date</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Closing Date</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Status</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Actions</TableHead>
+                    <TableHead className="w-[40px] font-semibold text-gray-700 text-xs   py-3"></TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3">Reference</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3">Business Unit</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3">Job Offer</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3 text-center">N° Applied</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3 text-center">N° Shortlisted</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3 text-center">N° Rejected</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3">Published Date</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3">Closing Date</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3">Status</TableHead>
+                    <TableHead className="font-semibold text-gray-700 text-xs text-center py-3">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -266,30 +266,30 @@ const HRJobOffers: React.FC = () => {
                   ) : (
                     filteredJobOffers.map((offer) => (
                       <React.Fragment key={offer.id}>
-                        <TableRow className="hover:bg-gray-50 transition-colors border-b border-gray-100">
-                          <TableCell className="py-4">
+                        <TableRow className="hover:bg-gray-50 transition-colors text-center border-b border-gray-100">
+                          <TableCell className="py-4 text-center">
                             <Button variant="ghost" size="sm" onClick={() => toggleExpanded(offer.id)}>
-                              {expandedOffer === offer.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                              {expandedOffer === offer.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4 text-teal-700" />}
                             </Button>
                           </TableCell>
-                          <TableCell className="font-mono text-xs text-gray-600 py-4">{offer.id}</TableCell>
-                          <TableCell className="text-gray-600 py-4">{offer.department}</TableCell>
+                          <TableCell className="font-mono text-xs text-gray-600 py-4 text-center">{offer.id}</TableCell>
+                          <TableCell className="text-gray-600 py-4 text-center">{offer.department}</TableCell>
                           <TableCell className="text-gray-600 py-4 font-medium">{offer.title}</TableCell>
                           <TableCell className="text-gray-600 py-4 text-center">
                             <div className="flex items-center justify-center space-x-2">
-                              <Users className="h-4 w-4 text-gray-400" />
+                              <Users className="h-4 w-4 text-teal-700" />
                               <span>{offer.applications}</span>
                             </div>
                           </TableCell>
                           <TableCell className="text-gray-600 py-4 text-center">
                             <div className="flex items-center justify-center space-x-2">
-                              <ListChecks className="h-4 w-4 text-gray-400" />
+                              <ListChecks className="h-4 w-4 text-yellow-500" />
                               <span>{getShortlistedCount(offer.candidates)}</span>
                             </div>
                           </TableCell>
                           <TableCell className="text-gray-600 py-4 text-center">
                             <div className="flex items-center justify-center space-x-2">
-                              <UserX className="h-4 w-4 text-gray-400" />
+                              <UserX className="h-4 w-4 text-red-400" />
                               <span>{getRejectedCount(offer.candidates)}</span>
                             </div>
                           </TableCell>
@@ -299,7 +299,7 @@ const HRJobOffers: React.FC = () => {
                           <TableCell className="text-gray-600 py-4">
                             {offer.closingDate ? format(new Date(offer.closingDate), 'MMM d, yyyy') : 'N/A'}
                           </TableCell>
-                          <TableCell className="text-gray-600 py-4">
+                          <TableCell className="text-gray-600 py-4 ">
                             <Select value={offer.status} onValueChange={(value) => handleStatusChange(offer.id, value as JobOffer['status'])}>
                               <SelectTrigger className="w-28 text-xs">
                                 <SelectValue />
@@ -314,8 +314,8 @@ const HRJobOffers: React.FC = () => {
                           </TableCell>
                           <TableCell className="text-gray-600 py-4">
                             <div className="flex space-x-1">
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><Edit className="h-4 w-4" /></Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>
+                              <Button variant="ghost" size="icon" className="h-8 w-8"><Edit className="h-4 w-4 text-teal-700" /></Button>
+                              <Button variant="ghost" size="icon" className="h-8 w-8"><Trash2 className="h-4 w-4 text-red-400" /></Button>
                             </div>
                           </TableCell>
                         </TableRow>
