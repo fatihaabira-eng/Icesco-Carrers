@@ -515,7 +515,7 @@ const handleManagerialSkillInputChange = (value: string) => {
     { number: 1, title: 'Personal Information' },
     { number: 2, title: 'Education & Professional Certifications' },
     { number: 3, title: 'Professional Experience' },
-    { number: 4, title: 'Skills' },
+    { number: 4, title: 'Professional Skills' },
     { number: 5, title: 'Languages' },
     { number: 6, title: 'Social Media & Online Presence' },
     { number: 7, title: 'References' },
@@ -1846,8 +1846,8 @@ case 3:
 
       {/* Competential Skills Section */}
       <div className="bg-white p-6 rounded-lg border shadow-sm">
-        <h3 className="text-lg font-medium text-yellow-700 mb-4 flex items-center gap-2">
-          <Plus className="w-5 h-5" /> Managerial Skills
+        <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
+          <Plus className="w-5 h-5" /> Managerial/Leadership Skills
         </h3>
         
         {/* managerial Skill Input */}

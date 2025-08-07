@@ -118,7 +118,7 @@ const allJobs = [
     programId: "youth",
     description: "Join a transformative program to promote peace and leadership among youth in the Islamic world.",
     skills: ["Leadership", "Peacebuilding"],
-     image: "/images/software-engineer.jpg", // ✅ Add image
+     image: "/1.svg", // ✅ Add image
     imageAlt: "Software engineer working on educational technology" // ✅ Add alt text
   },
   {
@@ -131,7 +131,7 @@ const allJobs = [
     programId: "youth",
     description: "Develop professional skills and networks through this youth-focused career development program.",
     skills: [ "Networking", "Career Planning"],
-     image: "/images/software-engineer.jpg", // ✅ Add image
+     image: "/2.svg", // ✅ Add image
     imageAlt: "Software engineer working on educational technology" // ✅ Add alt text
   },
   {

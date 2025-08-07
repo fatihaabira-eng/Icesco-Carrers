@@ -28,7 +28,7 @@ const passedInterviewsData = [
     candidate: "Ahmed Hassan El-Masri",
     position: "Senior Frontend Developer",
     dateTime: "2025-01-20 10:00 AM",
-    status: "Completed",
+    status: "rejected",
     interviewer: "Dr. Mohammed Al-Rashid",
     totalScore: 0,
     evaluation: {
@@ -60,14 +60,15 @@ const passedInterviewsData = [
       },
       recommendation: "Not recommended",
       finalNotes: "Candidate did not meet the minimum requirements for this position."
-    }
+    },
+      photoUrl: 'https://images.pexels.com/photos/8353814/pexels-photo-8353814.jpeg'
   },
   {
     id: 2,
     candidate: "Fatima Al-Zahra Benali",
     position: "Product Manager",
     dateTime: "2025-01-18 2:00 PM",
-    status: "Completed",
+    status: "Accepted",
     interviewer: "Ms. Fatima Al-Kindi",
     totalScore: 92,
     evaluation: {
@@ -99,14 +100,15 @@ const passedInterviewsData = [
       },
       recommendation: "Strongly recommended - top candidate",
       finalNotes: "Outstanding candidate with exceptional strategic thinking and communication skills."
-    }
+    },
+      photoUrl: 'https://images.pexels.com/photos/6409119/pexels-photo-6409119.jpeg'
   },
   {
     id: 3,
     candidate: "Omar Khalil Al-Rashid",
     position: "UX Designer",
     dateTime: "2025-01-15 11:00 AM",
-    status: "Completed",
+    status: "Recommended for an other position",
     interviewer: "Mr. Hassan Al-Mahmoud",
     totalScore: 78,
     evaluation: {
@@ -138,7 +140,8 @@ const passedInterviewsData = [
       },
       recommendation: "Recommended with reservations",
       finalNotes: "Good candidate but needs development in strategic thinking and leadership."
-    }
+    },
+      photoUrl: 'https://images.pexels.com/photos/13392786/pexels-photo-13392786.png'
   }
 ];
 
@@ -152,7 +155,8 @@ const upcomingInterviewsData = [
     status: "Pending",
     interviewer: "Dr. Ahmed Al-Rashid",
     candidateEmail: "sarah.almansouri@email.com",
-    requestDate: "2025-02-20"
+    requestDate: "2025-02-20",
+    photoUrl: "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg"
   },
   {
     id: 2,
@@ -162,7 +166,8 @@ const upcomingInterviewsData = [
     status: "Pending",
     interviewer: "Ms. Aisha Al-Zahra",
     candidateEmail: "mohammed.alkindi@email.com",
-    requestDate: "2025-02-18"
+    requestDate: "2025-02-18",
+    photoUrl: "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
   },
   {
     id: 3,
@@ -172,7 +177,8 @@ const upcomingInterviewsData = [
     status: "Pending",
     interviewer: "Mr. Khalil Al-Mahmoud",
     candidateEmail: "layla.alfarisi@email.com",
-    requestDate: "2025-02-19"
+    requestDate: "2025-02-19",
+    photoUrl: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg"
   },
   {
     id: 4,
@@ -182,7 +188,8 @@ const upcomingInterviewsData = [
     status: "Accepted",
     interviewer: "Dr. Fatima Al-Kindi",
     candidateEmail: "yusuf.alrashid@email.com",
-    requestDate: "2025-02-21"
+    requestDate: "2025-02-21",
+    photoUrl: "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg"
   }
 ];
 
@@ -308,16 +315,14 @@ const BUInterviews: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'Completed':
-        return <Badge className="bg-green-100 text-green-700 font-medium px-3 py-1 rounded-full">Completed</Badge>;
-      case 'Pending':
-        return <Badge className="bg-yellow-100 text-yellow-700 font-medium px-3 py-1 rounded-full">Pending</Badge>;
       case 'Accepted':
-        return <Badge className="bg-[#0f7378]/10 text-[#0f7378] font-medium px-3 py-1 rounded-full">Accepted</Badge>;
-      case 'Rescheduled':
-        return <Badge className="bg-orange-100 text-orange-700 font-medium px-3 py-1 rounded-full">Rescheduled</Badge>;
-      default:
-        return <Badge className="bg-gray-100 text-gray-700 font-medium px-3 py-1 rounded-full">{status}</Badge>;
+        return <Badge className="bg-green-100 text-green-700 font-medium px-3 py-1 rounded-full">Accepted</Badge>;
+
+      case 'rejected':
+        return <Badge className="bg-red-100 text-red-700 font-medium px-3 py-1 rounded-full">Rejected</Badge>;
+      case 'Recommended for an other position':
+        return <Badge className="bg-orange-100 text-orange-700 font-medium px-3 py-1 rounded-full">Recommended for an other position</Badge>;
+
     }
   };
 
@@ -490,11 +495,10 @@ const BUInterviews: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-[#f3f4f6]">
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Candidate</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-left">Candidate</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Position</TableHead>
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Date & Time</TableHead>
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Interviewer</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Score</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Date & Time</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Status</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Evaluation</TableHead>
                 </TableRow>
@@ -503,20 +507,18 @@ const BUInterviews: React.FC = () => {
                 {filteredPassedInterviews.map((interview) => (
                   <TableRow key={interview.id} className="hover:bg-[#f3f4f6] transition-colors">
                     <TableCell className="text-gray-600 text-sm text-center py-3">
-                      <div className="flex items-center justify-center space-x-3">
+                      <div className="flex items-center justify-left space-x-3">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src="/api/placeholder/32/32" />
-                          <AvatarFallback className="bg-[#0f7378]/10 text-[#0f7378]">
-                            {interview.candidate.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
+                          <AvatarImage
+                            src={interview.photoUrl}
+                            alt={interview.candidate}
+                          />
                         </Avatar>
                         <span>{interview.candidate}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-gray-600 text-sm text-center py-3">{interview.position}</TableCell>
-                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.dateTime}</TableCell>
-                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.interviewer}</TableCell>
-                    <TableCell className="text-gray-600 text-sm text-center py-3">
+                     <TableCell className="text-gray-600 text-sm text-center py-3">
                       <div className="flex items-center justify-center space-x-2">
                         <Star className={`h-4 w-4 ${getScoreColor(interview.totalScore)}`} />
                         <span className={`font-medium ${getScoreColor(interview.totalScore)}`}>
@@ -524,6 +526,8 @@ const BUInterviews: React.FC = () => {
                         </span>
                       </div>
                     </TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.dateTime}</TableCell>
+                   
                     <TableCell className="text-center py-3">{getStatusBadge(interview.status)}</TableCell>
                     <TableCell className="text-center py-3">
                       <Button
@@ -612,11 +616,9 @@ const BUInterviews: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-[#f3f4f6]">
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Candidate</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-left">Candidate</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Position</TableHead>
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Proposed Date & Time</TableHead>
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Interviewer</TableHead>
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Request Date</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Proposed Interview Date & Time</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Status</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Actions</TableHead>
                 </TableRow>
@@ -624,21 +626,19 @@ const BUInterviews: React.FC = () => {
               <TableBody>
                 {filteredUpcomingInterviews.map((interview) => (
                   <TableRow key={interview.id} className="hover:bg-[#f3f4f6] transition-colors">
-                    <TableCell className="text-gray-600 text-sm text-center py-3">
-                      <div className="flex items-center justify-center space-x-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src="/api/placeholder/32/32" />
-                          <AvatarFallback className="bg-[#0f7378]/10 text-[#0f7378]">
-                            {interview.candidate.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
+                    <TableCell className="text-gray-600 text-sm text-left py-3">
+                      <div className="flex items-center justify-left space-x-3">
+                       <Avatar className="h-8 w-8">
+                          <AvatarImage
+                            src={interview.photoUrl}
+                            alt={interview.candidate}
+                          />
                         </Avatar>
                         <span>{interview.candidate}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-gray-600 text-sm text-center py-3">{interview.position}</TableCell>
                     <TableCell className="text-gray-600 text-sm text-center py-3">{interview.proposedDateTime}</TableCell>
-                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.interviewer}</TableCell>
-                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.requestDate}</TableCell>
                     <TableCell className="text-center py-3">{getStatusBadge(interview.status)}</TableCell>
                     <TableCell className="text-center py-3">
                       {interview.status === 'Pending' ? (

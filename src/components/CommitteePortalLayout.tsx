@@ -40,28 +40,7 @@ const CommitteePortalLayout: React.FC<CommitteePortalLayoutProps> = ({ children 
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
-                <Bell className="h-4 w-4" />
-              </Button>
-              
-              <div className="flex items-center space-x-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/api/placeholder/32/32" />
-                  <AvatarFallback>
-                    {user.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-sm">
-                  <div className="font-medium text-foreground">{user.name}</div>
-                  <div className="text-muted-foreground capitalize">Committee Member</div>
-                </div>
-              </div>
-
-              <Button variant="ghost" size="icon">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </div>
+           
           </div>
         </header>
 

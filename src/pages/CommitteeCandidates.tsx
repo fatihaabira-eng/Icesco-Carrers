@@ -46,6 +46,7 @@ interface Candidate {
   committeeComments?: string;
   resumeUrl?: string;
   videoUrl?: string;
+  photoUrl?: string;
   interviewDate?: string;
   interviewType?: 'in-person' | 'virtual';
 }
@@ -67,7 +68,7 @@ const CommitteeCandidates: React.FC = () => {
       id: 'CAND-001',
       name: 'Alice Smith',
       position: 'Senior Software Engineer',
-      businessUnit: 'Digital Transformation',
+      businessUnit: 'DT',
       email: 'alice.smith@example.com',
       phone: '+1-555-0123',
       experience: '5 years',
@@ -75,13 +76,14 @@ const CommitteeCandidates: React.FC = () => {
       status: 'pending',
       applicationDate: '2024-01-15',
       resumeUrl: '/resumes/alice-smith.pdf',
-      videoUrl: '/videos/alice-smith-interview.mp4'
+      videoUrl: '/videos/alice-smith-interview.mp4',
+      photoUrl: 'https://images.pexels.com/photos/8353814/pexels-photo-8353814.jpeg'
     },
     {
       id: 'CAND-002',
       name: 'Bob Johnson',
       position: 'Marketing Manager',
-      businessUnit: 'Communications',
+      businessUnit: 'COM',
       email: 'bob.johnson@example.com',
       phone: '+1-555-0124',
       experience: '4 years',
@@ -94,13 +96,15 @@ const CommitteeCandidates: React.FC = () => {
       resumeUrl: '/resumes/bob-johnson.pdf',
       videoUrl: '/videos/bob-johnson-interview.mp4',
       interviewDate: '2024-02-15',
-      interviewType: 'virtual'
+      interviewType: 'virtual',
+      photoUrl: 'https://images.pexels.com/photos/6409119/pexels-photo-6409119.jpeg'
+      
     },
     {
       id: 'CAND-003',
       name: 'Clara Brown',
       position: 'Research Analyst',
-      businessUnit: 'Research Center',
+      businessUnit: 'RC',
       email: 'clara.brown@example.com',
       phone: '+1-555-0125',
       experience: '3 years',
@@ -113,13 +117,14 @@ const CommitteeCandidates: React.FC = () => {
       resumeUrl: '/resumes/clara-brown.pdf',
       videoUrl: '/videos/clara-brown-interview.mp4',
       interviewDate: '2024-02-18',
-      interviewType: 'in-person'
+      interviewType: 'in-person',
+      photoUrl: 'https://images.pexels.com/photos/13392786/pexels-photo-13392786.png'
     },
     {
       id: 'CAND-004',
       name: 'David Lee',
       position: 'Senior Software Engineer',
-      businessUnit: 'Digital Transformation',
+      businessUnit: 'DT',
       email: 'david.lee@example.com',
       phone: '+1-555-0126',
       experience: '6 years',
@@ -130,7 +135,8 @@ const CommitteeCandidates: React.FC = () => {
       committeeScore: 65,
       committeeComments: 'Technical skills are adequate but lacks the required leadership experience.',
       resumeUrl: '/resumes/david-lee.pdf',
-      videoUrl: '/videos/david-lee-interview.mp4'
+      videoUrl: '/videos/david-lee-interview.mp4',
+      photoUrl: 'https://images.pexels.com/photos/7752839/pexels-photo-7752839.jpeg'
     }
   ];
 
@@ -138,6 +144,8 @@ const CommitteeCandidates: React.FC = () => {
     if (selectedYear === 'all') return data;
     return data.filter(item => new Date(item.applicationDate).getFullYear() === parseInt(selectedYear));
   };
+
+  
 
   const filteredCandidates = filterDataByDate(candidates).filter(candidate =>
     candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -243,77 +251,65 @@ const CommitteeCandidates: React.FC = () => {
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Candidate</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Business Unit</TableHead>
-                  <TableHead>Application Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Score</TableHead>
-                  <TableHead>Take Action</TableHead>
+                <TableRow className="bg-gray-100 text-center">
+                  <TableHead className="text-center font-bold">Business Unit</TableHead>
+                  <TableHead className="text-center font-bold">Job Position</TableHead>
+                  <TableHead className="text-center font-bold">Candidate</TableHead>
+                  <TableHead className="text-center font-bold">Application Date</TableHead>
+                  <TableHead className="text-center font-bold">Status</TableHead>
+                  <TableHead className="text-center font-bold">Score</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredCandidates.length === 0 ? (
-                  <TableRow>
+                   <TableRow>
                     <TableCell colSpan={7} className="text-center text-muted-foreground h-24">
                       No candidates found.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredCandidates.map((candidate) => (
-                    <TableRow key={candidate.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={`/api/placeholder/32/32?name=${candidate.name}`} />
-                            <AvatarFallback>
-                              {candidate.name.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="font-medium">{candidate.name}</div>
-                            <div className="text-sm text-muted-foreground">{candidate.email}</div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{candidate.position}</TableCell>
-                      <TableCell>{candidate.businessUnit}</TableCell>
-                      <TableCell>{format(new Date(candidate.applicationDate), 'MMM d, yyyy')}</TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(candidate.status)}>
-                          {candidate.status.charAt(0).toUpperCase() + candidate.status.slice(1)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {candidate.committeeScore ? (
-                          <div className="flex items-center space-x-1">
-                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                            <span className="font-medium">{candidate.committeeScore}%</span>
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground">Not evaluated</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleViewCandidate(candidate)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          {/* <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleEvaluateCandidate(candidate)}
-                          >
-                            <Award className="h-4 w-4" />
-                          </Button> */}
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                     <TableRow key={candidate.id} className="text-center font-normal">
+          <TableCell className="text-center font-normal">{candidate.businessUnit}</TableCell>
+          <TableCell className="text-center font-normal">{candidate.position}</TableCell>
+          <TableCell className="text-center font-normal">
+            <div className="flex items-center justify-center space-x-3">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => handleViewCandidate(candidate)}
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+              <Avatar className="h-8 w-8">
+                <AvatarImage
+                  src={candidate.photoUrl}
+                  alt={candidate.name}
+                />
+              </Avatar>
+              <div>
+                <div className="font-medium">{candidate.name}</div>
+              </div>
+            </div>
+          </TableCell>
+          <TableCell className="text-center font-normal">{format(new Date(candidate.applicationDate), 'MMM d, yyyy')}</TableCell>
+          <TableCell className="text-center font-normal">
+            <Badge className={getStatusColor(candidate.status)}>
+              {candidate.status.charAt(0).toUpperCase() + candidate.status.slice(1)}
+            </Badge>
+          </TableCell>
+          <TableCell className="text-center font-normal">
+            {candidate.committeeScore ? (
+              <div className="flex items-center justify-center space-x-1">
+                <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                <span className="font-medium">{candidate.committeeScore}%</span>
+              </div>
+            ) : (
+              <span className="text-muted-foreground">Not evaluated</span>
+            )}
+          </TableCell>
+        </TableRow>
                   ))
                 )}
               </TableBody>

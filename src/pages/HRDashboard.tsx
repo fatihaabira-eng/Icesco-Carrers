@@ -12,10 +12,15 @@ import {
   Clock,
   MessageSquare,
   BarChart3,
+  ArrowUpRight,
+  CircleDollarSign,
   Globe,
   Share2,
   UserPlus,
-  Building
+  Building,
+  Icon,
+  Shield,
+  MoreHorizontal
 } from 'lucide-react';
 
 // Mock Data for the KPI Cards
@@ -26,14 +31,15 @@ const jobOfferStatusData = {
   neglected: 2,
   negotiation: 3,
   declined: 5,
+  
 };
 
 const declinedReasonsData = [
-  { reason: 'Salary', percentage: 55 },
-  { reason: 'Relocation', percentage: 20 },
-  { reason: 'Job Position', percentage: 10 },
-  { reason: 'Benefits', percentage: 10 },
-  { reason: 'Others', percentage: 5 },
+  { reason: 'Salary', percentage: 55, Icon: CircleDollarSign },
+  { reason: 'Relocation', percentage: 20, Icon: Globe },
+  { reason: 'Job Position', percentage: 10, Icon: Briefcase },
+  { reason: 'Benefits', percentage: 10, Icon: ArrowUpRight },
+  { reason: 'Others', percentage: 5, Icon: MoreHorizontal },
 ];
 
 const icescoVacanciesData = {
@@ -44,10 +50,10 @@ const icescoVacanciesData = {
 };
 
 const rejectedReasonsData = [
-  { reason: 'Language', percentage: 10 },
-  { reason: 'Integrity', percentage: 50 },
-  { reason: 'Relevant Experience', percentage: 20 },
-  { reason: 'Alignment with ICESCO values', percentage: 20 },
+  { reason: 'Language', percentage: 10, Icon: Users },
+  { reason: 'Integrity', percentage: 50, Icon: Shield },
+  { reason: 'Relevant Experience', percentage: 20, Icon: Briefcase },
+  { reason: 'Alignment with ICESCO values', percentage: 20, Icon: Globe },
 ];
 
 const recruitmentOutreachData = {
@@ -192,7 +198,7 @@ const HRDashboard: React.FC = () => {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
             {declinedReasonsData.map(item => (
-              <KpiCard key={item.reason} icon={<BarChart3 className="h-6 w-6 text-primary" />} title={item.reason} value={`${item.percentage}%`} />
+              <KpiCard key={item.reason} icon={<item.Icon className="h-6 w-6 text-primary" />} title={item.reason} value={`${item.percentage}%`} />
             ))}
           </div>
         </CardContent>
@@ -216,7 +222,7 @@ const HRDashboard: React.FC = () => {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {rejectedReasonsData.map(item => (
-              <KpiCard key={item.reason} icon={<BarChart3 className="h-6 w-6 text-primary" />} title={item.reason} value={`${item.percentage}%`} />
+              <KpiCard key={item.reason} icon={<item.Icon className="h-6 w-6 text-primary" />} title={item.reason} value={`${item.percentage}%`} />
             ))}
           </div>
         </CardContent>
