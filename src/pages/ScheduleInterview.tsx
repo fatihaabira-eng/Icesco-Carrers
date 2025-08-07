@@ -20,11 +20,24 @@ import {
   Plus,
   X,
   CheckCircle,
-  AlertCircle,
   Briefcase
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { addDays, format, startOfWeek } from 'date-fns';
 import { cn } from '@/lib/utils';
+
+const timeSlots = [
+  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
+];
+
+const fixedInterviews = [
+  { day: 0, time: '09:00', candidate: 'Ahmed Hassan' },
+  { day: 1, time: '10:30', candidate: 'Fatima Benali' },
+  { day: 2, time: '14:00', candidate: 'Omar Khalil' },
+];
+const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 }); // Monday
+const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
 
 const ScheduleInterview: React.FC = () => {
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
@@ -134,7 +147,7 @@ const ScheduleInterview: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="w-full max-w-full mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Schedule Interview</h1>
@@ -148,14 +161,14 @@ const ScheduleInterview: React.FC = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column - Position & Candidate & Interviewers */}
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+        {/* Left Column - Position & Candidate */}
+        <div className="space-y-6 col-span-1">
           {/* Position Selection */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Briefcase className="h-5 w-5" />
+                <Briefcase className="h-6 w-6 text-primary" />
                 Select Position
               </CardTitle>
             </CardHeader>
@@ -175,217 +188,193 @@ const ScheduleInterview: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Candidate Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Select Candidate
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search candidates..."
-                    value={candidateSearch}
-                    onChange={(e) => setCandidateSearch(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {filteredCandidates.map(candidate => (
-                    <div
-                      key={candidate.id}
-                      className={cn(
-                        "p-3 border rounded-lg cursor-pointer transition-colors",
-                        selectedCandidate?.id === candidate.id 
-                          ? "border-primary bg-primary/5" 
-                          : "hover:bg-muted/50"
-                      )}
-                      onClick={() => setSelectedCandidate(candidate)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={candidate.avatar} />
-                          <AvatarFallback>
-                            {candidate.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">{candidate.name}</p>
-                          <p className="text-xs text-muted-foreground">{candidate.position}</p>
-                          <Badge variant="outline" className="text-xs mt-1">
-                            {candidate.status}
-                          </Badge>
-                        </div>
-                        {selectedCandidate?.id === candidate.id && (
-                          <CheckCircle className="h-5 w-5 text-primary" />
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
+          <div className="space-y-6 col-span-1">
           {/* Interviewer Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Select Business Unit
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Selected Interviewers */}
-                {selectedInterviewers.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Selected Interviewers:</Label>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedInterviewers.map(interviewer => (
-                        <div
-                          key={interviewer.id}
-                          className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
-                        >
-                          <span>{interviewer.name}</span>
-                          <button
-                            onClick={() => removeInterviewer(interviewer.id)}
-                            className="hover:bg-primary/20 rounded-full p-0.5"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+       <Card>
+  <CardHeader>
+    <CardTitle className="flex items-center gap-2">
+      <Users className="h-6 w-6 text-primary" />
+      Select Business Unit
+    </CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="space-y-4">
+      {/* Selected Interviewers */}
+      {selectedInterviewers.length > 0 && (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Selected Interviewers:</Label>
+          <div className="flex flex-wrap gap-2">
+            {selectedInterviewers.map(interviewer => (
+              <div
+                key={interviewer.id}
+                className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
+              >
+                <span>{interviewer.name}</span>
+                <button
+                  onClick={() => removeInterviewer(interviewer.id)}
+                  className="hover:bg-primary/20 rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search interviewers..."
-                    value={interviewerSearch}
-                    onChange={(e) => setInterviewerSearch(e.target.value)}
-                    className="pl-10"
-                  />
+      <div className="relative">
+        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search interviewers..."
+          value={interviewerSearch}
+          onChange={(e) => setInterviewerSearch(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+      {/* Only show suggestions if user has typed something */}
+      {interviewerSearch.trim().length > 0 && (
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {filteredInterviewers.map(interviewer => (
+            <div
+              key={interviewer.id}
+              className={cn(
+                "p-3 border rounded-lg cursor-pointer transition-colors",
+                selectedInterviewers.find(i => i.id === interviewer.id)
+                  ? "border-primary bg-primary/5"
+                  : "hover:bg-muted/50",
+                interviewer.availability === 'Busy' && "opacity-50"
+              )}
+              onClick={() => {
+                if (interviewer.availability === 'Available' && !selectedInterviewers.find(i => i.id === interviewer.id)) {
+                  handleInterviewerSelect(interviewer);
+                  setInterviewerSearch(''); // Clear input after selection
+                }
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={interviewer.avatar} />
+                  <AvatarFallback>
+                    {interviewer.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">{interviewer.name}</p>
+                  <p className="text-xs text-muted-foreground">{interviewer.role}</p>
+                  <p className="text-xs text-muted-foreground">{interviewer.businessUnit}</p>
                 </div>
-
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {filteredInterviewers.map(interviewer => (
-                    <div
-                      key={interviewer.id}
-                      className={cn(
-                        "p-3 border rounded-lg cursor-pointer transition-colors",
-                        selectedInterviewers.find(i => i.id === interviewer.id)
-                          ? "border-primary bg-primary/5"
-                          : "hover:bg-muted/50",
-                        interviewer.availability === 'Busy' && "opacity-50"
-                      )}
-                      onClick={() => interviewer.availability === 'Available' && handleInterviewerSelect(interviewer)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={interviewer.avatar} />
-                          <AvatarFallback>
-                            {interviewer.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">{interviewer.name}</p>
-                          <p className="text-xs text-muted-foreground">{interviewer.role}</p>
-                          <p className="text-xs text-muted-foreground">{interviewer.businessUnit}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {interviewer.availability === 'Available' ? (
-                            <Badge variant="outline" className="text-green-600 border-green-200">
-                              Available
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="text-red-600 border-red-200">
-                              Busy
-                            </Badge>
-                          )}
-                          {selectedInterviewers.find(i => i.id === interviewer.id) && (
-                            <CheckCircle className="h-5 w-5 text-primary" />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-2">
+                  {interviewer.availability === 'Available' ? (
+                    <Badge variant="outline" className="text-green-600 border-green-200">
+                      Available
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-red-600 border-red-200">
+                      Busy
+                    </Badge>
+                  )}
+                  {selectedInterviewers.find(i => i.id === interviewer.id) && (
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                  )}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          ))}
+          {filteredInterviewers.length === 0 && (
+            <div className="text-center text-muted-foreground text-sm py-2">No business units found.</div>
+          )}
+        </div>
+      )}
+    </div>
+  </CardContent>
+</Card>
         </div>
 
-        {/* Right Column - Date, Time & Details */}
-        <div className="space-y-6">
-          {/* Date & Time Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5" />
-                Date & Time
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Date Selection */}
-                <div className="space-y-2">
-                  <Label>Interview Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !selectedDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        initialFocus
-                        className="pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
+     <Card>
+  <CardHeader>
+    <CardTitle className="flex items-center gap-2">
+      <Users className="h-6 w-6 text-primary" />
+      Select Candidate
+    </CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="space-y-4">
+      <div className="relative">
+        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search candidates..."
+          value={candidateSearch}
+          onChange={(e) => setCandidateSearch(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+      {/* Only show suggestions if user has typed something */}
+      {candidateSearch.trim().length > 0 && (
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {filteredCandidates.map(candidate => (
+            <div
+              key={candidate.id}
+              className={cn(
+                "p-3 border rounded-lg cursor-pointer transition-colors",
+                selectedCandidate?.id === candidate.id 
+                  ? "border-primary bg-primary/5" 
+                  : "hover:bg-muted/50"
+              )}
+              onClick={() => {
+                setSelectedCandidate(candidate);
+                setCandidateSearch(''); // Clear input after selection
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={candidate.avatar} />
+                  <AvatarFallback>
+                    {candidate.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="font-medium text-sm">{candidate.name}</p>
+                  <p className="text-xs text-muted-foreground">{candidate.position}</p>
+                  <Badge variant="outline" className="text-xs mt-1">
+                    {candidate.status}
+                  </Badge>
                 </div>
-
-                {/* Time Selection */}
-                <div className="space-y-2">
-                  <Label>Interview Time</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {timeSlots.map(time => (
-                      <Button
-                        key={time}
-                        variant={selectedTime === time ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedTime(time)}
-                        className="text-xs"
-                      >
-                        <Clock className="h-3 w-3 mr-1" />
-                        {time}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
+                {selectedCandidate?.id === candidate.id && (
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          ))}
+          {filteredCandidates.length === 0 && (
+            <div className="text-center text-muted-foreground text-sm py-2">No candidates found.</div>
+          )}
+        </div>
+      )}
 
-          {/* Interview Details */}
+      {/* Display the selected candidate */}
+      {selectedCandidate && (
+        <div className="mt-4 flex items-center gap-3 border rounded-lg p-3 bg-primary/5">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={selectedCandidate.avatar} />
+            <AvatarFallback>
+              {selectedCandidate.name.split(' ').map(n => n[0]).join('')}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="font-semibold">{selectedCandidate.name}</div>
+            <div className="text-xs text-muted-foreground">{selectedCandidate.position}</div>
+            <Badge variant="outline" className="text-xs mt-1">
+              {selectedCandidate.status}
+            </Badge>
+          </div>
+        </div>
+      )}
+    </div>
+  </CardContent>
+</Card>
+
+
+{/* Interview Details */}
           <Card>
             <CardHeader>
               <CardTitle>Interview Details</CardTitle>
@@ -473,6 +462,135 @@ const ScheduleInterview: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Middle Column - Interviewers */}
+        
+
+        {/* Right Column - Date, Time & Details */}
+        <div className="space-y-6 col-span-1">
+          {/* Date & Time Selection */}
+        <Card>
+  <CardHeader>
+    <CardTitle className="flex items-center gap-2">
+      <CalendarIcon className="h-6 w-6 text-primary" />
+      Date & Time
+    </CardTitle>
+  </CardHeader>
+  <CardContent>
+    {/* Date & Time Picker */}
+    <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+      <div className="flex items-center gap-2">
+        <Label>Date</Label>
+        <Input
+          type="date"
+          value={selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''}
+          onChange={e => {
+            const val = e.target.value;
+            setSelectedDate(val ? new Date(val) : undefined);
+          }}
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <Label>Time</Label>
+        <Input
+          type="time"
+          value={selectedTime}
+          onChange={e => setSelectedTime(e.target.value)}
+        />
+      </div>
+      <Button
+        type="button"
+        onClick={() => {
+          if (selectedDate && selectedTime) {
+            // Find the day index in the week
+            const dayIdx = days.findIndex(
+              d => format(d, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd')
+            );
+            if (dayIdx !== -1) {
+              // Optionally, you can add logic to add a new interview to fixedInterviews here
+              // For now, just scroll to the selected cell or highlight it
+              // (No-op, as the calendar will reflect the selection)
+            }
+          }
+        }}
+        disabled={!selectedDate || !selectedTime}
+        className="ml-2"
+      >
+        Set in Calendar
+      </Button>
+    </div>
+    {/* Calendar Table */}
+    <div className="overflow-x-auto">
+      <table className="min-w-full border-separate border-spacing-0 rounded-lg shadow-sm bg-white">
+        <thead>
+          <tr>
+            <th className="sticky left-0 z-10 bg-white border-b border-r p-3 font-semibold text-gray-700 text-left w-32">
+              Day / Time
+            </th>
+            {timeSlots.map(time => (
+              <th
+                key={time}
+                className="border-b p-3 font-semibold text-gray-700 bg-gray-50 text-center"
+                style={{ minWidth: 80 }}
+              >
+                {time}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {days.map((day, dayIdx) => (
+            <tr key={day.toISOString()} className="hover:bg-blue-50 transition">
+              <td className="sticky left-0 z-10 bg-white border-r p-3 font-medium text-gray-800 text-left">
+                <div>
+                  <span className="block text-base">{format(day, 'EEE')}</span>
+                  <span className="block text-xs text-gray-500">{format(day, 'dd/MM')}</span>
+                </div>
+              </td>
+              {timeSlots.map(time => {
+                const interview = fixedInterviews.find(
+                  i => i.day === dayIdx && i.time === time
+                );
+                const isSelected =
+                  selectedDate &&
+                  selectedTime &&
+                  format(day, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd') &&
+                  selectedTime === time;
+                return (
+                  <td
+                    key={time}
+                    className={cn(
+                      "border-b border-r p-2 align-middle text-center transition",
+                      interview
+                        ? "bg-teal-100 border-teal-200"
+                        : isSelected
+                        ? "bg-blue-200 border-blue-400"
+                        : "bg-white hover:bg-teal-50"
+                    )}
+                    style={{ minWidth: 80, height: 48 }}
+                  >
+                    {interview ? (
+                      <div className="flex flex-col items-center justify-center">
+                        <span className="bg-teal-500 text-white rounded px-2 py-1 text-xs font-semibold shadow">
+                          {interview.candidate}
+                        </span>
+                      </div>
+                    ) : isSelected ? (
+                      <span className="text-blue-700 font-bold text-lg">✓</span>
+                    ) : (
+                      <span className="text-gray-300 text-lg">•</span>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </CardContent>
+</Card>
 
           {/* Summary */}
           {selectedCandidate && selectedDate && selectedTime && (
