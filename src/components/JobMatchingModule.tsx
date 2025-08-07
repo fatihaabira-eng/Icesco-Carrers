@@ -196,7 +196,7 @@ const JobMatchingModule: React.FC = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Job Matching Module</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Job Matching Review</h1>
         <p className="text-muted-foreground">Find the best candidate matches for your open positions.</p>
       </div>
       <Card className="mt-6">

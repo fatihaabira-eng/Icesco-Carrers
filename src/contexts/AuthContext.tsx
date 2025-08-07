@@ -16,7 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const demoUsers: User[] = [
-  { name: 'Recruitment Team', email: 'hr@icesco.org', role: 'recruitment' },
+  { name: 'HR Team', email: 'hr@icesco.org', role: 'recruitment' },
   { name: 'Naoufal Chaouqi', email: 'naoufal.chaouqi@icesco.org', role: 'business unit' },
   { name: 'Sally Mabrouk', email: 'sally.mabrouk@icesco.org', role: 'committee' }
 ];

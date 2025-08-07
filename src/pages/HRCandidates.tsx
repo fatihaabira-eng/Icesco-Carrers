@@ -275,28 +275,28 @@ const HRCandidates: React.FC = () => {
 
   const kpiCards = [
     {
-      title: 'Total Candidates',
+      title: 'Active Published Positions',
       value: totalCandidates,
       icon: Users,
       description: 'All applications received'
     },
     {
-      title: 'Active Applications',
+      title: 'Applied Candidates',
       value: activeApplications,
       icon: UserCheck,
       description: 'In progress applications'
     },
     {
-      title: 'Interviews Scheduled',
+      title: 'Shortlisted for Interviews',
       value: interviewScheduled,
       icon: Calendar,
       description: 'Candidates in interview phase'
     },
     {
-      title: 'Hired',
+      title: 'Scheduled Interviews',
       value: hired,
       icon: Award,
-      description: 'Successfully hired candidates'
+      description: ''
     }
   ];
 
@@ -355,7 +355,7 @@ const HRCandidates: React.FC = () => {
 
       {/* Header */}
       <DashboardHeader
-        title="Candidates"
+        title="Candidates Overview"
         description="Manage and track candidate applications through the recruitment pipeline"
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
@@ -365,8 +365,8 @@ const HRCandidates: React.FC = () => {
 
       {/* KPI Cards */}
       <DashboardSection
-        title="Candidate Overview"
-        description="Key metrics for candidate management and recruitment pipeline"
+        title=""
+        description="K"
         icon={Users}
       >
         <KPICards cards={kpiCards} />
@@ -374,7 +374,7 @@ const HRCandidates: React.FC = () => {
 
       {/* Candidates Management */}
       <DashboardSection
-        title="Candidate Management"
+        title="Candidates Information Management"
         description="Track candidate progress through the recruitment pipeline"
         icon={Users}
       >
@@ -407,7 +407,7 @@ const HRCandidates: React.FC = () => {
                   <TableHead>Business Unit</TableHead>
                   <TableHead>Applied Date</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Score</TableHead>
+                  <TableHead>Job matching</TableHead>
                   <TableHead>Experience</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>

@@ -208,7 +208,7 @@ const CommitteeCandidates: React.FC = () => {
 
       {/* KPI Cards */}
       <DashboardSection
-        title="Candidate Overview"
+        title="Candidates Overview"
         description="Key metrics for candidate evaluations"
         icon={Users}
       >
@@ -217,7 +217,7 @@ const CommitteeCandidates: React.FC = () => {
 
       {/* Candidates Management */}
       <DashboardSection
-        title="Candidate Management"
+        title="Candidates Management"
         description="View and evaluate candidate profiles"
         icon={Users}
       >
@@ -304,13 +304,13 @@ const CommitteeCandidates: React.FC = () => {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button
+                          {/* <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleEvaluateCandidate(candidate)}
                           >
                             <Award className="h-4 w-4" />
-                          </Button>
+                          </Button> */}
                         </div>
                       </TableCell>
                     </TableRow>

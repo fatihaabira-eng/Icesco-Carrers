@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Search, 
   Filter,
@@ -20,6 +21,7 @@ import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
+import InterviewEvaluationDialog from '@/components/eva';
 
 interface ProposedInterview {
   id: string;
@@ -54,13 +56,70 @@ interface ScheduledInterview {
   location?: string;
   meetingLink?: string;
   notes?: string;
+  evaluation?: {
+    scores?: Record<string, number>;
+    notes?: Record<string, string>;
+    recommendation?: string;
+    finalNotes?: string;
+  };
 }
+
+interface EvaluationCategory {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  maxPoints: number;
+}
+
+interface Interview extends ScheduledInterview {
+  candidate: string;
+  totalScore?: number;
+}
+
+const evaluationCategories: EvaluationCategory[] = [
+  {
+    id: 'technical',
+    name: 'Technical Skills',
+    emoji: '💻',
+    description: 'Ability to demonstrate technical expertise relevant to the role',
+    maxPoints: 30,
+  },
+  {
+    id: 'communication',
+    name: 'Communication',
+    emoji: '🗣️',
+    description: 'Clarity and effectiveness in verbal and written communication',
+    maxPoints: 25,
+  },
+  {
+    id: 'problemSolving',
+    name: 'Problem Solving',
+    emoji: '🧠',
+    description: 'Ability to analyze and solve complex problems',
+    maxPoints: 25,
+  },
+  {
+    id: 'culturalFit',
+    name: 'Cultural Fit',
+    emoji: '🤝',
+    description: 'Alignment with company values and team dynamics',
+    maxPoints: 20,
+  },
+];
 
 const CommitteeInterviews: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState('2024');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('proposed');
+  const [showEvaluations, setShowEvaluations] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [evaluationScores, setEvaluationScores] = useState<Record<string, number>>({});
+  const [evaluationNotes, setEvaluationNotes] = useState<Record<string, string>>({});
+  const [recommendation, setRecommendation] = useState('');
+  const [finalNotes, setFinalNotes] = useState('');
 
   // Mock data for proposed interviews
   const proposedInterviews: ProposedInterview[] = [
@@ -78,7 +137,7 @@ const CommitteeInterviews: React.FC = () => {
       education: 'Master in Computer Science',
       proposedBy: 'HR Department',
       proposedDateRequest: '2024-02-10',
-      notes: 'Candidate has strong technical background and relevant experience.'
+      notes: 'Candidate has strong technical background and relevant experience.',
     },
     {
       id: 'PROP-002',
@@ -94,7 +153,7 @@ const CommitteeInterviews: React.FC = () => {
       education: 'MBA in Marketing',
       proposedBy: 'HR Department',
       proposedDateRequest: '2024-02-11',
-      notes: 'Excellent communication skills and marketing experience.'
+      notes: 'Excellent communication skills and marketing experience.',
     },
     {
       id: 'PROP-003',
@@ -110,8 +169,8 @@ const CommitteeInterviews: React.FC = () => {
       education: 'Master in Research Methods',
       proposedBy: 'HR Department',
       proposedDateRequest: '2024-02-12',
-      notes: 'Strong analytical skills and research background.'
-    }
+      notes: 'Strong analytical skills and research background.',
+    },
   ];
 
   // Mock data for scheduled interviews
@@ -130,7 +189,7 @@ const CommitteeInterviews: React.FC = () => {
       education: 'Bachelor in Software Engineering',
       interviewType: 'virtual',
       meetingLink: 'https://meet.google.com/abc-defg-hij',
-      notes: 'Virtual interview via Google Meet'
+      notes: 'Virtual interview via Google Meet',
     },
     {
       id: 'SCHED-002',
@@ -146,8 +205,24 @@ const CommitteeInterviews: React.FC = () => {
       education: 'MBA in Business Administration',
       interviewType: 'in-person',
       location: 'Conference Room A',
-      notes: 'Interview completed successfully. Candidate showed strong leadership skills.'
-    }
+      notes: 'Interview completed successfully. Candidate showed strong leadership skills.',
+      evaluation: {
+        scores: {
+          technical: 25,
+          communication: 20,
+          problemSolving: 22,
+          culturalFit: 18,
+        },
+        notes: {
+          technical: 'Demonstrated strong coding skills.',
+          communication: 'Clear and concise communication.',
+          problemSolving: 'Effective problem-solving approach.',
+          culturalFit: 'Good alignment with team values.',
+        },
+        recommendation: 'Hire',
+        finalNotes: 'Strong candidate with excellent potential.',
+      },
+    },
   ];
 
   const filterDataByDate = (data: any[]) => {
@@ -176,7 +251,7 @@ const CommitteeInterviews: React.FC = () => {
     { title: 'Pending Interviews', value: pendingInterviews, icon: Clock, description: 'Awaiting your response' },
     { title: 'Accepted Interviews', value: acceptedInterviews, icon: CheckCircle, description: 'Confirmed interviews' },
     { title: 'Upcoming Interviews', value: upcomingInterviews, icon: Calendar, description: 'Scheduled interviews' },
-    { title: 'Completed Interviews', value: completedInterviews, icon: AlertCircle, description: 'Finished evaluations' }
+    { title: 'Completed Interviews', value: completedInterviews, icon: AlertCircle, description: 'Finished evaluations' },
   ];
 
   const getStatusColor = (status: string) => {
@@ -186,7 +261,7 @@ const CommitteeInterviews: React.FC = () => {
       'declined': 'bg-red-100 text-red-800',
       'rescheduled': 'bg-blue-100 text-blue-800',
       'upcoming': 'bg-purple-100 text-purple-800',
-      'completed': 'bg-green-100 text-green-800'
+      'completed': 'bg-green-100 text-green-800',
     };
     return colorMap[status] || 'bg-gray-100 text-gray-800';
   };
@@ -206,9 +281,52 @@ const CommitteeInterviews: React.FC = () => {
     // Here you would typically open a reschedule modal or form
   };
 
-  const handleViewCandidate = (candidateId: string) => {
-    console.log(`Viewing candidate ${candidateId}`);
-    // Here you would typically navigate to candidate profile
+  const handleViewCandidate = (interviewId: string) => {
+    const interview = scheduledInterviews.find(i => i.id === interviewId);
+    if (interview) {
+      setSelectedInterview({
+        ...interview,
+        candidate: interview.candidateName,
+        totalScore: interview.evaluation
+          ? Object.values(interview.evaluation.scores || {}).reduce((sum, score) => sum + score, 0)
+          : 0,
+      });
+      setEvaluationScores(interview.evaluation?.scores || {});
+      setEvaluationNotes(interview.evaluation?.notes || {});
+      setRecommendation(interview.evaluation?.recommendation || '');
+      setFinalNotes(interview.evaluation?.finalNotes || '');
+      setShowEvaluations(true);
+    }
+  };
+
+  const getTotalScore = () => {
+    return Object.values(evaluationScores).reduce((sum, score) => sum + score, 0);
+  };
+
+  const getScorePercentage = (score: number, maxPoints: number) => {
+    return (score / maxPoints) * 100;
+  };
+
+  const getProgressColor = (percentage: number) => {
+    if (percentage >= 75) return 'bg-green-500';
+    if (percentage >= 50) return 'bg-yellow-500';
+    return 'bg-red-500';
+  };
+
+  const handleScoreChange = (categoryId: string, value: string) => {
+    const score = Math.max(0, Math.min(parseInt(value) || 0, evaluationCategories.find(c => c.id === categoryId)?.maxPoints || 100));
+    setEvaluationScores(prev => ({ ...prev, [categoryId]: score }));
+  };
+
+  const handleNoteChange = (categoryId: string, value: string) => {
+    setEvaluationNotes(prev => ({ ...prev, [categoryId]: value }));
+  };
+
+  const handleSaveEvaluation = () => {
+    console.log('Saving evaluation:', { evaluationScores, evaluationNotes, recommendation, finalNotes });
+    setIsEditMode(false);
+    setShowEvaluations(false);
+    // Here you would typically make an API call to save the evaluation
   };
 
   return (
@@ -431,8 +549,31 @@ const CommitteeInterviews: React.FC = () => {
           </TabsContent>
         </Tabs>
       </DashboardSection>
+
+      {showEvaluations && selectedInterview && (
+        <Dialog open={showEvaluations} onOpenChange={setShowEvaluations}>
+          <InterviewEvaluationDialog
+            selectedInterview={selectedInterview}
+            isEditMode={isEditMode}
+            setIsEditMode={setIsEditMode}
+            evaluationCategories={evaluationCategories}
+            evaluationScores={evaluationScores}
+            evaluationNotes={evaluationNotes}
+            recommendation={recommendation}
+            finalNotes={finalNotes}
+            setRecommendation={setRecommendation}
+            setFinalNotes={setFinalNotes}
+            handleScoreChange={handleScoreChange}
+            handleNoteChange={handleNoteChange}
+            handleSaveEvaluation={handleSaveEvaluation}
+            getTotalScore={getTotalScore}
+            getScorePercentage={getScorePercentage}
+            getProgressColor={getProgressColor}
+          />
+        </Dialog>
+      )}
     </div>
   );
 };
 
-export default CommitteeInterviews; 
+export default CommitteeInterviews;

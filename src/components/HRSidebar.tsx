@@ -75,7 +75,7 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
       path: '/manpower/hr/candidates',
       subItems: [
         // { id: 'pipeline', label: 'Pipeline View', path: '/manpower/hr/candidates/pipeline' },
-        { id: 'matching', label: 'Job Matching', path: '/manpower/hr/candidates/matching' },
+        { id: 'matching', label: 'Job Matching Review', path: '/manpower/hr/candidates/matching' },
         {
       id: 'assessment-scores',
       label: 'Assessment Scores',

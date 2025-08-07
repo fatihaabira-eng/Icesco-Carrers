@@ -152,8 +152,8 @@ const CommitteeDashboard: React.FC = () => {
     { title: 'Accepted Interviews', value: acceptedInterviews, icon: CheckCircle, description: 'Confirmed interviews' },
     { title: 'Upcoming Interviews', value: upcomingInterviews, icon: Calendar, description: 'Scheduled interviews' },
     { title: 'Completed Interviews', value: completedInterviews, icon: Award, description: 'Finished evaluations' },
-    { title: 'Active Positions', value: activePositions, icon: FileText, description: 'Assigned positions' },
-    { title: 'Total Candidates', value: totalCandidates, icon: Users, description: 'Candidates to review' }
+    { title: 'Missed Interviews', value: activePositions, icon: FileText, description: 'Not evaluated candidates' },
+    { title: 'Total Interviews', value: totalCandidates, icon: Users, description: 'Total candidates to be evaluated' }
   ];
 
   const getStatusColor = (status: string) => {
@@ -174,7 +174,7 @@ const CommitteeDashboard: React.FC = () => {
     <div className="space-y-8">
       {/* Header */}
       <DashboardHeader
-        title="Committee Dashboard"
+        title="Recruitment Committee Dashboard"
         description="Overview of your committee responsibilities and interview schedule"
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
@@ -184,7 +184,7 @@ const CommitteeDashboard: React.FC = () => {
 
       {/* KPI Cards */}
       <DashboardSection
-        title="Committee Overview"
+        title="Candidates Interviews Overview"
         description="Key metrics for your committee activities"
         icon={Award}
       >
@@ -276,7 +276,7 @@ const CommitteeDashboard: React.FC = () => {
       </DashboardSection>
 
       {/* Assigned Positions */}
-      <DashboardSection
+      {/* <DashboardSection
         title="Assigned Positions"
         description="Positions you are responsible for evaluating"
         icon={FileText}
@@ -310,7 +310,7 @@ const CommitteeDashboard: React.FC = () => {
             </div>
           )}
         </div>
-      </DashboardSection>
+      </DashboardSection> */}
     </div>
   );
 };

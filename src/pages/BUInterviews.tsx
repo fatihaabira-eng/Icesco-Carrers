@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Calendar,
   Search,
@@ -16,8 +17,6 @@ import {
   X,
   Clock,
   CheckCircle,
-  Award,
-  Users,
   Star,
   MessageSquare
 } from 'lucide-react';
@@ -61,45 +60,6 @@ const passedInterviewsData = [
       },
       recommendation: "Not recommended",
       finalNotes: "Candidate did not meet the minimum requirements for this position."
-    }
-  },
-  {
-    id: 2,
-    candidate: "Fatima Al-Zahra Benali",
-    position: "Product Manager",
-    dateTime: "2025-01-18 2:00 PM",
-    status: "Completed",
-    interviewer: "Ms. Fatima Al-Kindi",
-    totalScore: 92,
-    evaluation: {
-      scores: {
-        educational: 7,
-        experience: 9,
-        technical: 16,
-        strategic: 9,
-        leadership: 8,
-        communication: 9,
-        cultural: 5,
-        innovation: 8,
-        collaboration: 5,
-        commitment: 5,
-        languages: 9
-      },
-      notes: {
-        educational: "MBA from prestigious business school",
-        experience: "10+ years in product management across different industries",
-        technical: "Strong technical background with software development experience",
-        strategic: "Excellent strategic planning and market analysis skills",
-        leadership: "Proven track record of leading product teams",
-        communication: "Outstanding presentation and stakeholder management",
-        cultural: "Strong cultural awareness and sensitivity",
-        innovation: "Creative problem-solving with user-centric approach",
-        collaboration: "Excellent at building cross-functional partnerships",
-        commitment: "Deeply aligned with organizational values",
-        languages: "Trilingual - Arabic, French, English at native level"
-      },
-      recommendation: "Strongly recommended - top candidate",
-      finalNotes: "Outstanding candidate with exceptional strategic thinking and communication skills."
     }
   },
   {
@@ -310,8 +270,6 @@ const BUInterviews: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [positionFilter, setPositionFilter] = useState("all");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
   const [isEvaluationModalOpen, setIsEvaluationModalOpen] = useState(false);
   const [isProposeDateModalOpen, setIsProposeDateModalOpen] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<any>(null);
@@ -351,21 +309,21 @@ const BUInterviews: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'Completed':
-        return <Badge className="bg-green-100 text-green-800">Completed</Badge>;
+        return <Badge className="bg-green-100 text-green-700 font-medium px-3 py-1 rounded-full">Completed</Badge>;
       case 'Pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-700 font-medium px-3 py-1 rounded-full">Pending</Badge>;
       case 'Accepted':
-        return <Badge className="bg-blue-100 text-blue-800">Accepted</Badge>;
+        return <Badge className="bg-[#0f7378]/10 text-[#0f7378] font-medium px-3 py-1 rounded-full">Accepted</Badge>;
       case 'Rescheduled':
-        return <Badge className="bg-orange-100 text-orange-800">Rescheduled</Badge>;
+        return <Badge className="bg-orange-100 text-orange-700 font-medium px-3 py-1 rounded-full">Rescheduled</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
+        return <Badge className="bg-gray-100 text-gray-700 font-medium px-3 py-1 rounded-full">{status}</Badge>;
     }
   };
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return "text-green-600";
-    if (score >= 80) return "text-blue-600";
+    if (score >= 80) return "text-[#0f7378]";
     if (score >= 70) return "text-yellow-600";
     return "text-red-600";
   };
@@ -430,7 +388,6 @@ const BUInterviews: React.FC = () => {
   };
 
   const handleAcceptInterview = (interviewId: number) => {
-    // Update the status of the interview to "Accepted"
     setUpcomingInterviews(prevInterviews =>
       prevInterviews.map(interview =>
         interview.id === interviewId
@@ -438,7 +395,6 @@ const BUInterviews: React.FC = () => {
           : interview
       )
     );
-    
     console.log("Interview accepted:", interviewId);
   };
 
@@ -448,7 +404,6 @@ const BUInterviews: React.FC = () => {
   };
 
   const handleSubmitProposal = () => {
-    // Update the status of the interview to "Rescheduled" and handle proposal
     if (selectedInterview) {
       setUpcomingInterviews(prevInterviews =>
         prevInterviews.map(interview =>
@@ -463,14 +418,12 @@ const BUInterviews: React.FC = () => {
         )
       );
     }
-    
     console.log("Proposing new date:", {
       interview: selectedInterview,
       date: proposedDate,
       time: proposedTime,
       message: proposeMessage
     });
-    
     setIsProposeDateModalOpen(false);
     setProposedDate("");
     setProposedTime("");
@@ -478,30 +431,28 @@ const BUInterviews: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6 bg-gray-50 min-h-screen">
       {/* Header with Date Filter */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Interviews</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold text-gray-900">Interviews Management</h1>
+          <p className="text-sm text-gray-500 mt-1">
             Manage and track all interview sessions
           </p>
         </div>
-      
       </div>
 
-
       {/* Passed Interviews Table */}
-      <Card>
-        <CardHeader>
+      <Card className="shadow-sm border-0 rounded-xl">
+        <CardHeader className="pb-4">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <CheckCircle className="h-6 w-6 text-primary" />
+            <div className="p-2 rounded-lg bg-[#0f7378]/10">
+              <CheckCircle className="h-6 w-6 text-[#0f7378]" />
             </div>
             <div>
-              <CardTitle className="text-xl">Completed Interviews</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Past interviews with evaluations and scores
+              <CardTitle className="text-xl font-semibold text-gray-900">Candidates Assessments</CardTitle>
+              <p className="text-sm text-gray-500">
+                Evaluation Scores For Interviewed Candidates
               </p>
             </div>
           </div>
@@ -510,18 +461,18 @@ const BUInterviews: React.FC = () => {
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <div className="relative">
+              <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   placeholder="Search interviews..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64"
+                  className="pl-10 border-gray-200 focus:ring-2 focus:ring-[#0f7378]/20 rounded-lg"
                 />
               </div>
 
               <Select value={positionFilter} onValueChange={setPositionFilter}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-full sm:w-48 border-gray-200 rounded-lg">
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
                 <SelectContent>
@@ -538,50 +489,51 @@ const BUInterviews: React.FC = () => {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="font-semibold text-center">Candidate</TableHead>
-                  <TableHead className="font-semibold text-center">Position</TableHead>
-                  <TableHead className="font-semibold text-center">Date & Time</TableHead>
-                  <TableHead className="font-semibold text-center">Interviewer</TableHead>
-                  <TableHead className="font-semibold text-center">Score</TableHead>
-                  <TableHead className="font-semibold text-center">Status</TableHead>
-                  <TableHead className="font-semibold text-center">Evaluation</TableHead>
+                <TableRow className="bg-[#f3f4f6]">
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Candidate</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Position</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Date & Time</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Interviewer</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Score</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Status</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Evaluation</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredPassedInterviews.map((interview) => (
-                  <TableRow key={interview.id} className="hover:bg-muted/50 transition-colors">
-                    <TableCell className="font-medium text-center">
+                  <TableRow key={interview.id} className="hover:bg-[#f3f4f6] transition-colors">
+                    <TableCell className="text-gray-600 text-sm text-center py-3">
                       <div className="flex items-center justify-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-sm font-medium text-primary">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="/api/placeholder/32/32" />
+                          <AvatarFallback className="bg-[#0f7378]/10 text-[#0f7378]">
                             {interview.candidate.split(' ').map(n => n[0]).join('')}
-                          </span>
-                        </div>
+                          </AvatarFallback>
+                        </Avatar>
                         <span>{interview.candidate}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">{interview.position}</TableCell>
-                    <TableCell className="text-center">{interview.dateTime}</TableCell>
-                    <TableCell className="text-center">{interview.interviewer}</TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.position}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.dateTime}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.interviewer}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">
                       <div className="flex items-center justify-center space-x-2">
                         <Star className={`h-4 w-4 ${getScoreColor(interview.totalScore)}`} />
-                        <span className={`font-bold ${getScoreColor(interview.totalScore)}`}>
+                        <span className={`font-medium ${getScoreColor(interview.totalScore)}`}>
                           {interview.totalScore}/100
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">{getStatusBadge(interview.status)}</TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center py-3">{getStatusBadge(interview.status)}</TableCell>
+                    <TableCell className="text-center py-3">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleEvaluationView(interview)}
-                        className="text-primary hover:text-primary"
+                        className="text-[#0f7378] hover:text-[#0f7378]/80 border-[#0f7378]/20 hover:border-[#0f7378]/40 rounded-lg"
                       >
                         <Eye className="h-4 w-4 mr-2" />
-                        View Evaluation
+                        Evaluate
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -591,8 +543,8 @@ const BUInterviews: React.FC = () => {
           </div>
 
           {filteredPassedInterviews.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              <CheckCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+            <div className="text-center py-8 text-gray-500">
+              <CheckCircle className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p>No completed interviews found</p>
             </div>
           )}
@@ -600,15 +552,15 @@ const BUInterviews: React.FC = () => {
       </Card>
 
       {/* Upcoming Interviews Table */}
-      <Card>
-        <CardHeader>
+      <Card className="shadow-sm border-0 rounded-xl">
+        <CardHeader className="pb-4">
           <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Clock className="h-6 w-6 text-primary" />
+            <div className="p-2 rounded-lg bg-[#0f7378]/10">
+              <Clock className="h-6 w-6 text-[#0f7378]" />
             </div>
             <div>
-              <CardTitle className="text-xl">Upcoming Interviews</CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <CardTitle className="text-xl font-semibold text-gray-900">Proposed Interviews</CardTitle>
+              <p className="text-sm text-gray-500">
                 Pending interview requests requiring action
               </p>
             </div>
@@ -618,18 +570,18 @@ const BUInterviews: React.FC = () => {
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <div className="relative">
+              <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
-                  placeholder="Search upcoming interviews..."
+                  placeholder="Search proposed interviews..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64"
+                  className="pl-10 border-gray-200 focus:ring-2 focus:ring-[#0f7378]/20 rounded-lg"
                 />
               </div>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40 border-gray-200 rounded-lg">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -641,7 +593,7 @@ const BUInterviews: React.FC = () => {
               </Select>
 
               <Select value={positionFilter} onValueChange={setPositionFilter}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-full sm:w-48 border-gray-200 rounded-lg">
                   <SelectValue placeholder="Position" />
                 </SelectTrigger>
                 <SelectContent>
@@ -659,42 +611,43 @@ const BUInterviews: React.FC = () => {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="font-semibold text-center">Candidate</TableHead>
-                  <TableHead className="font-semibold text-center">Position</TableHead>
-                  <TableHead className="font-semibold text-center">Proposed Date & Time</TableHead>
-                  <TableHead className="font-semibold text-center">Interviewer</TableHead>
-                  <TableHead className="font-semibold text-center">Request Date</TableHead>
-                  <TableHead className="font-semibold text-center">Status</TableHead>
-                  <TableHead className="font-semibold text-center">Actions</TableHead>
+                <TableRow className="bg-[#f3f4f6]">
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Candidate</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Position</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Proposed Date & Time</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Interviewer</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Request Date</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Status</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUpcomingInterviews.map((interview) => (
-                  <TableRow key={interview.id} className="hover:bg-muted/50 transition-colors">
-                    <TableCell className="font-medium text-center">
+                  <TableRow key={interview.id} className="hover:bg-[#f3f4f6] transition-colors">
+                    <TableCell className="text-gray-600 text-sm text-center py-3">
                       <div className="flex items-center justify-center space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-sm font-medium text-primary">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src="/api/placeholder/32/32" />
+                          <AvatarFallback className="bg-[#0f7378]/10 text-[#0f7378]">
                             {interview.candidate.split(' ').map(n => n[0]).join('')}
-                          </span>
-                        </div>
+                          </AvatarFallback>
+                        </Avatar>
                         <span>{interview.candidate}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">{interview.position}</TableCell>
-                    <TableCell className="text-center">{interview.proposedDateTime}</TableCell>
-                    <TableCell className="text-center">{interview.interviewer}</TableCell>
-                    <TableCell className="text-center">{interview.requestDate}</TableCell>
-                    <TableCell className="text-center">{getStatusBadge(interview.status)}</TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.position}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.proposedDateTime}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.interviewer}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.requestDate}</TableCell>
+                    <TableCell className="text-center py-3">{getStatusBadge(interview.status)}</TableCell>
+                    <TableCell className="text-center py-3">
                       {interview.status === 'Pending' ? (
                         <div className="flex items-center justify-center space-x-2">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleAcceptInterview(interview.id)}
-                            className="text-green-600 hover:text-green-700 border-green-200 hover:border-green-300"
+                            className="text-green-600 hover:text-green-700 border-green-200 hover:border-green-300 rounded-lg"
                           >
                             <Check className="h-4 w-4 mr-1" />
                             Accept
@@ -703,14 +656,14 @@ const BUInterviews: React.FC = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleProposeDate(interview)}
-                            className="text-orange-600 hover:text-orange-700 border-orange-200 hover:border-orange-300"
+                            className="text-orange-600 hover:text-orange-700 border-orange-200 hover:border-orange-300 rounded-lg"
                           >
                             <Calendar className="h-4 w-4 mr-1" />
                             Propose Date
                           </Button>
                         </div>
                       ) : (
-                        <span className="text-sm text-muted-foreground">No action needed</span>
+                        <span className="text-sm text-gray-500">No action needed</span>
                       )}
                     </TableCell>
                   </TableRow>
@@ -720,8 +673,8 @@ const BUInterviews: React.FC = () => {
           </div>
 
           {filteredUpcomingInterviews.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              <Clock className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+            <div className="text-center py-8 text-gray-500">
+              <Clock className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p>No upcoming interviews found</p>
             </div>
           )}
@@ -730,18 +683,18 @@ const BUInterviews: React.FC = () => {
 
       {/* Evaluation Modal */}
       <Dialog open={isEvaluationModalOpen} onOpenChange={setIsEvaluationModalOpen}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
-          <DialogHeader className="border-b pb-4 flex-shrink-0">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col rounded-xl">
+          <DialogHeader className="border-b border-gray-200 pb-4 flex-shrink-0 bg-white">
             <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-bold">
+              <DialogTitle className="text-xl font-bold text-gray-900">
                 Interview Evaluation - {selectedInterview?.candidate}
               </DialogTitle>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-lg font-bold text-primary">
+                  <p className="text-lg font-bold text-[#0f7378]">
                     Total Score: {isEditMode ? getTotalScore() : selectedInterview?.totalScore || 0}/100
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-500">
                     {((isEditMode ? getTotalScore() : selectedInterview?.totalScore || 0) / 100 * 100).toFixed(1)}%
                   </p>
                 </div>
@@ -749,6 +702,7 @@ const BUInterviews: React.FC = () => {
                   variant={isEditMode ? "outline" : "default"}
                   size="sm"
                   onClick={() => setIsEditMode(!isEditMode)}
+                  className={isEditMode ? "border-gray-200 text-gray-600 hover:text-gray-700 hover:border-gray-300 rounded-lg" : "bg-[#0f7378] hover:bg-[#0f7378]/80 text-white rounded-lg"}
                 >
                   {isEditMode ? "Cancel Edit" : "Edit Evaluation"}
                 </Button>
@@ -756,7 +710,7 @@ const BUInterviews: React.FC = () => {
             </div>
           </DialogHeader>
           
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-6 bg-[#f3f4f6]">
             <div className="space-y-4">
               {evaluationCategories.map((category) => {
                 const score = isEditMode ? (evaluationScores[category.id] || 0) : (selectedInterview?.evaluation?.scores?.[category.id] || 0);
@@ -764,32 +718,32 @@ const BUInterviews: React.FC = () => {
                 const note = isEditMode ? (evaluationNotes[category.id] || "") : (selectedInterview?.evaluation?.notes?.[category.id] || "");
                 
                 return (
-                  <div key={category.id} className="bg-muted/50 rounded-lg p-4 border">
+                  <div key={category.id} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                     <div className="flex items-center gap-4">
                       <span className="text-2xl">{category.emoji}</span>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-medium text-foreground">
+                          <h3 className="font-semibold text-gray-900">
                             {category.name}
                           </h3>
                           <div className="text-right">
-                            <span className="text-sm font-medium text-foreground">
+                            <span className="text-sm font-medium text-gray-700">
                               {score}/{category.maxPoints} pts
                             </span>
-                            <span className="text-sm text-muted-foreground ml-2">
+                            <span className="text-sm text-gray-500 ml-2">
                               ({percentage.toFixed(0)}%)
                             </span>
                           </div>
                         </div>
                         
-                        <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-3">
                           <div
-                            className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(percentage)}`}
+                            className={`h-2.5 rounded-full transition-all duration-300 ${getProgressColor(percentage)}`}
                             style={{ width: `${percentage}%` }}
                           />
                         </div>
 
-                        <p className="text-xs text-muted-foreground mb-3">
+                        <p className="text-xs text-gray-500 mb-3">
                           {category.description}
                         </p>
 
@@ -801,20 +755,20 @@ const BUInterviews: React.FC = () => {
                               max={category.maxPoints}
                               value={score}
                               onChange={(e) => handleScoreChange(category.id, e.target.value)}
-                              className="w-24"
+                              className="w-24 border-gray-200 rounded-lg"
                               placeholder="Score"
                             />
                             <Textarea
                               value={note}
                               onChange={(e) => handleNoteChange(category.id, e.target.value)}
                               placeholder="Add notes..."
-                              className="flex-1 resize-none"
+                              className="flex-1 resize-none border-gray-200 rounded-lg"
                               rows={2}
                             />
                           </div>
                         ) : (
                           note && (
-                            <p className="text-sm text-foreground bg-background p-3 rounded border">
+                            <p className="text-sm text-gray-700 bg-white p-3 rounded border border-gray-200">
                               {note}
                             </p>
                           )
@@ -826,26 +780,28 @@ const BUInterviews: React.FC = () => {
               })}
               
               {/* Final Recommendation */}
-              <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
-                <h3 className="font-semibold text-primary mb-2">Final Recommendation</h3>
+              <div className="bg-[#0f7378]/10 rounded-lg p-4 border border-[#0f7378]/20">
+                <h3 className="font-semibold text-[#0f7378] mb-2">Final Recommendation</h3>
                 {isEditMode ? (
                   <div className="space-y-3">
                     <div>
-                      <Label htmlFor="recommendation">Recommendation</Label>
+                      <Label htmlFor="recommendation" className="text-gray-700">Recommendation</Label>
                       <Input
                         id="recommendation"
                         value={recommendation}
                         onChange={(e) => setRecommendation(e.target.value)}
                         placeholder="Enter recommendation..."
+                        className="border-gray-200 rounded-lg"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="final-notes">Final Notes</Label>
+                      <Label htmlFor="final-notes" className="text-gray-700">Final Notes</Label>
                       <Textarea
                         id="final-notes"
                         value={finalNotes}
                         onChange={(e) => setFinalNotes(e.target.value)}
                         placeholder="Add final notes..."
+                        className="border-gray-200 rounded-lg"
                         rows={3}
                       />
                     </div>
@@ -853,12 +809,12 @@ const BUInterviews: React.FC = () => {
                 ) : (
                   <>
                     {selectedInterview?.evaluation?.recommendation && (
-                      <p className="text-sm text-foreground mb-2">
+                      <p className="text-sm text-gray-700 mb-2">
                         <strong>Recommendation:</strong> {selectedInterview.evaluation.recommendation}
                       </p>
                     )}
                     {selectedInterview?.evaluation?.finalNotes && (
-                      <p className="text-sm text-foreground">
+                      <p className="text-sm text-gray-700">
                         <strong>Notes:</strong> {selectedInterview.evaluation.finalNotes}
                       </p>
                     )}
@@ -867,14 +823,15 @@ const BUInterviews: React.FC = () => {
               </div>
               
               {isEditMode && (
-                <div className="mt-6 flex justify-end gap-4 sticky bottom-0 bg-background p-4 border-t">
+                <div className="mt-6 flex justify-end gap-4 sticky bottom-0 bg-white p-4 border-t border-gray-200">
                   <Button
                     variant="outline"
                     onClick={() => setIsEditMode(false)}
+                    className="border-gray-200 text-gray-600 hover:text-gray-700 hover:border-gray-300 rounded-lg"
                   >
                     Cancel
                   </Button>
-                  <Button onClick={handleSaveEvaluation}>
+                  <Button onClick={handleSaveEvaluation} className="bg-[#0f7378] hover:bg-[#0f7378]/80 text-white rounded-lg">
                     Save Evaluation
                   </Button>
                 </div>
@@ -886,49 +843,59 @@ const BUInterviews: React.FC = () => {
 
       {/* Propose Date Modal */}
       <Dialog open={isProposeDateModalOpen} onOpenChange={setIsProposeDateModalOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader>
-            <DialogTitle>Propose Alternative Date</DialogTitle>
-            <p className="text-sm text-muted-foreground">
+            <DialogTitle className="text-xl font-bold text-gray-900">Propose Alternative Date</DialogTitle>
+            <p className="text-sm text-gray-500">
               Suggest a new date and time for {selectedInterview?.candidate}
             </p>
           </DialogHeader>
           <div className="space-y-4 pt-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="proposed-date">Proposed Date</Label>
+                <Label htmlFor="proposed-date" className="text-gray-700">Proposed Date</Label>
                 <Input
                   id="proposed-date"
                   type="date"
                   value={proposedDate}
                   onChange={(e) => setProposedDate(e.target.value)}
+                  className="border-gray-200 rounded-lg"
                 />
               </div>
               <div>
-                <Label htmlFor="proposed-time">Proposed Time</Label>
+                <Label htmlFor="proposed-time" className="text-gray-700">Proposed Time</Label>
                 <Input
                   id="proposed-time"
                   type="time"
                   value={proposedTime}
                   onChange={(e) => setProposedTime(e.target.value)}
+                  className="border-gray-200 rounded-lg"
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="message">Message (Optional)</Label>
+              <Label htmlFor="message" className="text-gray-700">Message (Optional)</Label>
               <Textarea
                 id="message"
                 placeholder="Add a message explaining the reason for rescheduling..."
                 value={proposeMessage}
                 onChange={(e) => setProposeMessage(e.target.value)}
+                className="border-gray-200 rounded-lg"
                 rows={3}
               />
             </div>
             <div className="flex justify-end space-x-2 pt-4">
-              <Button variant="outline" onClick={() => setIsProposeDateModalOpen(false)}>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsProposeDateModalOpen(false)}
+                className="border-gray-200 text-gray-600 hover:text-gray-700 hover:border-gray-300 rounded-lg"
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSubmitProposal}>
+              <Button 
+                onClick={handleSubmitProposal}
+                className="bg-[#0f7378] hover:bg-[#0f7378]/80 text-white rounded-lg"
+              >
                 Send Proposal
               </Button>
             </div>

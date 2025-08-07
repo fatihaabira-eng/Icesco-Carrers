@@ -563,7 +563,7 @@ const CommitteeEvaluation = () => {
       </div> */}
 
         {/* Proposed Interview Dates Section */}
-        <Card className="mt-6">
+        {/* <Card className="mt-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
@@ -650,7 +650,7 @@ const CommitteeEvaluation = () => {
               )}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     );
   };

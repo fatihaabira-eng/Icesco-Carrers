@@ -82,7 +82,7 @@ const HRDashboard: React.FC = () => {
       {/* Header with Date Filter */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Recruitment Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Manpower Management Dashboard</h1>
           <p className="text-muted-foreground">
             Key Performance Indicators for recruitment activities
           </p>

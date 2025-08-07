@@ -332,7 +332,7 @@ const CandidateAssessmentScore: React.FC = () => {
                   <TableHead>Position</TableHead>
                   <TableHead>Candidate Name</TableHead>
                   <TableHead>Total Score</TableHead>
-                  <TableHead>Assessment Date</TableHead>
+                  <TableHead>Interview Details</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

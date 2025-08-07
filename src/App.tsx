@@ -56,6 +56,7 @@ import CommitteeDashboard from "./pages/CommitteeDashboard";
 import CommitteeInterviews from "./pages/CommitteeInterviews";
 import CommitteeCandidates from "./pages/CommitteeCandidates";
 import CareerProgram from "./components/CareerProgram";
+import CommitteeCalendar from "./pages/CommitteeCalendar";
 
 const queryClient = new QueryClient();
 
@@ -294,18 +295,45 @@ const AppContent = () => {
             path="/manpower/committee" 
             element={
               <ProtectedManpowerRoute>
-                <CommitteePortalLayout />
+                <CommitteePortalLayout>
+                  <CommitteeDashboard />
+                </CommitteePortalLayout>
               </ProtectedManpowerRoute>
             } 
-          >
-            <Route index element={<BUManpowerManagement />} />
-            <Route path="interviews" element={<CommitteeInterviews />} />
-            <Route path="candidates" element={<CommitteeCandidates />} />
+          />
+            {/* <Route index element={<BUManpowerManagement />} /> */}
+            <Route path="manpower/committee/interviews" 
+                    element={
+              <ProtectedManpowerRoute>
+                <CommitteePortalLayout>
+                  <BUInterviews />
+                </CommitteePortalLayout>
+              </ProtectedManpowerRoute>
+            }
+            />
+             <Route path="manpower/committee/candidates" 
+                    element={
+              <ProtectedManpowerRoute>
+                <CommitteePortalLayout>
+                  <CommitteeCandidates />
+                </CommitteePortalLayout>
+              </ProtectedManpowerRoute>
+            }
+            />
+            <Route path="manpower/committee/calendar" 
+                    element={
+              <ProtectedManpowerRoute>
+                <CommitteePortalLayout>
+                  <CommitteeCalendar />
+                </CommitteePortalLayout>
+              </ProtectedManpowerRoute>
+            }
+            />
             <Route path="*" element={<div style={{ padding: '20px', backgroundColor: 'lightblue', border: '2px solid blue' }}>
               <h2>Committee Fallback Route Hit</h2>
               <p>This means the route is working but no specific route matched.</p>
             </div>} />
-          </Route>
+          
           <Route 
             path="/manpower/bu" 
             element={
