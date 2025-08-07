@@ -26,6 +26,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import CommitteeEvaluation from '@/pages/CommitteeEvaluation';
+import HrEvaluation from './hrEvaluation';
 
 interface Candidate {
   ref: string;
@@ -43,6 +44,7 @@ interface Candidate {
   phase: string;
   decision: string;
   avatar: string;
+  hrAction: 'shortlist' | 'reject' | 'not-reviewed';
 }
 
 const JobMatchingModule: React.FC = () => {
@@ -51,6 +53,7 @@ const JobMatchingModule: React.FC = () => {
   const [sortBy, setSortBy] = useState('score');
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isEvaluationOpen, setIsEvaluationOpen] = useState(false);
+  
 
   const candidatesData: Candidate[] = [
     {
@@ -68,7 +71,9 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'English', 'French'],
       phase: 'Technical Interview',
       decision: 'hired',
-      avatar: '/api/placeholder/40/40'
+      avatar: '/api/placeholder/40/40',
+      hrAction: 'not-reviewed'
+
     },
     {
       ref: 'SHS25004',
@@ -85,7 +90,9 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'French', 'English'],
       phase: 'Final Interview',
       decision: 'hired',
-      avatar: '/api/placeholder/40/40'
+      avatar: '/api/placeholder/40/40',
+      hrAction: 'not-reviewed'
+
     },
     {
       ref: 'SHS25005',
@@ -102,7 +109,9 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'English'],
       phase: 'HR Interview',
       decision: 'rejected',
-      avatar: '/api/placeholder/40/40'
+      avatar: '/api/placeholder/40/40',
+      hrAction: 'not-reviewed'
+
     },
     {
       ref: 'SHS25006',
@@ -119,7 +128,9 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'French', 'English'],
       phase: 'Screening',
       decision: 'rejected',
-      avatar: '/api/placeholder/40/40'
+      avatar: '/api/placeholder/40/40',
+      hrAction: 'not-reviewed'
+
     },
     {
       ref: 'SHS25007',
@@ -136,7 +147,9 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'French', 'English'],
       phase: 'Portfolio Review',
       decision: 'hired',
-      avatar: '/api/placeholder/40/40'
+      avatar: '/api/placeholder/40/40',
+      hrAction: 'not-reviewed'
+
     }
   ];
 
@@ -148,6 +161,16 @@ const JobMatchingModule: React.FC = () => {
     { value: 'finance', label: 'Finance' }
   ];
 
+  const getHrActionColor = (action: string | undefined) => {
+    switch (action) {
+      case 'shortlist':
+        return 'bg-green-500 text-white';
+      case 'reject':
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-200 text-gray-800';
+    }
+  };
   const getDecisionColor = (decision: string) => {
     switch (decision) {
       case 'hired':
@@ -162,6 +185,12 @@ const JobMatchingModule: React.FC = () => {
   const handleCandidateClick = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
     setIsEvaluationOpen(true);
+  };
+
+  const handleHrActionChange = (candidateRef: string, action: 'shortlist' | 'reject' | 'not-reviewed') => {
+    candidatesData.map(candidate => 
+      candidate.ref === candidateRef ? { ...candidate, hrAction: action } : candidate
+    );
   };
 
   const getScoreColor = (score: number) => {
@@ -249,101 +278,92 @@ const JobMatchingModule: React.FC = () => {
           {/* Candidates Table */}
           <div className="border rounded-lg overflow-hidden">
             <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-200">
-                  <TableHead className="w-24 font-bold text-gray-800 py-3">Ref</TableHead>
-                  <TableHead className="font-bold text-gray-800 py-3">Job Position</TableHead>
-                  <TableHead className="font-bold text-gray-800 py-3">Candidate</TableHead>
-                  <TableHead className="text-center font-bold text-gray-800 py-3">Nationality</TableHead>
-                  <TableHead className="text-center font-bold text-gray-800 py-3">Age</TableHead>
-                  <TableHead className="font-bold text-gray-800 py-3">Degree</TableHead>
-                  <TableHead className="font-bold text-gray-800 py-3">University</TableHead>
-                  <TableHead className="font-bold text-gray-800 py-3">Phase</TableHead>
-                  <TableHead className="font-bold text-gray-800 py-3">Decision</TableHead>
-                  <TableHead className="text-center font-bold text-gray-800 py-3">Matching</TableHead>
-                  <TableHead className="text-center font-bold text-gray-800 py-3">Take Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCandidates.map((candidate) => (
-                  <TableRow key={candidate.ref} className="hover:bg-gray-50 transition-colors">
-                    <TableCell className="font-normal text-gray-600 py-3">{candidate.ref}</TableCell>
-                    <TableCell className="font-normal text-gray-600 py-3">
-                      <p className="text-sm">{candidate.position}</p>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {candidate.skills.slice(0, 2).map(skill => (
-                          <Badge key={skill} variant="outline" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {candidate.skills.length > 2 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{candidate.skills.length - 2}
-                          </Badge>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-normal text-gray-600 py-3">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <p className="text-sm">{candidate.name}</p>
-                          <p className="text-xs text-gray-500">{candidate.experience} experience</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center font-normal text-gray-600 py-3">
-                      <div className="flex items-center justify-left gap-2">
-                        <img 
-                          src={candidate.flag} 
-                          alt={candidate.nationality + " flag"} 
-                          className="h-5 w-7 object-cover rounded-sm shadow-sm" 
-                        />
-                        <span className="text-sm">{candidate.nationality}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center font-normal text-gray-600 py-3">
-                      {candidate.age}
-                    </TableCell>
-                    <TableCell className="font-normal text-gray-600 py-3">
-                      <p className="text-sm">{candidate.degree}</p>
-                    </TableCell>
-                    <TableCell className="font-normal text-gray-600 py-3">
-                      <div>
-                        <p className="text-sm">{candidate.university}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-normal text-gray-600 py-3">
-                      <Badge variant="outline">
-                        {candidate.phase}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-normal text-gray-600 py-3">
-                      <Badge className={getDecisionColor(candidate.decision)}>
-                        {candidate.decision === 'hired' ? 'Hired' : candidate.decision}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center font-normal text-gray-600 py-3">
-                      <div className="flex items-center justify-center gap-1">
-                        <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
-                        <span className={`font-semibold ${getScoreColor(candidate.matchingScore)}`}>
-                          {candidate.matchingScore}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-normal text-gray-600 py-3">
-                      <div className="flex items-center justify-center gap-2">
-                        <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <MessageSquare className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+  <TableHeader>
+    <TableRow className="bg-gray-100">
+      <TableHead className="w-24 font-semibold text-gray-700 py-3 text-left">Ref</TableHead>
+      <TableHead className="font-semibold text-gray-700 py-3 text-left">Job Position</TableHead>
+      <TableHead className="font-semibold text-gray-700 py-3 text-left">Candidate</TableHead>
+      <TableHead className="font-semibold text-gray-700 py-3 text-center">Nationality</TableHead>
+      <TableHead className="font-semibold text-gray-700 py-3 text-center">Years of Experience</TableHead>
+      <TableHead className="font-semibold text-gray-700 py-3 text-left">Degree</TableHead>
+      <TableHead className="font-semibold text-gray-700 py-3 text-center">Matching</TableHead>
+      <TableHead className="font-semibold text-gray-700 py-3 text-left">Action</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {filteredCandidates.map((candidate) => (
+      <TableRow key={candidate.ref} className="hover:bg-gray-50 transition-colors border-b border-gray-200">
+        <TableCell className="font-medium text-gray-600 py-3 text-left">{candidate.ref}</TableCell>
+        <TableCell className="font-medium text-gray-600 py-3 text-left">
+          <p className="text-sm">{candidate.position}</p>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {candidate.skills.slice(0, 2).map(skill => (
+              <Badge key={skill} variant="outline" className="text-xs">
+                {skill}
+              </Badge>
+            ))}
+            {candidate.skills.length > 2 && (
+              <Badge variant="outline" className="text-xs">
+                +{candidate.skills.length - 2}
+              </Badge>
+            )}
+          </div>
+        </TableCell>
+        <TableCell className="font-medium text-gray-600 py-3 text-left">
+          <div className="flex items-center gap-3">
+            <div>
+              <p className="text-sm">{candidate.name}</p>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
+              <Eye className="h-4 w-4" />
+            </Button>
+          </div>
+        </TableCell>
+        <TableCell className="text-center font-medium text-gray-600 py-3">
+          <div className="flex items-center justify-center gap-2">
+            <img 
+              src={candidate.flag} 
+              alt={candidate.nationality + " flag"} 
+              className="h-5 w-7 object-cover rounded-sm shadow-sm" 
+            />
+            <span className="text-sm">{candidate.nationality}</span>
+          </div>
+        </TableCell>
+        <TableCell className="text-center font-medium text-gray-600 py-3">
+          {candidate.experience}
+        </TableCell>
+        <TableCell className="font-medium text-gray-600 py-3 text-left">
+          <p className="text-sm">{candidate.degree}</p>
+        </TableCell>
+        <TableCell className="text-center font-medium text-gray-600 py-3">
+          <div className="flex items-center justify-center gap-1">
+            <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
+            <span className={`font-semibold ${getScoreColor(candidate.matchingScore)}`}>
+              {candidate.matchingScore}
+            </span>
+          </div>
+        </TableCell>
+        <TableCell className="font-medium text-gray-600 py-3 text-left">
+          <Select 
+            value={candidate.hrAction} 
+            onValueChange={(value: 'shortlist' | 'reject' | 'not-reviewed') => 
+              handleHrActionChange(candidate.ref, value)
+            }
+          >
+            <SelectTrigger className={`w-40 ${getHrActionColor(candidate.hrAction)} text-left p-1`}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="shortlist" className="text-green-600">Shortlist</SelectItem>
+              <SelectItem value="reject" className="text-red-600">Reject</SelectItem>
+              <SelectItem value="not-reviewed" className="text-gray-600">Not Reviewed</SelectItem>
+            </SelectContent>
+          </Select>
+        </TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+</Table>
           </div>
         </CardContent>
         <Dialog open={isEvaluationOpen} onOpenChange={setIsEvaluationOpen}>
@@ -352,7 +372,7 @@ const JobMatchingModule: React.FC = () => {
               <DialogTitle>Candidate Evaluation</DialogTitle>
             </DialogHeader>
             {selectedCandidate && (
-              <CommitteeEvaluation candidateId={selectedCandidate.ref} />
+              <HrEvaluation candidateId={selectedCandidate.ref} />
             )}
           </DialogContent>
         </Dialog>

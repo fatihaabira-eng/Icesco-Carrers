@@ -59,15 +59,15 @@ const CandidateAssessmentScore: React.FC = () => {
       position: 'Senior Software Engineer',
       candidateName: 'Alice Smith',
       overallScore: 85,
-      assessmentDate: '2024-01-15',
+      assessmentDate: '2025-01-15',
       committeeMembers: [
         {
-          id: 'CM-1',
-          name: 'Dr. Sally Mabrouk',
-          position: 'Director of the Office of Director General',
-          image: sallyimage,
-          score: 88,
-          comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
+          id: 'CM-5',
+          name: 'Prof. Dr. Raheel Qamar',
+          position: 'Chief of Sciences and Technologies Sector',
+          image: raheelimage,
+          score: 87,
+          comments: 'Impressive technical background and relevant experience. Good understanding of educational technology.'
         },
         {
           id: 'CM-2',
@@ -93,14 +93,15 @@ const CandidateAssessmentScore: React.FC = () => {
           score: 85,
           comments: 'Strong cultural fit and excellent interpersonal skills. Demonstrates good leadership potential.'
         },
+        
         {
-          id: 'CM-5',
-          name: 'Prof. Dr. Raheel Qamar',
-          position: 'Chief of Sciences and Technologies Sector',
-          image: raheelimage,
-          score: 87,
-          comments: 'Impressive technical background and relevant experience. Good understanding of educational technology.'
-        }
+          id: 'CM-1',
+          name: 'Dr. Sally Mabrouk',
+          position: 'Director of the Office of Director General',
+          image: sallyimage,
+          score: 88,
+          comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
+        },
       ],
       technicalInterviewers: [
         {
@@ -126,22 +127,22 @@ const CandidateAssessmentScore: React.FC = () => {
       position: 'Marketing Manager',
       candidateName: 'David Lee',
       overallScore: 78,
-      assessmentDate: '2024-01-12',
+      assessmentDate: '2025-01-12',
       committeeMembers: [
         {
-          id: 'CM-1',
-          name: 'Dr. Sally Mabrouk',
-          position: 'Director of the Office of Director General',
-          image: '/src/assets/dr-sally-mabrouk.png',
-          score: 88,
-          comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
+          id: 'CM-5',
+          name: 'Prof. Dr. Raheel Qamar',
+          position: 'Chief of Sciences and Technologies Sector',
+          image: '/src/assets/dr-rahel.jpg',
+          score: 67,
+          comments: ' Good understanding of educational technology.'
         },
         {
           id: 'CM-2',
           name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
           position: 'Director of the Administrative Affairs Department',
           image: '/src/assets/dr-nidal.jpg',
-          score: 82,
+          score: 72,
           comments: 'Good communication skills and team collaboration. Needs some improvement in system architecture knowledge.'
         },
         {
@@ -149,24 +150,24 @@ const CandidateAssessmentScore: React.FC = () => {
           name: 'Dr. Ahmed Albanyan',
           position: 'Director of the Center of Translation and Publishing',
           image: '/src/assets/dr-ahmed-albanyan.webp',
-          score: 90,
-          comments: 'Outstanding technical expertise and innovative thinking. Highly recommended for the position.'
+          score: 60,
+          comments: 'Lacks technical expertise and innovative thinking. Not recommended for the position.'
         },
         {
           id: 'CM-4',
           name: 'Mr. ANAR KARIMOV',
           position: 'Chief of Partnerships and International Cooperation Sector',
           image: '/src/assets/dr-anar.jpg',
-          score: 85,
-          comments: 'Strong cultural fit and excellent interpersonal skills. Demonstrates good leadership potential.'
+          score: 45,
+          comments: 'Weak cultural fit and bad interpersonal skills.'
         },
         {
-          id: 'CM-5',
-          name: 'Prof. Dr. Raheel Qamar',
-          position: 'Chief of Sciences and Technologies Sector',
-          image: '/src/assets/dr-rahel.jpg',
-          score: 87,
-          comments: 'Impressive technical background and relevant experience. Good understanding of educational technology.'
+          id: 'CM-1',
+          name: 'Dr. Sally Mabrouk',
+          position: 'Director of the Office of Director General',
+          image: '/src/assets/dr-sally-mabrouk.png',
+          score: 50,
+          comments: 'Bad technical skills and problem-solving abilities.'
         }
       ],
       technicalInterviewers: [
@@ -284,9 +285,9 @@ const CandidateAssessmentScore: React.FC = () => {
             <Icon className="h-5 w-5" />
             {title}
           </h3>
-          <Badge className='bg-primary text-primary-foreground'>
+          {/* <Badge className='bg-primary text-primary-foreground'>
             {average}
-          </Badge>
+          </Badge> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           {items.map((item) => (
@@ -319,7 +320,7 @@ const CandidateAssessmentScore: React.FC = () => {
 
   const renderDialogContent = (assessment: CandidateAssessment, dialogType: 'full' | 'committee' | 'technical') => (
     <div className="space-y-6">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start pt-8">
         <div>
           <h2 className="text-2xl font-bold">{assessment.candidateName}</h2>
           <p className="text-muted-foreground">{assessment.position}</p>

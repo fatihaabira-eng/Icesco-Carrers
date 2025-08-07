@@ -55,12 +55,12 @@ interface Candidate {
 }
 
 const stages = [
-  { id: 'new', title: 'New Applications', color: 'bg-blue-100' },
-  { id: 'under_review', title: 'Under Review', color: 'bg-yellow-100' },
-  { id: 'interview', title: 'Interview', color: 'bg-purple-100' },
-  { id: 'offer', title: 'Offer', color: 'bg-orange-100' },
-  { id: 'hired', title: 'Hired', color: 'bg-green-100' },
-  { id: 'rejected', title: 'Rejected', color: 'bg-red-100' },
+  { id: 'new', title: 'New Applications', color: 'bg-blue-50 text-blue-700' },
+  { id: 'under_review', title: 'Under Review', color: 'bg-yellow-50 text-yellow-700' },
+  { id: 'interview', title: 'Interview', color: 'bg-purple-50 text-purple-700' },
+  { id: 'offer', title: 'Offer', color: 'bg-orange-50 text-orange-700' },
+  { id: 'hired', title: 'Hired', color: 'bg-green-50 text-green-700' },
+  { id: 'rejected', title: 'Rejected', color: 'bg-red-50 text-red-700' },
 ] as const;
 
 const HRJobOffers: React.FC = () => {
@@ -133,7 +133,6 @@ const HRJobOffers: React.FC = () => {
     }
   ];
 
-  // Function to abbreviate department names
   const abbreviateDepartment = (department: string) => {
     return department
       .split(' ')
@@ -185,17 +184,17 @@ const HRJobOffers: React.FC = () => {
   const TABLE_COL_COUNT = 11;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       {showCreateForm && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-background rounded-lg shadow-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Create New Job Offer</h2>
-              <Button variant="ghost" size="icon" onClick={handleCloseCreateForm} className="h-8 w-8">
-                <X className="h-4 w-4" />
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 sm:p-6 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Create New Job Offer</h2>
+              <Button variant="ghost" size="icon" onClick={handleCloseCreateForm} className="h-9 w-9 hover:bg-gray-100">
+                <X className="h-5 w-5 text-gray-600" />
               </Button>
             </div>
-            <div className="p-4">
+            <div className="p-4 sm:p-6">
               <CreateJobOfferForm onClose={handleCloseCreateForm} />
             </div>
           </div>
@@ -210,8 +209,8 @@ const HRJobOffers: React.FC = () => {
         dateRange={dateRange}
         setDateRange={setDateRange}
       >
-        <Button onClick={handleCreateJobOffer}>
-          <Plus className="h-4 w-4 mr-2" />
+        <Button onClick={handleCreateJobOffer} className="bg-primary hover:bg-primary-light text-white">
+          <Plus className="h-5 w-5 mr-2" />
           Create Job Offer
         </Button>
       </DashboardHeader>
@@ -221,87 +220,87 @@ const HRJobOffers: React.FC = () => {
         description="Track and manage job postings with candidate pipeline"
         icon={FileText}
       >
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search job offers by title or unit..."
-              className="w-full pl-10"
+              className="w-full pl-10 rounded-lg border-gray-200 focus:ring-2 focus:ring-blue-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button variant="outline">
-            <Filter className="h-4 w-4 mr-2" />
+          <Button variant="outline" className="border-gray-200 hover:bg-gray-50">
+            <Filter className="h-4 w-4 mr-2 text-gray-600" />
             Filters
           </Button>
         </div>
 
-        <Card className="border-0 shadow-sm">
+        <Card className="border-none shadow-lg rounded-xl overflow-hidden">
           <CardContent className="p-0">
             <div className="w-full overflow-x-auto">
               <Table className="w-full">
                 <TableHeader>
-                  <TableRow className="bg-gray-50 border-b border-gray-200">
-                    <TableHead className="w-[40px] font-semibold text-gray-700 text-xs uppercase tracking-wide py-3"></TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Reference</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Business Unit</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Job Offer</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3 text-center">N° Applied</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3 text-center">N° Shortlisted</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3 text-center">N° Rejected</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Published Date</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Closing Date</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Status</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Actions</TableHead>
+                  <TableRow className="bg-gray-100 border-none">
+                    <TableHead className="w-[50px] font-semibold text-xs uppercase tracking-wider py-4"></TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Reference</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Business Unit</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Job Offer</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4 text-center">N° Applied</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4 text-center">N° Shortlisted</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4 text-center">N° Rejected</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Published Date</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Closing Date</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Status</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredJobOffers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={TABLE_COL_COUNT} className="text-center text-gray-500 h-24">
+                      <TableCell colSpan={TABLE_COL_COUNT} className="text-center text-gray-500 h-24 py-6">
                         No job offers found.
                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredJobOffers.map((offer) => (
                       <React.Fragment key={offer.id}>
-                        <TableRow className="hover:bg-gray-50 transition-colors border-b border-gray-100">
-                          <TableCell className="py-4">
-                            <Button variant="ghost" size="sm" onClick={() => toggleExpanded(offer.id)}>
-                              {expandedOffer === offer.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        <TableRow className="hover:bg-gray-50 transition-colors duration-200 border-b border-gray-100">
+                          <TableCell className="py-3 sm:py-4">
+                            <Button variant="ghost" size="sm" onClick={() => toggleExpanded(offer.id)} className="hover:bg-gray-100">
+                              {expandedOffer === offer.id ? <ChevronUp className="h-5 w-5 text-gray-600" /> : <ChevronDown className="h-5 w-5 text-gray-600" />}
                             </Button>
                           </TableCell>
-                          <TableCell className="font-mono text-xs text-gray-600 py-4">{offer.id}</TableCell>
-                          <TableCell className="text-gray-600 py-4">{offer.department}</TableCell>
-                          <TableCell className="text-gray-600 py-4 font-medium">{offer.title}</TableCell>
-                          <TableCell className="text-gray-600 py-4 text-center">
+                          <TableCell className="font-mono text-xs text-gray-700 py-3 sm:py-4">{offer.id}</TableCell>
+                          <TableCell className="text-gray-700 text-sm py-3 sm:py-4">{offer.department}</TableCell>
+                          <TableCell className="text-gray-800 text-sm font-medium py-3 sm:py-4">{offer.title}</TableCell>
+                          <TableCell className="text-gray-700 text-sm py-3 sm:py-4 text-center">
                             <div className="flex items-center justify-center space-x-2">
-                              <Users className="h-4 w-4 text-gray-400" />
+                              <Users className="h-4 w-4 text-blue-500" />
                               <span>{offer.applications}</span>
                             </div>
                           </TableCell>
-                          <TableCell className="text-gray-600 py-4 text-center">
+                          <TableCell className="text-gray-700 text-sm py-3 sm:py-4 text-center">
                             <div className="flex items-center justify-center space-x-2">
-                              <ListChecks className="h-4 w-4 text-gray-400" />
+                              <ListChecks className="h-4 w-4 text-green-500" />
                               <span>{getShortlistedCount(offer.candidates)}</span>
                             </div>
                           </TableCell>
-                          <TableCell className="text-gray-600 py-4 text-center">
+                          <TableCell className="text-gray-700 text-sm py-3 sm:py-4 text-center">
                             <div className="flex items-center justify-center space-x-2">
-                              <UserX className="h-4 w-4 text-gray-400" />
+                              <UserX className="h-4 w-4 text-red-500" />
                               <span>{getRejectedCount(offer.candidates)}</span>
                             </div>
                           </TableCell>
-                          <TableCell className="text-gray-600 py-4">
+                          <TableCell className="text-gray-700 text-sm py-3 sm:py-4">
                             {offer.publishedDate ? format(new Date(offer.publishedDate), 'MMM d, yyyy') : 'N/A'}
                           </TableCell>
-                          <TableCell className="text-gray-600 py-4">
+                          <TableCell className="text-gray-700 text-sm py-3 sm:py-4">
                             {offer.closingDate ? format(new Date(offer.closingDate), 'MMM d, yyyy') : 'N/A'}
                           </TableCell>
-                          <TableCell className="text-gray-600 py-4">
+                          <TableCell className="text-gray-700 text-sm py-3 sm:py-4">
                             <Select value={offer.status} onValueChange={(value) => handleStatusChange(offer.id, value as JobOffer['status'])}>
-                              <SelectTrigger className="w-28 text-xs">
+                              <SelectTrigger className="w-28 text-xs rounded-md border-gray-200 focus:ring-2 focus:ring-blue-500">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -312,50 +311,56 @@ const HRJobOffers: React.FC = () => {
                               </SelectContent>
                             </Select>
                           </TableCell>
-                          <TableCell className="text-gray-600 py-4">
-                            <div className="flex space-x-1">
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><Edit className="h-4 w-4" /></Button>
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><Trash2 className="h-4 w-4" /></Button>
+                          <TableCell className="text-gray-700 py-3 sm:py-4">
+                            <div className="flex space-x-2">
+                              <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100">
+                                <Edit className="h-4 w-4 text-orange-500" />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100">
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
                         {expandedOffer === offer.id && (
                           <TableRow>
                             <TableCell colSpan={TABLE_COL_COUNT} className="p-0">
-                              <div className="p-4 bg-gray-50">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="p-4 sm:p-6 bg-gray-50">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                   <div>
-                                    <h4 className="font-semibold mb-3 text-gray-800">Job Details</h4>
-                                    <div className="space-y-2 text-sm text-gray-600">
+                                    <h4 className="font-semibold text-lg text-gray-900 mb-4">Job Details</h4>
+                                    <div className="space-y-3 text-sm text-gray-600">
                                       <div><strong>Description:</strong> {offer.description}</div>
                                       <div><strong>Salary:</strong> {offer.salary}</div>
                                       <div><strong>Experience:</strong> {offer.experience}</div>
                                       <div><strong>Requirements:</strong></div>
-                                      <div className="flex flex-wrap gap-1 mt-1">
+                                      <div className="flex flex-wrap gap-2 mt-2">
                                         {offer.requirements.map((req, index) => (
-                                          <Badge key={index} variant="secondary" className="text-xs">{req}</Badge>
+                                          <Badge key={index} variant="secondary" className="text-xs bg-gray-100 text-gray-700 border border-gray-200">
+                                            {req}
+                                          </Badge>
                                         ))}
                                       </div>
                                     </div>
                                   </div>
                                   <div>
-                                    <h4 className="font-semibold mb-3 text-gray-800">Candidate Pipeline</h4>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                                    <h4 className="font-semibold text-lg text-gray-900 mb-4">Candidate Pipeline</h4>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                                       {stages.map((stage) => (
                                         <div key={stage.id} className="flex flex-col">
-                                          <div className={`p-2 rounded-t-md text-xs font-semibold ${stage.color}`}>
+                                          <div className={`p-2 rounded-t-lg text-xs font-semibold ${stage.color}`}>
                                             {stage.title} ({offer.candidates.filter(c => c.stage === stage.id).length})
                                           </div>
-                                          <div className="space-y-1 p-2 bg-slate-50 border rounded-b-md min-h-[50px]">
+                                          <div className="space-y-2 p-3 bg-white border border-gray-100 rounded-b-lg min-h-[80px] shadow-sm">
                                             {offer.candidates
                                               .filter((candidate) => candidate.stage === stage.id)
                                               .map((candidate) => (
-                                                <div key={candidate.id} className="text-xs p-1.5 bg-white rounded border shadow-sm">
+                                                <div key={candidate.id} className="text-xs p-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-gray-100 transition-colors">
                                                   {candidate.name}
                                                 </div>
                                               ))}
                                             {offer.candidates.filter((candidate) => candidate.stage === stage.id).length === 0 && (
-                                              <div className="text-xs text-gray-400 text-center pt-2">
+                                              <div className="text-xs text-gray-400 text-center pt-3">
                                                 Empty
                                               </div>
                                             )}

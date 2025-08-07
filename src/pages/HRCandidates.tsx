@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
   Search, 
@@ -58,12 +57,12 @@ interface Candidate {
 }
 
 const stages = [
-  { id: 'new', title: 'New Applications', color: 'bg-blue-100' },
-  { id: 'under_review', title: 'Under Review', color: 'bg-yellow-100' },
-  { id: 'interview', title: 'Interview', color: 'bg-purple-100' },
-  { id: 'offer', title: 'Offer', color: 'bg-orange-100' },
-  { id: 'hired', title: 'Hired', color: 'bg-green-100' },
-  { id: 'rejected', title: 'Rejected', color: 'bg-red-100' },
+  { id: 'new', title: 'New', color: 'bg-gray-100 text-gray-800' },
+  { id: 'under_review', title: 'Under Review', color: 'bg-yellow-100 text-yellow-800' },
+  { id: 'interview', title: 'Interview', color: 'bg-blue-100 text-blue-800' },
+  { id: 'offer', title: 'Offer', color: 'bg-green-100 text-green-800' },
+  { id: 'hired', title: 'Hired', color: 'bg-teal-100 text-teal-800' },
+  { id: 'rejected', title: 'Rejected', color: 'bg-red-100 text-red-800' },
 ] as const;
 
 const HRCandidates: React.FC = () => {
@@ -73,7 +72,7 @@ const HRCandidates: React.FC = () => {
   const [expandedCandidate, setExpandedCandidate] = useState<string | null>(null);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
 
-  // Mock candidate data
+  // Mock candidate data with avatar images
   const candidates: Candidate[] = [
     {
       id: 'CAND-001',
@@ -82,7 +81,8 @@ const HRCandidates: React.FC = () => {
       businessUnit: 'Digital Transformation',
       status: 'interview',
       score: 95,
-      appliedDate: '2024-01-15',
+      appliedDate: '2025-01-15',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
       email: 'ahmed.elmasri@email.com',
       phone: '+212-6-1234-5678',
       location: 'Rabat, Morocco',
@@ -90,7 +90,7 @@ const HRCandidates: React.FC = () => {
       experience: '8 years',
       skills: ['React', 'Node.js', 'Python', 'AI/ML'],
       education: 'PhD Computer Science - Cairo University',
-      year: 2024,
+      year: 2025,
       videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
       aiScreeningScore: 92,
       aiRecommendations: [
@@ -127,7 +127,8 @@ const HRCandidates: React.FC = () => {
       businessUnit: 'Communications',
       status: 'offer',
       score: 92,
-      appliedDate: '2024-01-14',
+      appliedDate: '2025-01-14',
+      avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
       email: 'fatima.benali@email.com',
       phone: '+212-6-8765-4321',
       location: 'Casablanca, Morocco',
@@ -135,7 +136,7 @@ const HRCandidates: React.FC = () => {
       experience: '6 years',
       skills: ['Digital Marketing', 'Strategy', 'Analytics'],
       education: 'Master Marketing - Mohammed V University',
-      year: 2024,
+      year: 2025,
       videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
       aiScreeningScore: 88,
       aiRecommendations: [
@@ -171,7 +172,8 @@ const HRCandidates: React.FC = () => {
       businessUnit: 'Education',
       status: 'hired',
       score: 89,
-      appliedDate: '2024-01-13',
+      appliedDate: '2025-01-13',
+      avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
       email: 'omar.alrashid@email.com',
       phone: '+212-6-5555-1234',
       location: 'Amman, Jordan',
@@ -179,7 +181,7 @@ const HRCandidates: React.FC = () => {
       experience: '10 years',
       skills: ['Program Management', 'Educational Design', 'Leadership'],
       education: 'PhD Education - University of Jordan',
-      year: 2024,
+      year: 2025,
       videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
       aiScreeningScore: 85,
       aiRecommendations: [
@@ -216,7 +218,8 @@ const HRCandidates: React.FC = () => {
       businessUnit: 'Finance',
       status: 'new',
       score: 87,
-      appliedDate: '2024-01-20',
+      appliedDate: '2025-01-20',
+      avatar: 'https://randomuser.me/api/portraits/women/4.jpg',
       email: 'sarah.johnson@email.com',
       phone: '+1-555-123-4567',
       location: 'New York, USA',
@@ -224,7 +227,7 @@ const HRCandidates: React.FC = () => {
       experience: '5 years',
       skills: ['Financial Analysis', 'Excel', 'SAP'],
       education: 'MBA Finance - Harvard University',
-      year: 2024,
+      year: 2025,
       videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
       aiScreeningScore: 83,
       aiRecommendations: [
@@ -301,26 +304,10 @@ const HRCandidates: React.FC = () => {
   ];
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'interview':
-        return 'bg-blue-100 text-blue-800';
-      case 'offer':
-        return 'bg-green-100 text-green-800';
-      case 'hired':
-        return 'bg-green-100 text-green-800';
-      case 'rejected':
-        return 'bg-red-100 text-red-800';
-      case 'new':
-        return 'bg-gray-100 text-gray-800';
-      case 'under_review':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+    return stages.find(stage => stage.id === status)?.color || 'bg-gray-100 text-gray-800';
   };
 
   const handleStageChange = (candidateId: string, newStatus: Candidate['status']) => {
-    // In a real app, this would update the backend
     console.log(`Updating candidate ${candidateId} to status ${newStatus}`);
   };
 
@@ -337,14 +324,11 @@ const HRCandidates: React.FC = () => {
   };
 
   const handleStatusChange = (candidateId: string, newStatus: string, reason?: string) => {
-    // Update the candidate status
     console.log(`Updating candidate ${candidateId} to status ${newStatus}${reason ? ` with reason: ${reason}` : ''}`);
-    // In a real app, this would update the backend and refresh the data
   };
 
   return (
     <div className="space-y-8">
-      {/* Candidate Profile Modal */}
       {selectedCandidate && (
         <CandidateProfile
           candidate={selectedCandidate}
@@ -353,7 +337,6 @@ const HRCandidates: React.FC = () => {
         />
       )}
 
-      {/* Header */}
       <DashboardHeader
         title="Candidates Overview"
         description="Manage and track candidate applications through the recruitment pipeline"
@@ -362,61 +345,55 @@ const HRCandidates: React.FC = () => {
         dateRange={dateRange}
         setDateRange={setDateRange}
       />
-  
-      {/* KPI Cards */}
-      <KPICards cards={kpiCards} />
 
-      {/* Candidates Management */}
       <DashboardSection
         title="Candidates Information Management"
         description="Track candidate progress through the recruitment pipeline"
         icon={Users}
       >
-        {/* Search and Filters */}
         <div className="flex gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search candidates..."
-              className="w-full pl-10"
+              className="w-full pl-10 bg-white shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button variant="outline">
+          <Button variant="outline" className="bg-white shadow-sm hover:bg-gray-50">
             <Filter className="h-4 w-4 mr-2" />
             Filters
           </Button>
         </div>
 
-        {/* Candidates Table */}
-        <Card>
+        <Card className="border-0 shadow-lg">
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[50px]"></TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Business Unit</TableHead>
-                  <TableHead>Applied Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Job matching</TableHead>
-                  <TableHead>Experience</TableHead>
-                  <TableHead>Actions</TableHead>
+                <TableRow className="bg-gray-50">
+                  <TableHead className="w-[50px] font-bold text-gray-900"></TableHead>
+                  <TableHead className="font-bold text-gray-900">Candidate Name</TableHead>
+                  <TableHead className="font-bold text-gray-900">Position</TableHead>
+                  <TableHead className="font-bold text-gray-900">Business Unit</TableHead>
+                  <TableHead className="font-bold text-gray-900">Years of Experience</TableHead>
+                  <TableHead className="font-bold text-gray-900">Applied Date</TableHead>
+                  <TableHead className="font-bold text-gray-900">Status</TableHead>
+                  <TableHead className="font-bold text-gray-900">Job Matching</TableHead>
+                  <TableHead className="font-bold text-gray-900">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredCandidates.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground">
+                    <TableCell colSpan={9} className="text-center text-gray-500 py-8">
                       No candidates found.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredCandidates.map((candidate) => (
                     <React.Fragment key={candidate.id}>
-                      <TableRow>
+                      <TableRow className="hover:bg-gray-50 transition-colors">
                         <TableCell>
                           <Button
                             variant="ghost"
@@ -425,72 +402,68 @@ const HRCandidates: React.FC = () => {
                             aria-label={expandedCandidate === candidate.id ? 'Collapse details' : 'Expand details'}
                           >
                             {expandedCandidate === candidate.id ? (
-                              <ChevronUp className="h-4 w-4" />
+                              <ChevronUp className="h-4 w-4 text-gray-600" />
                             ) : (
-                              <ChevronDown className="h-4 w-4" />
+                              <ChevronDown className="h-4 w-4 text-gray-600" />
                             )}
                           </Button>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
                               {candidate.avatar ? (
                                 <img
                                   src={candidate.avatar}
                                   alt={candidate.name}
-                                  className="w-10 h-10 rounded-full"
+                                  className="w-10 h-10 rounded-full object-cover"
                                 />
                               ) : (
-                                <span className="text-sm font-medium">
+                                <span className="text-sm font-medium text-gray-600">
                                   {candidate.name.split(' ').map(n => n[0]).join('')}
                                 </span>
                               )}
                             </div>
-                            <div>
-                              <div className="font-medium">{candidate.name}</div>
-                              <div className="text-sm text-muted-foreground">{candidate.email}</div>
-                            </div>
+                            <div className="font-medium text-gray-700">{candidate.name}</div>
                           </div>
                         </TableCell>
-                        <TableCell className="font-medium">{candidate.position}</TableCell>
-                        <TableCell>{candidate.businessUnit}</TableCell>
-                        <TableCell>{format(new Date(candidate.appliedDate), 'PPP')}</TableCell>
+                        <TableCell className="text-gray-600">{candidate.position}</TableCell>
+                        <TableCell className="text-gray-600">{candidate.businessUnit}</TableCell>
+                        <TableCell className="text-gray-600">{candidate.experience}</TableCell>
+                        <TableCell className="text-gray-600">{format(new Date(candidate.appliedDate), 'PPP')}</TableCell>
                         <TableCell>
-                          <Select
-                            value={candidate.status}
-                            onValueChange={(value) => handleStageChange(candidate.id, value as Candidate['status'])}
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(candidate.status)}`}
                           >
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {stages.map((stage) => (
-                                <SelectItem key={stage.id} value={stage.id}>
-                                  {stage.title}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            {stages.find(stage => stage.id === candidate.status)?.title}
+                          </span>
                         </TableCell>
                         <TableCell>
-                          <Badge className={getStatusColor(candidate.status)}>
+                          <Badge className={`${getStatusColor(candidate.status)} bg-opacity-50`}>
                             {candidate.score}%
                           </Badge>
                         </TableCell>
-                        <TableCell>{candidate.experience}</TableCell>
                         <TableCell>
                           <div className="flex space-x-2">
                             <Button 
                               variant="ghost" 
                               size="icon"
                               onClick={() => handleViewProfile(candidate)}
+                              className="text-gray-600 hover:text-gray-900"
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              className="text-gray-600 hover:text-gray-900"
+                            >
                               <MessageSquare className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              className="text-gray-600 hover:text-gray-900"
+                            >
                               <Calendar className="h-4 w-4" />
                             </Button>
                           </div>
@@ -499,25 +472,25 @@ const HRCandidates: React.FC = () => {
                       {expandedCandidate === candidate.id && (
                         <TableRow>
                           <TableCell colSpan={9} className="p-0">
-                            <div className="p-4 bg-muted/20">
+                            <div className="p-4 bg-gray-50">
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div>
-                                  <h4 className="font-semibold mb-2">Contact Information</h4>
-                                  <div className="space-y-1 text-sm">
+                                  <h4 className="font-semibold text-gray-800 mb-2">Contact Information</h4>
+                                  <div className="space-y-1 text-sm text-gray-600">
                                     <div><strong>Email:</strong> {candidate.email}</div>
                                     <div><strong>Phone:</strong> {candidate.phone}</div>
                                     <div><strong>Nationality:</strong> {candidate.nationality}</div>
                                   </div>
                                 </div>
                                 <div>
-                                  <h4 className="font-semibold mb-2">Education</h4>
-                                  <div className="text-sm">{candidate.education}</div>
+                                  <h4 className="font-semibold text-gray-800 mb-2">Education</h4>
+                                  <div className="text-sm text-gray-600">{candidate.education}</div>
                                 </div>
                                 <div>
-                                  <h4 className="font-semibold mb-2">Skills</h4>
+                                  <h4 className="font-semibold text-gray-800 mb-2">Skills</h4>
                                   <div className="flex flex-wrap gap-1">
                                     {candidate.skills.map((skill, index) => (
-                                      <Badge key={index} variant="secondary" className="text-xs">
+                                      <Badge key={index} variant="secondary" className="text-xs bg-gray-100 text-gray-600">
                                         {skill}
                                       </Badge>
                                     ))}
@@ -540,4 +513,4 @@ const HRCandidates: React.FC = () => {
   );
 };
 
-export default HRCandidates; 
+export default HRCandidates;

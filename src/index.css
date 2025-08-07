@@ -9,6 +9,11 @@ body {
   @apply font-title;
 }
 @layer base {
+  html {
+    @apply font-title;
+  }
+}
+@layer base {
   :root {
     /* ICESCO Brand Colors */
     --background: 0 0% 100%;
