@@ -61,13 +61,15 @@ const CommitteeHome: React.FC = () => {
 
   return (
     <div className="space-y-8">
-     <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Committee Members</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {committeeMembers.map((member, idx) => (
+
+       <DashboardSection
+        title="Committee Members"
+        description="List of committee members"
+        icon={Users}
+      >
+        
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {committeeMembers.map((member, idx) => (
               <div
                 key={idx}
                 className="flex flex-col items-center bg-gray-50 border rounded-lg p-4 shadow-sm"
@@ -83,165 +85,95 @@ const CommitteeHome: React.FC = () => {
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+       
+    </DashboardSection>
+
    
-
-      {/* Block 1: Minutes of Meetings */}
-      <DashboardSection
-        title="Minutes of Meetings"
-        description="Follow-up on committee meetings"
-        icon={Users}
-      >
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-100 text-center">
-                  <TableHead className="text-center font-bold">Date</TableHead>
-                  <TableHead className="text-center font-bold">Minute</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {meetingMinutes.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-center text-muted-foreground h-24">
-                      No minutes found.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  meetingMinutes.map((minute, idx) => (
-                    <TableRow key={idx} className="text-center font-normal">
-                      <TableCell className="text-center">{minute.date}</TableCell>
-                      <TableCell className="text-center">
-                        <a
-                          href={minute.fileUrl}
-                          download
-                          className="inline-flex items-center gap-2 text-primary hover:underline"
-                        >
-                          <Folder className="h-5 w-5" />
-                          <Download className="h-4 w-4" />
-                          <span>Download minute</span>
-                        </a>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </DashboardSection>
-
-      {/* Block 2: Committee Recruitment Decisions */}
-      <DashboardSection
-        title="Committee Recruitment Decisions"
-        description="Decisions made by the recruitment committee"
-        icon={Users}
-      >
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-100 text-center">
-                  <TableHead className="text-center font-bold">Business Unit</TableHead>
-                  <TableHead className="text-center font-bold">Candidate</TableHead>
-                  <TableHead className="text-center font-bold">Score</TableHead>
-                  <TableHead className="text-center font-bold">Decision</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recruitmentDecisions.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                      No decisions found.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  recruitmentDecisions.map((row, idx) => (
-                    <TableRow key={idx} className="text-center font-normal">
-                      <TableCell className="text-center">{row.businessUnit}</TableCell>
-                      <TableCell className="text-center">{row.candidate}</TableCell>
-                      <TableCell className="text-center">
-                        <span className="inline-flex items-center gap-1 justify-center">
-                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                          {row.score}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center">{row.decision}</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </DashboardSection>
-
+      
       {/* Block 3: Recruitment Decisions */}
       <DashboardSection
-        title="Recruitment Decisions"
-        description="Decisions made by the recruitment committee"
-        icon={Users}
-      >
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-100 text-center">
-                  <TableHead className="text-center font-bold">Business Unit</TableHead>
-                  <TableHead className="text-center font-bold">Candidate</TableHead>
-                  <TableHead className="text-center font-bold">Score</TableHead>
-                  <TableHead className="text-center font-bold">Decision</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recruitmentDecisions.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                      No decisions found.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  recruitmentDecisions.map((row, idx) => (
-                    <TableRow key={idx} className="text-center font-normal">
-                      <TableCell className="text-center">{row.businessUnit}</TableCell>
-                      <TableCell className="text-center">{row.candidate}</TableCell>
-                      <TableCell className="text-center">
-                        <span className="inline-flex items-center gap-1 justify-center">
-                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                          {row.score}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center">{row.decision}</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </DashboardSection>
+  title="Recruitment Decisions"
+  description="Decisions made by the recruitment committee"
+  icon={Users}
+>
+  <Card>
+    <CardContent className="p-0">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-100 text-center">
+            <TableHead className="text-center font-bold">Date</TableHead>
+            <TableHead className="text-center font-bold">Meeting Minutes</TableHead>
+            <TableHead className="text-center font-bold">Recruitment Decisions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {meetingMinutes.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={3} className="text-center text-muted-foreground h-24">
+                No decisions found.
+              </TableCell>
+            </TableRow>
+          ) : (
+            meetingMinutes.map((minute, idx) => (
+              <TableRow key={idx} className="text-center font-normal">
+                <TableCell className="text-center">{minute.date}</TableCell>
+                <TableCell className="text-center">
+                  <a
+                    href={minute.fileUrl}
+                    download
+                    className="inline-flex items-center gap-2 text-primary hover:underline justify-center"
+                    title="Download meeting minute"
+                  >
+                    <Folder className="h-5 w-5" />
+                  </a>
+                </TableCell>
+                <TableCell className="text-center">
+                  <a
+                    href={`/recruitment-decisions/${minute.date}`}
+                    className="inline-flex items-center gap-2 text-primary hover:underline justify-center"
+                    title="View recruitment decision"
+                  >
+                    <Folder className="h-5 w-5" />
+                  </a>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </CardContent>
+  </Card>
+</DashboardSection>
 
       {/* Block 4: Recruitment Knowledge Hub */}
-      <DashboardSection
-        title="Recruitment Knowledge Hub"
-        description="Access to committee resources"
-        icon={Users}
-      >
-        <Card>
-          <CardContent>
-            <div className="flex flex-col gap-4">
-              <a href="/resources/assessment-manual.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary hover:underline text-base mt-6" >
-                <Folder className="h-5 w-5" /> Assessment manual
-              </a>
-              <a href="/resources/recruitment-policy.pdf" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary hover:underline text-base">
-                <Folder className="h-5 w-5" /> Recruitment Policy
-              </a>
-            </div>
-          </CardContent>
-        </Card>
-      </DashboardSection>
+    <DashboardSection
+  title="Recruitment Knowledge Hub"
+  description="Access to committee resources"
+  icon={Users}
+>
+  <Card>
+    <CardContent>
+      <div className="flex flex-row gap-24 mt-6 justify-center">
+        <a
+          href="/resources/assessment-manual.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-primary hover:underline text-base"
+        >
+          <Folder className="h-5 w-5" /> Assessment manual
+        </a>
+        <a
+          href="/resources/recruitment-policy.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-primary hover:underline text-base"
+        >
+          <Folder className="h-5 w-5" /> Recruitment Policy
+        </a>
+      </div>
+    </CardContent>
+  </Card>
+</DashboardSection>
     </div>
   );
 };

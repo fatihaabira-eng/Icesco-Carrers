@@ -10,6 +10,8 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+ Languages,
+X
   
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -158,13 +160,13 @@ const CommitteeDashboard: React.FC = () => {
   ];
 
    const kpiCards_reject = [
-    { title: 'Language', value: "10%", icon: Clock, description: '' },
+    { title: 'Language', value: "10%", icon: Languages, description: '' },
     { title: 'Integrity', value: "50%", icon: CheckCircle, description: '' },
     { title: 'Relevant Experience', value: "20%", icon: Calendar, description: '' },
     { title: 'Alignment with ICESCO values', value: "20%", icon: Award, description: '' },
   ];
   const kpiCards_status = [
-    { title: 'Rejected', value: pendingInterviews, icon: Clock, description: '' },
+    { title: 'Rejected', value: pendingInterviews, icon: X, description: '' },
     { title: 'Accepted', value: acceptedInterviews, icon: CheckCircle, description: '' },
     { title: 'Recommended for another Position', value: upcomingInterviews, icon: Users, description: '' },
   ];
