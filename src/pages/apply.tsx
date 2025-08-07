@@ -54,7 +54,7 @@ const TECHNICAL_SKILLS = [
   'Google Analytics', 'Salesforce', 'HubSpot', 'CRM', 'ERP', 'Business Intelligence'
 ];
 
-const COMPETENTIAL_SKILLS = [
+const MANAGERIAL_SKILLS = [
   // Leadership & Management
   'Leadership', 'Team Leadership', 'Project Management', 'Team Management', 'Strategic Planning',
   'Decision Making', 'Delegation', 'Mentoring', 'Coaching', 'Performance Management',
@@ -140,9 +140,19 @@ interface Experience {
   endDate: string;
   description: string;
   achievements: string;
+   achievementType?: string; // Add achievement type
+  achievementFile?: File | null; // Add achievement file
+  achievementLink?: string; // Add achievement link
   current: boolean;
 }
 
+
+const ACHIEVEMENT_TYPES = [
+  { value: 'report', label: 'Upload Report' },
+  { value: 'acknowledgment', label: 'Acknowledgment Letter' },
+  { value: 'certificate', label: 'Thank You Certificate' },
+  { value: 'press', label: 'Press Links' }
+];
 interface Certification {
   title: string;
   issuer: string;
@@ -198,8 +208,10 @@ interface FormData {
   education: Education[];
   certifications: Certification[];
   experience: Experience[];
-  technicalSkills: string[]; // Changed from skills to technicalSkills
-  competentialSkills: string[];
+  technicalSkills: string[];
+  managerialSkills: string[];
+  technicalSkillsEvidence: { [skill: string]: File | null }; // Add evidence for technical skills
+  managerialSkillsEvidence: { [skill: string]: File | null }; // Add evidence for managerial skills
   languages: Language[];
   socialMedia: SocialMedia[];
   practicalExperience: string;
@@ -207,10 +219,8 @@ interface FormData {
   cv: File | null;
   videoIntroSubmitted: boolean;
   videoFile: File | null;
-
- skillExperiences: { [skill: string]: number[] };
+  skillExperiences: { [skill: string]: number[] };
   skillEducation: { [skill: string]: number[] };
-  
 }
 
 const countryCodes = [
@@ -233,192 +243,141 @@ const SkillDisplay: React.FC<{
   onRemove: () => void;
   formData: FormData;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
-  skillType: 'technical' | 'competential';
-   }> = ({ skill, onRemove, formData, setFormData, skillType }) => {
-  const badgeColor = skillType === 'technical' ? 'bg-teal-100 text-teal-800' : 'bg-yellow-100 text-yellow-800';
-  const iconColor = skillType === 'technical' ? 'text-teal-600' : 'text-yellow-600';
+  skillType: 'technical' | 'managerial';
+}> = ({ skill, onRemove, formData, setFormData, skillType }) => {
+  const badgeColor = skillType === 'technical' ? 'bg-teal-100 text-teal-800 border-teal-200' : 'bg-yellow-100 text-yellow-800 border-yellow-200';
+  const evidenceKey = skillType === 'technical' ? 'technicalSkillsEvidence' : 'managerialSkillsEvidence';
+
+  // Add safety check for evidence
+  const currentEvidence = formData[evidenceKey] && formData[evidenceKey][skill] ? formData[evidenceKey][skill] : null;
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-3">
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${badgeColor}`}>
-              {skill}
-            </span>
-          </div>
-        </div>
-        
+    <div className={`border rounded-lg p-4 bg-white shadow-sm ${badgeColor.includes('teal') ? 'border-teal-200' : 'border-yellow-200'}`}>
+      {/* Skill Badge and Remove Button */}
+      <div className="flex items-center justify-between mb-3">
+        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${badgeColor}`}>
+          {skill}
+        </span>
         <button
           onClick={onRemove}
-          className="text-gray-400 hover:text-red-500 transition-colors p-1"
+          className="text-gray-400 hover:text-red-600 transition-colors"
           title="Remove skill"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Experience Selection */}
-      <div className="mb-4">
-        <h4 className={`text-sm font-medium text-gray-700 mb-2 flex items-center gap-2`}>
-          <Briefcase className={`w-4 h-4 ${iconColor}`} />
-          Related Experience:
-        </h4>
-        <div className="space-y-2 max-h-40 overflow-y-auto">
-          {formData.experience.length === 0 ? (
-            <p className="text-xs text-gray-400 italic">No experience entries added yet</p>
-          ) : (
-            formData.experience.map((exp, expIndex) => (
-              <label key={expIndex} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded border cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.skillExperiences[skill]?.includes(expIndex) || false}
-                  onChange={(e) => {
-                    const newSkillExperiences = { ...formData.skillExperiences };
-                    
-                    if (e.target.checked) {
-                      if (!newSkillExperiences[skill]) {
-                        newSkillExperiences[skill] = [];
-                      }
-                      if (!newSkillExperiences[skill].includes(expIndex)) {
-                        newSkillExperiences[skill].push(expIndex);
-                      }
-                    } else {
-                      if (newSkillExperiences[skill]) {
-                        newSkillExperiences[skill] = newSkillExperiences[skill].filter(i => i !== expIndex);
-                        if (newSkillExperiences[skill].length === 0) {
-                          delete newSkillExperiences[skill];
-                        }
-                      }
-                    }
-                    
-                    setFormData(prev => ({
-                      ...prev,
-                      skillExperiences: newSkillExperiences
-                    }));
-                  }}
-                  className={`w-4 h-4 border-gray-300 rounded focus:ring-2 mt-0.5 ${
-                    skillType === 'technical' ? 'text-teal-600 focus:ring-teal-500' : 'text-blue-600 focus:ring-blue-500'
-                  }`}
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-gray-700 truncate">
-                    {exp.jobTitle || 'Untitled Position'}
-                  </div>
-                  <div className="text-xs text-gray-500 truncate">
-                    {exp.company || 'Unknown Company'} • {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
-                  </div>
-                </div>
-              </label>
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* Education Selection */}
-      <div className="mb-4">
-        <h4 className={`text-sm font-medium text-gray-700 mb-2 flex items-center gap-2`}>
-          <GraduationCap className={`w-4 h-4 ${iconColor}`} />
-          Related Education:
-        </h4>
-        <div className="space-y-2 max-h-40 overflow-y-auto">
-          {formData.education.length === 0 ? (
-            <p className="text-xs text-gray-400 italic">No education entries added yet</p>
-          ) : (
-            formData.education.map((edu, eduIndex) => (
-              <label key={eduIndex} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded border cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.skillEducation[skill]?.includes(eduIndex) || false}
-                  onChange={(e) => {
-                    const newSkillEducation = { ...formData.skillEducation };
-                    
-                    if (e.target.checked) {
-                      if (!newSkillEducation[skill]) {
-                        newSkillEducation[skill] = [];
-                      }
-                      if (!newSkillEducation[skill].includes(eduIndex)) {
-                        newSkillEducation[skill].push(eduIndex);
-                      }
-                    } else {
-                      if (newSkillEducation[skill]) {
-                        newSkillEducation[skill] = newSkillEducation[skill].filter(i => i !== eduIndex);
-                        if (newSkillEducation[skill].length === 0) {
-                          delete newSkillEducation[skill];
-                        }
-                      }
-                    }
-                    
-                    setFormData(prev => ({
-                      ...prev,
-                      skillEducation: newSkillEducation
-                    }));
-                  }}
-                  className={`w-4 h-4 border-gray-300 rounded focus:ring-2 mt-0.5 ${
-                    skillType === 'technical' ? 'text-teal-600 focus:ring-teal-500' : 'text-blue-600 focus:ring-blue-500'
-                  }`}
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-gray-700 truncate">
-                    {edu.diploma || 'Untitled Diploma'}
-                  </div>
-                  <div className="text-xs text-gray-500 truncate">
-                    {edu.place || 'Unknown Institution'} • {new Date(edu.startDate).getFullYear() || ''} - {new Date(edu.endDate).getFullYear() || ''}
-                  </div>
-                </div>
-              </label>
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* Summary */}
+      {/* Evidence Upload Section */}
       <div className="border-t pt-3">
-        <div className="flex items-center gap-4 text-xs text-gray-600">
-          <span className="flex items-center gap-1">
-            <Briefcase className="w-3 h-3" />
-            {formData.skillExperiences[skill]?.length || 0} experience(s)
-          </span>
-          <span className="flex items-center gap-1">
-            <GraduationCap className="w-3 h-3" />
-            {formData.skillEducation[skill]?.length || 0} education(s)
-          </span>
+        <h4 className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
+          <Download className="w-3 h-3" />
+          Upload Evidence (Optional)
+        </h4>
+        
+        <div className="flex items-center gap-3">
+          {/* Upload Button */}
+          <label className="cursor-pointer flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded text-xs font-medium text-gray-700 transition">
+            <Download className="w-3 h-3 mr-1" />
+            {currentEvidence ? 'Change' : 'Upload'}
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                setFormData(prev => ({
+                  ...prev,
+                  [evidenceKey]: {
+                    ...prev[evidenceKey],
+                    [skill]: file || null
+                  }
+                }));
+              }}
+            />
+          </label>
+
+          {/* File Info Display */}
+          {currentEvidence && (
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded text-xs truncate">
+                <FileText className="w-3 h-3 text-green-600 flex-shrink-0" />
+                <span className="text-green-700 font-medium truncate" title={currentEvidence.name}>
+                  {currentEvidence.name && currentEvidence.name.length > 15 
+                    ? `${currentEvidence.name.substring(0, 15)}...` 
+                    : currentEvidence.name || 'Unknown file'}
+                </span>
+              </div>
+              
+              {/* Remove Evidence Button */}
+              <button
+                onClick={() => {
+                  setFormData(prev => ({
+                    ...prev,
+                    [evidenceKey]: {
+                      ...prev[evidenceKey],
+                      [skill]: null
+                    }
+                  }));
+                }}
+                className="text-red-500 hover:text-red-700 transition-colors"
+                title="Remove evidence"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* File Format Info */}
+        <p className="text-xs text-gray-400 mt-1">
+          PDF, JPG, PNG, DOC, DOCX (Max: 5MB)
+        </p>
       </div>
     </div>
   );
 };
-
 
 const MultiStepForm: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
-    offerId: '',
-    fullName: '',
-    email: '',
-    phoneCountryCode: '+212',
-    phoneNumber: '',
-    nationality: '',
-    dateOfBirth: '',
-    address: '',
-    education: [{ place: '', diploma: '', startDate: '', endDate: '' }],
-    certifications: [{ title: '', issuer: '', date: '', url: '', certificate: null }],
-    experience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '', achievements: '', current: false }],
-     technicalSkills: [''], // Changed from skills
-  competentialSkills: [''], // Added
-    languages: [{ language: '', level: '', learnedFrom: '', certificate: null }],
-    socialMedia: [{ platform: '', url: '' }],
-    practicalExperience: '',
-    references: [{ name: '', title: '', email: '',phone: '', note: '' }],
-    cv: null,
-    videoIntroSubmitted: false,
-    videoFile: null,
-
-     skillExperiences: {},
-    skillEducation: {},
-  });
+  offerId: '',
+  fullName: '',
+  email: '',
+  phoneCountryCode: '+212',
+  phoneNumber: '',
+  nationality: '',
+  dateOfBirth: '',
+  address: '',
+  education: [{ place: '', diploma: '', startDate: '', endDate: '' }],
+  certifications: [{ title: '', issuer: '', date: '', url: '', certificate: null }],
+  experience: [{
+    company: '',
+    jobTitle: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    achievements: '',
+    achievementType: '',
+    achievementFile: null,
+    achievementLink: '',
+    current: false
+  }],
+  technicalSkills: [], // Changed from [''] to []
+  managerialSkills: [], // Changed from [''] to []
+  technicalSkillsEvidence: {}, // Ensure this is properly initialized
+  managerialSkillsEvidence: {}, // Ensure this is properly initialized
+  languages: [{ language: '', level: '', learnedFrom: '', certificate: null }],
+  socialMedia: [{ platform: '', url: '' }],
+  practicalExperience: '',
+  references: [{ name: '', title: '', email: '', phone: '', note: '' }],
+  cv: null,
+  videoIntroSubmitted: false,
+  videoFile: null,
+  skillExperiences: {},
+  skillEducation: {},
+});
   const [submitted, setSubmitted] = useState(false);
   const [cvParsing, setCvParsing] = useState(false);
   const [cvParseError, setCvParseError] = useState<string | null>(null);
@@ -436,34 +395,34 @@ const MultiStepForm: React.FC = () => {
 
   // Skill input state for step 4
   const [technicalSkillInput, setTechnicalSkillInput] = useState<string>('');
-  const [competentialSkillInput, setCompetentialSkillInput] = useState<string>('');
+  const [managerialSkillInput, setManagerialSkillInput] = useState<string>('');
   const [technicalSkillSuggestions, setTechnicalSkillSuggestions] = useState<{[key: number]: string[]}>({});
-const [competentialSkillSuggestions, setCompetentialSkillSuggestions] = useState<{[key: number]: string[]}>({});
+const [managerialSkillSuggestions, setManagerialSkillSuggestions] = useState<{[key: number]: string[]}>({});
 
 const removeTechnicalSkill = (skillToRemove: string) => {
-  setFormData(prev => ({
-    ...prev,
-    technicalSkills: prev.technicalSkills.filter(skill => skill !== skillToRemove),
-    skillExperiences: Object.fromEntries(
-      Object.entries(prev.skillExperiences).filter(([skill]) => skill !== skillToRemove)
-    ),
-    skillEducation: Object.fromEntries(
-      Object.entries(prev.skillEducation).filter(([skill]) => skill !== skillToRemove)
-    )
-  }));
+  setFormData(prev => {
+    const newTechnicalSkillsEvidence = { ...prev.technicalSkillsEvidence };
+    delete newTechnicalSkillsEvidence[skillToRemove];
+    
+    return {
+      ...prev,
+      technicalSkills: prev.technicalSkills.filter(skill => skill !== skillToRemove),
+      technicalSkillsEvidence: newTechnicalSkillsEvidence
+    };
+  });
 };
 
-const removeCompetentialSkill = (skillToRemove: string) => {
-  setFormData(prev => ({
-    ...prev,
-    competentialSkills: prev.competentialSkills.filter(skill => skill !== skillToRemove),
-    skillExperiences: Object.fromEntries(
-      Object.entries(prev.skillExperiences).filter(([skill]) => skill !== skillToRemove)
-    ),
-    skillEducation: Object.fromEntries(
-      Object.entries(prev.skillEducation).filter(([skill]) => skill !== skillToRemove)
-    )
-  }));
+const removeManagerialSkill = (skillToRemove: string) => {
+  setFormData(prev => {
+    const newManagerialSkillsEvidence = { ...prev.managerialSkillsEvidence };
+    delete newManagerialSkillsEvidence[skillToRemove];
+
+    return {
+      ...prev,
+      managerialSkills: prev.managerialSkills.filter(skill => skill !== skillToRemove),
+      managerialSkillsEvidence: newManagerialSkillsEvidence
+    };
+  });
 };
 
 
@@ -471,9 +430,9 @@ const removeCompetentialSkill = (skillToRemove: string) => {
 const detectSkillsInText = (text: string): string[] => {
   const detectedSkills: string[] = [];
   const lowerText = text.toLowerCase();
-  
-  // Check both technical and competential skills
-  [...TECHNICAL_SKILLS, ...COMPETENTIAL_SKILLS].forEach(skill => {
+
+  // Check both technical and managerial skills
+  [...TECHNICAL_SKILLS, ...MANAGERIAL_SKILLS].forEach(skill => {
     const skillLower = skill.toLowerCase();
     if (lowerText.includes(skillLower)) {
       detectedSkills.push(skill);
@@ -483,94 +442,9 @@ const detectSkillsInText = (text: string): string[] => {
   return detectedSkills;
 };
 
-// Function to update skill relationships when education changes
-const updateSkillEducationRelationships = () => {
-  const newSkillEducation: { [skill: string]: number[] } = {};
-  
-  formData.education.forEach((edu, eduIndex) => {
-    const allEducationText = `${edu.place} ${edu.diploma}`.toLowerCase();
-    
-    // Check technical skills
-    formData.technicalSkills.forEach(skill => {
-      if (skill.trim() === '') return;
-      const skillLower = skill.toLowerCase();
-      if (allEducationText.includes(skillLower)) {
-        if (!newSkillEducation[skill]) {
-          newSkillEducation[skill] = [];
-        }
-        if (!newSkillEducation[skill].includes(eduIndex)) {
-          newSkillEducation[skill].push(eduIndex);
-        }
-      }
-    });
-    
-    // Check competential skills
-    formData.competentialSkills.forEach(skill => {
-      if (skill.trim() === '') return;
-      const skillLower = skill.toLowerCase();
-      if (allEducationText.includes(skillLower)) {
-        if (!newSkillEducation[skill]) {
-          newSkillEducation[skill] = [];
-        }
-        if (!newSkillEducation[skill].includes(eduIndex)) {
-          newSkillEducation[skill].push(eduIndex);
-        }
-      }
-    });
-  });
-  
-  setFormData(prev => ({
-    ...prev,
-    skillEducation: newSkillEducation
-  }));
-};
-// Function to update skill relationships when experience changes
-const updateSkillExperienceRelationships = () => {
-  const newSkillExperiences: { [skill: string]: number[] } = {};
-  
-  formData.experience.forEach((exp, expIndex) => {
-    const allExperienceText = `${exp.company} ${exp.jobTitle} ${exp.description} ${exp.achievements}`.toLowerCase();
-    
-    // Check technical skills
-    formData.technicalSkills.forEach(skill => {
-      if (skill.trim() === '') return;
-      const skillLower = skill.toLowerCase();
-      if (allExperienceText.includes(skillLower)) {
-        if (!newSkillExperiences[skill]) {
-          newSkillExperiences[skill] = [];
-        }
-        if (!newSkillExperiences[skill].includes(expIndex)) {
-          newSkillExperiences[skill].push(expIndex);
-        }
-      }
-    });
-    
-    // Check competential skills
-    formData.competentialSkills.forEach(skill => {
-      if (skill.trim() === '') return;
-      const skillLower = skill.toLowerCase();
-      if (allExperienceText.includes(skillLower)) {
-        if (!newSkillExperiences[skill]) {
-          newSkillExperiences[skill] = [];
-        }
-        if (!newSkillExperiences[skill].includes(expIndex)) {
-          newSkillExperiences[skill].push(expIndex);
-        }
-      }
-    });
-  });
-  
-  setFormData(prev => ({
-    ...prev,
-    skillExperiences: newSkillExperiences
-  }));
-};
 
-// Function to update all skill relationships
-const updateAllSkillRelationships = () => {
-  updateSkillEducationRelationships();
-  updateSkillExperienceRelationships();
-};
+
+
 
   // Handler for skill input change (for step 4)
   const handleTechnicalSkillInputChange = (value: string) => {
@@ -605,15 +479,15 @@ const updateAllSkillRelationships = () => {
   }
 };
 
-const handleCompetentialSkillInputChange = (value: string) => {
-  setCompetentialSkillInput(value);
+const handleManagerialSkillInputChange = (value: string) => {
+  setManagerialSkillInput(value);
 
   if (value.trim().length > 0) {
     const searchTerm = value.toLowerCase();
-    const filtered = COMPETENTIAL_SKILLS
+    const filtered = MANAGERIAL_SKILLS
       .filter(skill =>
         skill.toLowerCase().includes(searchTerm) &&
-        !formData.competentialSkills.some(existingSkill => existingSkill.toLowerCase() === skill.toLowerCase())
+        !formData.managerialSkills.some(existingSkill => existingSkill.toLowerCase() === skill.toLowerCase())
       )
       .sort((a, b) => {
         const aLower = a.toLowerCase();
@@ -627,9 +501,9 @@ const handleCompetentialSkillInputChange = (value: string) => {
       })
       .slice(0, 8);
 
-    setCompetentialSkillSuggestions({ ...competentialSkillSuggestions, 0: filtered });
+    setManagerialSkillSuggestions({ ...managerialSkillSuggestions, 0: filtered });
   } else {
-    setCompetentialSkillSuggestions(prev => {
+    setManagerialSkillSuggestions(prev => {
       const newSuggestions = { ...prev };
       delete newSuggestions[0];
       return newSuggestions;
@@ -756,12 +630,6 @@ const handleCompetentialSkillInputChange = (value: string) => {
     }
   }, [searchParams]);
 
-useEffect(() => {
-  if ((formData.technicalSkills.length > 0 || formData.competentialSkills.length > 0) && 
-      (formData.education.length > 0 || formData.experience.length > 0)) {
-    updateAllSkillRelationships();
-  }
-}, [formData.technicalSkills, formData.competentialSkills, formData.education, formData.experience]);
 
   // Convert form data to backend API format
   const convertToApplicationData = (): ApplicationData => {
@@ -792,7 +660,7 @@ useEffect(() => {
       })),
      skills: [
   ...formData.technicalSkills.filter(skill => skill.trim() !== ''),
-  ...formData.competentialSkills.filter(skill => skill.trim() !== '')
+  ...formData.managerialSkills.filter(skill => skill.trim() !== '')
 ],
       practical_experience: formData.practicalExperience,
       certifications: formData.certifications
@@ -931,18 +799,12 @@ useEffect(() => {
  
 const updateEducationField = (index: number, field: keyof Education, value: string) => {
   const updated = [...formData.education];
-  // Ensure correct type for 'certificate' field
   if (field === 'certificate') {
     updated[index][field] = value as unknown as File | null;
   } else {
     updated[index][field] = value;
   }
   setFormData({ ...formData, education: updated });
-  
-  // Update skill relationships after education changes
-  setTimeout(() => {
-    updateSkillEducationRelationships();
-  }, 100);
 };
 
  const updateCertificationField = (index: number, field: keyof Certification, value: string | File | null) => {
@@ -955,15 +817,17 @@ const updateEducationField = (index: number, field: keyof Education, value: stri
   setFormData({ ...formData, certifications: updated });
 };
 
- const updateExperienceField = (index: number, field: keyof Experience, value: string | boolean) => {
+const updateExperienceField = (index: number, field: keyof Experience, value: string | boolean | File | null) => {
   const updated = [...formData.experience];
-  (updated[index] as any)[field] = value;
+  
+  if (field === 'achievementFile') {
+    updated[index][field] = value as File | null;
+  } else {
+    (updated[index] as any)[field] = value;
+  }
+  
   setFormData({ ...formData, experience: updated });
   
-  // Update skill relationships after experience changes
-  setTimeout(() => {
-    updateSkillExperienceRelationships();
-  }, 100);
 };
 
 const updateLanguageField = (index: number, field: keyof Language, value: string | File | null) => {
@@ -1110,13 +974,13 @@ const updateLanguageField = (index: number, field: keyof Language, value: string
           ) &&
           formData.practicalExperience.trim() !== ''
         );
-      case 4:
-  return (
-    formData.technicalSkills.length > 0 &&
-    formData.technicalSkills.every(skill => skill.trim() !== '') &&
-    formData.competentialSkills.length > 0 &&
-    formData.competentialSkills.every(skill => skill.trim() !== '')
-  );
+        case 4:
+        return (
+          formData.technicalSkills.length > 0 &&
+          formData.technicalSkills.some(skill => skill.trim() !== '') &&
+          formData.managerialSkills.length > 0 &&
+          formData.managerialSkills.some(skill => skill.trim() !== '')
+        );
       case 5:
         return (
           formData.languages.length > 0 &&
@@ -1208,30 +1072,37 @@ const updateLanguageField = (index: number, field: keyof Language, value: string
         
         // Professional Experience
         experience: [
-          { 
-            company: "TechCorp Solutions", 
-            jobTitle: "Senior Software Engineer", 
-            startDate: "2018-01-01", 
-            endDate: "", 
-            description: "Led development of web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality software solutions.", 
-            achievements: "Successfully delivered 3 major projects ahead of schedule, mentored 2 junior developers, improved code quality by implementing automated testing.", 
-            current: true 
-          },
-          { 
-            company: "Digital Innovations Ltd", 
-            jobTitle: "Software Engineer", 
-            startDate: "2015-01-01", 
-            endDate: "2017-12-31", 
-            description: "Developed and maintained web applications using JavaScript, PHP and MySQL. Participated in agile development process.", 
-            achievements: "Reduced application load time by 40%, implemented new features that increased user engagement by 25%.", 
-            current: false 
-          }
-        ],
+  { 
+    company: "TechCorp Solutions", 
+    jobTitle: "Senior Software Engineer", 
+    startDate: "2018-01-01", 
+    endDate: "", 
+    description: "Led development of web applications using React and Node.js. Collaborated with cross-functional teams to deliver high-quality software solutions.", 
+    achievements: "Successfully delivered 3 major projects ahead of schedule, mentored 2 junior developers, improved code quality by implementing automated testing.", 
+    achievementType: "report",
+    achievementFile: null,
+    achievementLink: "",
+    current: true 
+  },
+  { 
+    company: "Digital Innovations Ltd", 
+    jobTitle: "Software Engineer", 
+    startDate: "2015-01-01", 
+    endDate: "2017-12-31", 
+    description: "Developed and maintained web applications using JavaScript, PHP and MySQL. Participated in agile development process.", 
+    achievements: "Reduced application load time by 40%, implemented new features that increased user engagement by 25%.", 
+    achievementType: "press",
+    achievementFile: null,
+    achievementLink: "https://example.com/tech-innovation-award",
+    current: false 
+  }
+],
         
         // Skills
         technicalSkills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS", "Git", "MySQL", "MongoDB"],
-competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Management", "Project Management"],
-        
+managerialSkills: ["Leadership", "Communication", "Problem Solving", "Team Management", "Project Management"],
+        technicalSkillsEvidence: {}, // Initialize empty - users will upload evidence if they want
+  managerialSkillsEvidence: {},
        languages: [
   { 
     language: "Arabic", 
@@ -1452,14 +1323,14 @@ competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Man
             <div className="border-t pt-4">
               <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
                 <Download className="w-4 h-4 text-teal-600" />
-                Education Certificate/Diploma (Optional)
+                Upload Evidence (Optional)
               </h4>
               
               <div className="flex items-center gap-4">
                 {/* Upload Button */}
                 <label className="cursor-pointer flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition">
                   <Download className="w-4 h-4 mr-2" />
-                  {edu.certificate ? 'Change Certificate' : 'Upload Certificate'}
+                  {edu.certificate ? 'Change Diploma' : 'Upload Diploma'}
                   <input
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
@@ -1661,111 +1532,242 @@ competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Man
 </div>
     </div>
   );
-      case 3:
-        return (
-          <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-semibold text-teal-600">Professional Experience</h2>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
-                <Briefcase className="w-5 h-5" /> Work History
-              </h3>
-              <button
-                onClick={() => setFormData((prev) => ({ ...prev, experience: [...prev.experience, { company: '', jobTitle: '', startDate: '', endDate: '', description: '', achievements: '', current: false }] }))}
-                className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
-              >
-                <Plus className="w-4 h-4 mr-2" /> Add
-              </button>
-            </div>
-            {formData.experience.length === 0 && (
-              <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
-                <Briefcase className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                <p className="text-gray-500">No work experience added yet. Click "Add" to start.</p>
-              </div>
-            )}
-            {formData.experience.map((exp, index) => (
-              <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
-                <InputField label="Company" id={`company-${index}` as keyof FormData} value={exp.company} placeholder="Company Name" onChange={(_, value) => updateExperienceField(index, 'company', value)} />
-                <InputField label="Job Title" id={`jobTitle-${index}` as keyof FormData} value={exp.jobTitle} placeholder="e.g. Software Engineer" onChange={(_, value) => updateExperienceField(index, 'jobTitle', value)} />
-                <InputField label="Start Date" id={`startDate-exp-${index}` as keyof FormData} type="date" value={exp.startDate} onChange={(_, value) => updateExperienceField(index, 'startDate', value)} />
-                <div className="space-y-2">
-                  {exp.current ? (
-                    <div className="relative">
-                      <div className="w-full px-4 py-3 pt-7 pb-1 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 shadow-sm">
-                        Currently
-                      </div>
-                      <label className="absolute left-4 top-2 text-xs text-teal-600 font-medium pointer-events-none">
-                        End Date
-                      </label>
-                    </div>
-                  ) : (
-                    <InputField 
-                      label="End Date" 
-                      id={`endDate-exp-${index}` as keyof FormData} 
-                      type="date" 
-                      value={exp.endDate} 
-                      onChange={(_, value) => updateExperienceField(index, 'endDate', value)}
-                    />
-                  )}
-                  <label className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={exp.current}
-                      onChange={(e) => {
-                        const updatedExperience = [...formData.experience];
-                        updatedExperience[index].current = e.target.checked;
-                        if (e.target.checked) {
-                          updatedExperience[index].endDate = 'Currently';
-                        } else {
-                          updatedExperience[index].endDate = '';
-                        }
-                        setFormData({ ...formData, experience: updatedExperience });
-                      }}
-                      className="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
-                    />
-                    <span className="text-gray-600">I currently work here</span>
-                  </label>
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1 ">Main Tasks</label>
-                  <textarea
-                    value={exp.description}
-                    onChange={e => updateExperienceField(index, 'description', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400 min-h-[100px]"
-                    placeholder="Job description ..."
-                    rows={4}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                   Major Achievements
-                  </label>
-                  <textarea
-                    value={exp.achievements}
-                    onChange={e => updateExperienceField(index, 'achievements', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400 min-h-[100px]"
-                    placeholder="Achievements..."
-                    rows={4}
-                  />
-                </div>
-                {formData.experience.length > 1 && (
-                  <button
-                    onClick={() => setFormData({ ...formData, experience: formData.experience.filter((_, i) => i !== index) })}
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
-                    title="Remove experience entry"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-              </div>
-            ))}
-            
-          </div>
-        );
-
- case 4:
+case 3:
   return (
     <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
-      <h2 className="text-2xl font-semibold text-teal-600">Skills</h2>
+      <h2 className="text-2xl font-semibold text-teal-600">Professional Experience</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
+          <Briefcase className="w-5 h-5" /> Work History
+        </h3>
+        <button
+          onClick={() => setFormData((prev) => ({ 
+            ...prev, 
+            experience: [...prev.experience, { 
+              company: '', 
+              jobTitle: '', 
+              startDate: '', 
+              endDate: '', 
+              description: '', 
+              achievements: '', 
+              achievementType: '',
+              achievementFile: null,
+              achievementLink: '',
+              current: false 
+            }] 
+          }))}
+          className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
+        >
+          <Plus className="w-4 h-4 mr-2" /> Add
+        </button>
+      </div>
+      {formData.experience.length === 0 && (
+        <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
+          <Briefcase className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+          <p className="text-gray-500">No work experience added yet. Click "Add" to start.</p>
+        </div>
+      )}
+      {formData.experience.map((exp, index) => (
+        <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
+          <InputField 
+            label="Company" 
+            id={`company-${index}` as keyof FormData} 
+            value={exp.company} 
+            placeholder="Company Name" 
+            onChange={(_, value) => updateExperienceField(index, 'company', value)} 
+          />
+          <InputField 
+            label="Job Title" 
+            id={`jobTitle-${index}` as keyof FormData} 
+            value={exp.jobTitle} 
+            placeholder="e.g. Software Engineer" 
+            onChange={(_, value) => updateExperienceField(index, 'jobTitle', value)} 
+          />
+          <InputField 
+            label="Start Date" 
+            id={`startDate-exp-${index}` as keyof FormData} 
+            type="date" 
+            value={exp.startDate} 
+            onChange={(_, value) => updateExperienceField(index, 'startDate', value)} 
+          />
+          <div className="space-y-2">
+            {exp.current ? (
+              <div className="relative">
+                <div className="w-full px-4 py-3 pt-7 pb-1 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 shadow-sm">
+                  Currently
+                </div>
+                <label className="absolute left-4 top-2 text-xs text-teal-600 font-medium pointer-events-none">
+                  End Date
+                </label>
+              </div>
+            ) : (
+              <InputField 
+                label="End Date" 
+                id={`endDate-exp-${index}` as keyof FormData} 
+                type="date" 
+                value={exp.endDate} 
+                onChange={(_, value) => updateExperienceField(index, 'endDate', value)}
+              />
+            )}
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={exp.current}
+                onChange={(e) => {
+                  const updatedExperience = [...formData.experience];
+                  updatedExperience[index].current = e.target.checked;
+                  if (e.target.checked) {
+                    updatedExperience[index].endDate = 'Currently';
+                  } else {
+                    updatedExperience[index].endDate = '';
+                  }
+                  setFormData({ ...formData, experience: updatedExperience });
+                }}
+                className="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+              />
+              <span className="text-gray-600">I currently work here</span>
+            </label>
+          </div>
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Main Tasks</label>
+            <textarea
+              value={exp.description}
+              onChange={e => updateExperienceField(index, 'description', e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400 min-h-[100px]"
+              placeholder="Job description ..."
+              rows={4}
+            />
+          </div>
+          
+          {/* Major Achievements Section */}
+          <div className="col-span-2 border-t pt-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-teal-600" />
+              Major Achievements
+            </h4>
+            
+          
+
+            {/* Achievement Type Dropdown */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Achievement Evidence Type</label>
+              <select
+                value={exp.achievementType || ''}
+                onChange={e => updateExperienceField(index, 'achievementType', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm"
+              >
+                <option value="">Select evidence type...</option>
+                {ACHIEVEMENT_TYPES.map((type) => (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Dynamic Input based on Achievement Type */}
+            {exp.achievementType && exp.achievementType !== 'press' && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {exp.achievementType === 'report' && 'Upload Report'}
+                  {exp.achievementType === 'acknowledgment' && 'Upload Acknowledgment Letter'}
+                  {exp.achievementType === 'certificate' && 'Upload Thank You Certificate'}
+                </label>
+                
+                <div className="flex items-center gap-4">
+                  {/* Upload Button */}
+                  <label className="cursor-pointer flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition">
+                    <Download className="w-4 h-4 mr-2" />
+                    {exp.achievementFile ? 'Change File' : 'Upload File'}
+                    <input
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const updated = [...formData.experience];
+                          updated[index].achievementFile = file;
+                          setFormData({ ...formData, experience: updated });
+                        }
+                      }}
+                    />
+                  </label>
+
+                  {/* File Info Display */}
+                  {exp.achievementFile && (
+                    <div className="flex items-center gap-2 flex-1">
+                      <div className="flex items-center gap-2 px-3 py-2 bg-teal-50 border border-teal-200 rounded-lg text-sm">
+                        <FileText className="w-4 h-4 text-teal-600" />
+                        <span className="text-teal-700 font-medium truncate max-w-[200px]">
+                          {exp.achievementFile.name}
+                        </span>
+                        <span className="text-teal-600 text-xs">
+                          ({(exp.achievementFile.size / (1024 * 1024)).toFixed(2)} MB)
+                        </span>
+                      </div>
+                      
+                      {/* Remove File Button */}
+                      <button
+                        onClick={() => {
+                          const updated = [...formData.experience];
+                          updated[index].achievementFile = null;
+                          setFormData({ ...formData, experience: updated });
+                        }}
+                        className="text-red-500 hover:text-red-700 p-1 rounded transition"
+                        title="Remove file"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* File Format Info */}
+                <p className="text-xs text-gray-500 mt-2">
+                  Accepted formats: PDF, JPG, PNG, DOC, DOCX (Max: 10MB)
+                </p>
+              </div>
+            )}
+
+            {/* Press Links Input */}
+            {exp.achievementType === 'press' && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Press Link</label>
+                <input
+                  type="url"
+                  value={exp.achievementLink || ''}
+                  onChange={e => updateExperienceField(index, 'achievementLink', e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400"
+                  placeholder="https://example.com/press-article"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the URL of the press article or news coverage about your achievement
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Remove Experience Entry Button */}
+          {formData.experience.length > 1 && (
+            <button
+              onClick={() => setFormData({ 
+                ...formData, 
+                experience: formData.experience.filter((_, i) => i !== index) 
+              })}
+              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
+              title="Remove experience entry"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  case 4:
+  return (
+    <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
+      <h2 className="text-2xl font-semibold text-teal-600">Professional Skills</h2>
 
       {/* Technical Skills Section */}
       <div className="bg-white p-6 rounded-lg border shadow-sm">
@@ -1801,10 +1803,6 @@ competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Man
                       delete newSuggestions[0];
                       return newSuggestions;
                     });
-                    
-                    setTimeout(() => {
-                      updateAllSkillRelationships();
-                    }, 100);
                   }}
                   className="w-full text-left px-4 py-2 hover:bg-teal-50 hover:text-teal-700 focus:bg-teal-50 focus:text-teal-700 focus:outline-none transition-colors"
                 >
@@ -1816,30 +1814,31 @@ competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Man
         </div>
 
         {/* Technical Skills Display */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
             <BookOpen className="w-4 h-4" />
             Your Technical Skills ({formData.technicalSkills.filter(skill => skill.trim() !== '').length})
           </h4>
           
           {formData.technicalSkills.filter(skill => skill.trim() !== '').length === 0 ? (
-            <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
+            <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
               <p className="text-sm">No technical skills added yet.</p>
+              <p className="text-xs text-gray-400 mt-1">Start typing to add skills</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {formData.technicalSkills
                 .filter(skill => skill.trim() !== '')
                 .map((skill, index) => (
-                <SkillDisplay 
-                  key={`tech-${index}`}
-                  skill={skill}
-                  onRemove={() => removeTechnicalSkill(skill)}
-                  formData={formData}
-                  setFormData={setFormData}
-                  skillType="technical"
-                />
-              ))}
+                  <SkillDisplay 
+                    key={`tech-${index}`}
+                    skill={skill}
+                    onRemove={() => removeTechnicalSkill(skill)}
+                    formData={formData}
+                    setFormData={setFormData}
+                    skillType="technical"
+                  />
+                ))}
             </div>
           )}
         </div>
@@ -1847,44 +1846,40 @@ competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Man
 
       {/* Competential Skills Section */}
       <div className="bg-white p-6 rounded-lg border shadow-sm">
-        <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
-          <Plus className="w-5 h-5" /> Competential Skills
+        <h3 className="text-lg font-medium text-yellow-700 mb-4 flex items-center gap-2">
+          <Plus className="w-5 h-5" /> Managerial Skills
         </h3>
         
-        {/* Competential Skill Input */}
+        {/* managerial Skill Input */}
         <div className="relative mb-4">
           <input
             type="text"
-            value={competentialSkillInput}
-            onChange={(e) => handleCompetentialSkillInputChange(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm placeholder-gray-400"
-            placeholder="Type a competential skill (e.g. Leadership, Communication, Problem Solving...)"
+            value={managerialSkillInput}
+            onChange={(e) => handleManagerialSkillInputChange(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 bg-white shadow-sm placeholder-gray-400"
+            placeholder="Type a managerial skill (e.g. Leadership, Communication, Problem Solving...)"
           />
-          
-          {/* Competential Skill Suggestions */}
-          {competentialSkillSuggestions[0] && competentialSkillSuggestions[0].length > 0 && (
+
+          {/* Managerial Skill Suggestions */}
+          {managerialSkillSuggestions[0] && managerialSkillSuggestions[0].length > 0 && (
             <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-              {competentialSkillSuggestions[0].map((suggestion, suggestionIndex) => (
+              {managerialSkillSuggestions[0].map((suggestion, suggestionIndex) => (
                 <button
                   key={suggestionIndex}
                   type="button"
                   onClick={() => {
                     setFormData(prev => ({
                       ...prev,
-                      competentialSkills: [...prev.competentialSkills, suggestion]
+                      managerialSkills: [...prev.managerialSkills, suggestion]
                     }));
-                    setCompetentialSkillInput('');
-                    setCompetentialSkillSuggestions(prev => {
+                    setManagerialSkillInput('');
+                    setManagerialSkillSuggestions(prev => {
                       const newSuggestions = { ...prev };
                       delete newSuggestions[0];
                       return newSuggestions;
                     });
-                    
-                    setTimeout(() => {
-                      updateAllSkillRelationships();
-                    }, 100);
                   }}
-                  className="w-full text-left px-4 py-2 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 focus:outline-none transition-colors"
+                  className="w-full text-left px-4 py-2 hover:bg-yellow-50 hover:text-yellow-700 focus:bg-yellow-50 focus:text-yellow-700 focus:outline-none transition-colors"
                 >
                   <span className="font-medium">{suggestion}</span>
                 </button>
@@ -1893,37 +1888,39 @@ competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Man
           )}
         </div>
 
-        {/* Competential Skills Display */}
-        <div className="space-y-4">
+        {/* managerial Skills Display */}
+        <div className="space-y-3">
           <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
             <BookOpen className="w-4 h-4" />
-            Your Competential Skills ({formData.competentialSkills.filter(skill => skill.trim() !== '').length})
+            Your Managerial Skills ({formData.managerialSkills.filter(skill => skill.trim() !== '').length})
           </h4>
-          
-          {formData.competentialSkills.filter(skill => skill.trim() !== '').length === 0 ? (
-            <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
-              <p className="text-sm">No competential skills added yet.</p>
+
+          {formData.managerialSkills.filter(skill => skill.trim() !== '').length === 0 ? (
+            <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+              <p className="text-sm">No Managerial skills added yet.</p>
+              <p className="text-xs text-gray-400 mt-1">Start typing to add skills</p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {formData.competentialSkills
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {formData.managerialSkills
                 .filter(skill => skill.trim() !== '')
                 .map((skill, index) => (
-                <SkillDisplay 
-                  key={`comp-${index}`}
-                  skill={skill}
-                  onRemove={() => removeCompetentialSkill(skill)}
-                  formData={formData}
-                  setFormData={setFormData}
-                  skillType="competential"
-                />
-              ))}
+                  <SkillDisplay 
+                    key={`man-${index}`}
+                    skill={skill}
+                    onRemove={() => removeManagerialSkill(skill)}
+                    formData={formData}
+                    setFormData={setFormData}
+                    skillType="managerial"
+                  />
+                ))}
             </div>
           )}
         </div>
       </div>
     </div>
   );
+
 case 5:
   return (
     <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
@@ -2015,26 +2012,6 @@ case 5:
                 </label>
               </div>
 
-              {/* Where Language Was Learned */}
-              <div className="relative">
-                <select
-                  value={language.learnedFrom || ''}
-                  onChange={e => updateLanguageField(index, 'learnedFrom', e.target.value)}
-                  className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer"
-                >
-                  <option value=""></option>
-                  {LANGUAGE_LEARNING_SOURCES.map((source) => (
-                    <option key={source} value={source}>{source}</option>
-                  ))}
-                </select>
-                <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-                  language.learnedFrom 
-                    ? 'top-2 text-xs text-teal-600 font-medium' 
-                    : 'top-1/2 -translate-y-1/2 text-base text-gray-500'
-                } peer-focus:top-2 peer-focus:text-xs peer-focus:text-teal-600 peer-focus:font-medium`}>
-                  Where Did You Learn It?
-                </label>
-              </div>
 
               {/* Placeholder for grid alignment */}
               <div></div>
@@ -2044,7 +2021,7 @@ case 5:
             <div className="border-t pt-4">
               <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
                 <Download className="w-4 h-4 text-teal-600" />
-                Language Certificate (Optional)
+                Upload certificate if available (Optional)
               </h4>
               
               <div className="flex items-center gap-4">
@@ -2235,7 +2212,7 @@ case 5:
                 <InputField label="Company" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
                 <InputField label="Link of the Company" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
                 <InputField label="Name" id={`ref-name-${index}` as keyof FormData} value={ref.name} placeholder="e.g. Jane Smith" onChange={(_, value) => updateReferenceField(index, 'name', value)} />
-                <InputField label="Title/Relationship" id={`ref-title-${index}` as keyof FormData} value={ref.title} placeholder="e.g. Manager" onChange={(_, value) => updateReferenceField(index, 'title', value)} />
+                <InputField label="Job Title" id={`ref-title-${index}` as keyof FormData} value={ref.title} placeholder="e.g. Manager" onChange={(_, value) => updateReferenceField(index, 'title', value)} />
                 <InputField label="Email" id={`ref-email-${index}` as keyof FormData} type="email" value={ref.email} placeholder="e.g. jane.smith@company.com" onChange={(_, value) => updateReferenceField(index, 'email', value)} />
                 <InputField label="Phone" id={`ref-email-${index}` as keyof FormData} value={ref.phone} placeholder="e.g. jane.smith@company.com" onChange={(_, value) => updateReferenceField(index, 'phone', value)} />
                 <div className="col-span-2">
@@ -2312,7 +2289,7 @@ case 5:
               <label htmlFor="cv-upload" className={`cursor-pointer px-6 py-3 rounded-lg font-medium shadow-md transition bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white `}
                 >
                 <Download className="w-5 h-5 mr-2 inline" />
-                Cover Letter , Certifications or Other Documents..
+                Cover Letter or Other Documents..
               </label>
               <input
                 id="cv-upload"
@@ -2490,69 +2467,126 @@ case 5:
                   </ul>
                 )}
               </div>
-              <div>
-                <h3 className="text-lg font-medium text-teal-700 mb-3">Professional Experience</h3>
-                {formData.experience.length === 0 ? (
-                  <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No experience provided.</div>
-                ) : (
-                  <ul className="space-y-4">
-                    {formData.experience.map((exp, idx) => (
-                      <li key={idx} className="p-4 rounded-lg border bg-white shadow-sm">
-                        <div className="grid md:grid-cols-2 gap-2">
-                          <div><span className="font-semibold">Company:</span> {exp.company || '-'}</div>
-                          <div><span className="font-semibold">Position:</span> {exp.jobTitle || '-'}</div>
-                          <div><span className="font-semibold">From:</span> {exp.startDate || '-'}</div>
-                          <div><span className="font-semibold">To:</span> {exp.current ? 'Currently' : (exp.endDate || '-')}</div>
-                        </div>
-                        {exp.description && (
-                          <div className="mt-2">
-                            <span className="font-semibold">Description:</span>
-                            <p className="text-gray-700 mt-1">{exp.description}</p>
-                          </div>
-                        )}
-                        {exp.achievements && (
-                          <div className="mt-2">
-                            <span className="font-semibold">Achievements:</span>
-                            <p className="text-gray-700 mt-1">{exp.achievements}</p>
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            <div>
+             <div>
+  <h3 className="text-lg font-medium text-teal-700 mb-3">Professional Experience</h3>
+  {formData.experience.length === 0 ? (
+    <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No experience provided.</div>
+  ) : (
+    <ul className="space-y-4">
+      {formData.experience.map((exp, idx) => (
+        <li key={idx} className="p-4 rounded-lg border bg-white shadow-sm">
+          <div className="grid md:grid-cols-2 gap-2">
+            <div><span className="font-semibold">Company:</span> {exp.company || '-'}</div>
+            <div><span className="font-semibold">Position:</span> {exp.jobTitle || '-'}</div>
+            <div><span className="font-semibold">From:</span> {exp.startDate || '-'}</div>
+            <div><span className="font-semibold">To:</span> {exp.current ? 'Currently' : (exp.endDate || '-')}</div>
+          </div>
+          {exp.description && (
+            <div className="mt-2">
+              <span className="font-semibold">Description:</span>
+              <p className="text-gray-700 mt-1">{exp.description}</p>
+            </div>
+          )}
+          {exp.achievements && (
+            <div className="mt-2">
+              <span className="font-semibold">Achievements:</span>
+              <p className="text-gray-700 mt-1">{exp.achievements}</p>
+              
+              {/* Achievement Evidence */}
+              {exp.achievementType && (
+                <div className="mt-2 p-3 bg-gray-50 rounded-lg">
+                  <span className="font-semibold text-sm">Evidence:</span>
+                  {exp.achievementType === 'press' && exp.achievementLink ? (
+                    <div className="mt-1">
+                      <span className="text-sm text-gray-600">Press Link: </span>
+                      <a 
+                        href={exp.achievementLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-teal-600 hover:underline text-sm"
+                      >
+                        {exp.achievementLink}
+                      </a>
+                    </div>
+                  ) : exp.achievementFile ? (
+                    <div className="mt-1 flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-teal-600" />
+                      <span className="text-sm text-gray-600">
+                        {exp.achievementType === 'report' && 'Report: '}
+                        {exp.achievementType === 'acknowledgment' && 'Acknowledgment Letter: '}
+                        {exp.achievementType === 'certificate' && 'Thank You Certificate: '}
+                        {exp.achievementFile.name}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-gray-500 mt-1 block">
+                      {ACHIEVEMENT_TYPES.find(t => t.value === exp.achievementType)?.label} (No file uploaded)
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+         
+         <div>
   <h3 className="text-lg font-medium text-teal-700 mb-3">Technical Skills</h3>
   {formData.technicalSkills.filter(skill => skill.trim() !== '').length === 0 ? (
     <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No technical skills provided.</div>
   ) : (
-    <ul className="flex flex-wrap gap-2 p-4 rounded-lg border bg-white shadow-sm">
+    <div className="space-y-3 p-4 rounded-lg border bg-white shadow-sm">
       {formData.technicalSkills
         .filter(skill => skill.trim() !== '')
         .map((skill, idx) => (
-          <li key={idx} className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">
-            {skill}
-          </li>
+          <div key={idx} className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg">
+            <div className="flex items-center gap-3">
+              <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium">
+                {skill}
+              </span>
+              {formData.technicalSkillsEvidence[skill] && (
+                <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded flex items-center gap-1">
+                  <FileText className="w-3 h-3" />
+                  Evidence: {formData.technicalSkillsEvidence[skill]?.name}
+                </span>
+              )}
+            </div>
+          </div>
         ))}
-    </ul>
+    </div>
   )}
 </div>
+
 <div>
-  <h3 className="text-lg font-medium text-teal-700 mb-3">Competential Skills</h3>
-  {formData.competentialSkills.filter(skill => skill.trim() !== '').length === 0 ? (
-    <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No competential skills provided.</div>
+  <h3 className="text-lg font-medium text-teal-700 mb-3">Managerial Skills</h3>
+  {formData.managerialSkills.filter(skill => skill.trim() !== '').length === 0 ? (
+    <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No managerial skills provided.</div>
   ) : (
-    <ul className="flex flex-wrap gap-2 p-4 rounded-lg border bg-white shadow-sm">
-      {formData.competentialSkills
+    <div className="space-y-3 p-4 rounded-lg border bg-white shadow-sm">
+      {formData.managerialSkills
         .filter(skill => skill.trim() !== '')
         .map((skill, idx) => (
-          <li key={idx} className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">
-            {skill}
-          </li>
+          <div key={idx} className="flex items-center justify-between p-3 bg-yellow-50  border border-yellow-200 rounded-lg">
+            <div className="flex items-center gap-3">
+              <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                {skill}
+              </span>
+              {formData.managerialSkillsEvidence[skill] && (
+                <span className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded flex items-center gap-1">
+                  <FileText className="w-3 h-3" />
+                  Evidence: {formData.managerialSkillsEvidence[skill]?.name}
+                </span>
+              )}
+            </div>
+          </div>
         ))}
-    </ul>
+    </div>
   )}
 </div>
+
             <div>
   <h3 className="text-lg font-medium text-teal-700 mb-3">Languages</h3>
   {formData.languages.filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '').length === 0 ? (

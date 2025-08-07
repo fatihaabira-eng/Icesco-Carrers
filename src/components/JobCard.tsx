@@ -90,9 +90,13 @@ export default function JobCard({
       <CardContent className="flex flex-col flex-1 justify-between space-y-4">
         {/* Fixed height area for description and skills */}
         <div className="flex-1 space-y-4">
-          <p className="text-muted-foreground text-sm leading-relaxed line-clamp-4">
-            {description}
-          </p>
+          
+        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
+          {description.length > 10 
+            ? `${description.substring(0, description.lastIndexOf(' ', 40) || 100)}...` 
+            : description
+          }
+        </p>
 
           <div className="space-y-2">
             <p className="text-sm font-medium text-card-foreground">Key Skills:</p>

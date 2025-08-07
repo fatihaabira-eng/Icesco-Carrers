@@ -28,6 +28,7 @@ const allJobs = [
     urgent: true,
     description: "Lead development of educational technology platforms that impact millions of students across the Islamic world.",
     skills: ["React", "Node.js", "TypeScript", "MongoDB", "AWS", "Docker"],
+    
   },
   {
     id: "job-002",
@@ -116,7 +117,9 @@ const allJobs = [
     experience: "0-2 years",
     programId: "youth",
     description: "Join a transformative program to promote peace and leadership among youth in the Islamic world.",
-    skills: ["Leadership", "Peacebuilding", "Communication", "Community Engagement"],
+    skills: ["Leadership", "Peacebuilding"],
+     image: "/images/software-engineer.jpg", // ✅ Add image
+    imageAlt: "Software engineer working on educational technology" // ✅ Add alt text
   },
   {
     id: "job-010",
@@ -127,7 +130,9 @@ const allJobs = [
     experience: "0-2 years",
     programId: "youth",
     description: "Develop professional skills and networks through this youth-focused career development program.",
-    skills: ["Professional Development", "Networking", "Career Planning", "Leadership"],
+    skills: [ "Networking", "Career Planning"],
+     image: "/images/software-engineer.jpg", // ✅ Add image
+    imageAlt: "Software engineer working on educational technology" // ✅ Add alt text
   },
   {
     id: "job-011",
@@ -490,7 +495,7 @@ export default function Opportunities() {
                 </p>
               </div>
               {filteredJobs.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredJobs.map((job, index) => (
                     <JobCard key={index} {...job} />
                   ))}
