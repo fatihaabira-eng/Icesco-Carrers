@@ -4,6 +4,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Folder, Download, Star, Users } from 'lucide-react';
 import DashboardHeader from '@/components/DashboardHeader';
 import DashboardSection from '@/components/DashboardSection';
+import anarimage from '@/assets/dr-anar.jpg';
+import nidalimage from '@/assets/dr-nidal.jpg';
+import albanyanimage from '@/assets/dr-ahmed-albanyan.webp';
+import sallyMabroukImage from '@/assets/dr-sally-mabrouk.png';
+import rahelimage from '@/assets/dr-rahel.jpg';
 
 const meetingMinutes = [
   { date: '2025-07-01', fileUrl: '/minutes/minute-2025-07-01.pdf' },
@@ -15,31 +20,31 @@ const committeeMembers = [
     name: 'Prof. Dr.Raheel Qamar',
     title: 'Chief of sciences and technologies sector',
     joined: '2022-03-15',
-    photoUrl: '/src/assets/dr-rahel.jpg',
+    photoUrl: rahelimage,
   },
   {
     name: 'Dr. Ahmed Albanyan',
     title: 'Director of the center of translation and publishing',
     joined: '2023-01-10',
-    photoUrl: '/src/assets/dr-ahmed-albanyan.webp',
+    photoUrl: albanyanimage,
   },
   {
     name: 'Mr. Anar Karimov',
     title: 'Chief of partnerships and international cooperation sector',
     joined: '2021-09-05',
-    photoUrl: '/src/assets/dr-anar.jpg',
+    photoUrl: anarimage,
   },
   {
     name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
     title: 'Director of the administrative affairs departement',
     joined: '2023-01-10',
-    photoUrl: '/src/assets/dr-nidal.jpg',
+    photoUrl: nidalimage,
   },
   {
     name: 'Dr. Sally Mabrouk',
     title: 'Director of the office of director general',
     joined: '2021-09-05',
-    photoUrl: '/src/assets/dr-sally-mabrouk.png',
+    photoUrl: sallyMabroukImage,
   },
 ];
 

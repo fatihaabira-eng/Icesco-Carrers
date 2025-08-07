@@ -20,6 +20,7 @@ import {
   Star,
   MessageSquare
 } from 'lucide-react';
+import { duration } from 'moment';
 
 // Sample data for passed interviews
 const passedInterviewsData = [
@@ -28,6 +29,7 @@ const passedInterviewsData = [
     candidate: "Ahmed Hassan El-Masri",
     position: "Senior Frontend Developer",
     dateTime: "2025-01-20 10:00 AM",
+    duration: "1 hour",
     status: "rejected",
     interviewer: "Dr. Mohammed Al-Rashid",
     totalScore: 0,
@@ -68,6 +70,7 @@ const passedInterviewsData = [
     candidate: "Fatima Al-Zahra Benali",
     position: "Product Manager",
     dateTime: "2025-01-18 2:00 PM",
+    duration: "1 hour 30 minutes",
     status: "Accepted",
     interviewer: "Ms. Fatima Al-Kindi",
     totalScore: 92,
@@ -108,6 +111,7 @@ const passedInterviewsData = [
     candidate: "Omar Khalil Al-Rashid",
     position: "UX Designer",
     dateTime: "2025-01-15 11:00 AM",
+    duration: "45 minutes",
     status: "Recommended for an other position",
     interviewer: "Mr. Hassan Al-Mahmoud",
     totalScore: 78,
@@ -497,9 +501,11 @@ const BUInterviews: React.FC = () => {
                 <TableRow className="bg-[#f3f4f6]">
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-left">Candidate</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Position</TableHead>
-                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Score</TableHead>
+                  
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Date & Time</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Duration</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Status</TableHead>
+                  <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Score</TableHead>
                   <TableHead className="font-bold text-gray-900 text-base py-4 text-center">Evaluation</TableHead>
                 </TableRow>
               </TableHeader>
@@ -518,7 +524,12 @@ const BUInterviews: React.FC = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-gray-600 text-sm text-center py-3">{interview.position}</TableCell>
-                     <TableCell className="text-gray-600 text-sm text-center py-3">
+                     
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.dateTime}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.duration}</TableCell>
+                   
+                    <TableCell className="text-center py-3">{getStatusBadge(interview.status)}</TableCell>
+                    <TableCell className="text-gray-600 text-sm text-center py-3">
                       <div className="flex items-center justify-center space-x-2">
                         <Star className={`h-4 w-4 ${getScoreColor(interview.totalScore)}`} />
                         <span className={`font-medium ${getScoreColor(interview.totalScore)}`}>
@@ -526,9 +537,6 @@ const BUInterviews: React.FC = () => {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-gray-600 text-sm text-center py-3">{interview.dateTime}</TableCell>
-                   
-                    <TableCell className="text-center py-3">{getStatusBadge(interview.status)}</TableCell>
                     <TableCell className="text-center py-3">
                       <Button
                         variant="outline"
