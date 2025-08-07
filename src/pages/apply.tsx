@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Download, Plus, Link2, CheckCircle, Info, BookOpen, Briefcase, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Plus, Link2, CheckCircle, Info, BookOpen, Briefcase, X, GraduationCap, FileText } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
 import ReactCountryFlag from 'react-country-flag';
@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ApplicationService, ApplicationData } from '../services/api';
 
 // Predefined skills list for autocomplete
-const PREDEFINED_SKILLS = [
+const TECHNICAL_SKILLS = [
   // Programming Languages
   'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'PHP', 'Ruby', 'Go', 'Rust', 'Swift', 'Kotlin',
   'Scala', 'R', 'MATLAB', 'SQL', 'HTML', 'CSS', 'Dart', 'Perl', 'Shell Scripting', 'PowerShell',
@@ -40,33 +40,58 @@ const PREDEFINED_SKILLS = [
   'Test-Driven Development', 'Behavior-Driven Development', 'Quality Assurance', 'Manual Testing',
   'Automated Testing', 'Performance Testing', 'Load Testing',
   
-  // Version Control & Collaboration
+  // Version Control & Tools
   'Git', 'GitHub', 'GitLab', 'Bitbucket', 'SVN', 'Mercurial', 'Code Review', 'Pull Requests',
   
-  // Project Management & Methodologies
-  'Agile', 'Scrum', 'Kanban', 'Waterfall', 'Lean', 'Project Management', 'Team Leadership',
-  'Product Management', 'Business Analysis', 'Requirements Gathering', 'User Stories',
-  'Sprint Planning', 'Retrospectives',
+  // Design & UX/UI Tools
+  'Figma', 'Adobe XD', 'Sketch', 'Photoshop', 'Illustrator', 'InDesign', 'Wireframing', 'Prototyping',
   
-  // Design & UX/UI
-  'UI/UX Design', 'User Experience', 'User Interface', 'Figma', 'Adobe XD', 'Sketch',
-  'Photoshop', 'Illustrator', 'InDesign', 'Wireframing', 'Prototyping', 'User Research',
-  'Usability Testing', 'Design Systems', 'Responsive Design', 'Accessibility',
-  
-  // Security
+  // Security & Technical
   'Cybersecurity', 'Information Security', 'Network Security', 'Penetration Testing',
   'Vulnerability Assessment', 'OWASP', 'SSL/TLS', 'OAuth', 'JWT', 'Encryption',
   
-  // Soft Skills
-  'Communication', 'Problem Solving', 'Critical Thinking', 'Teamwork', 'Leadership',
-  'Time Management', 'Adaptability', 'Creativity', 'Analytical Thinking', 'Attention to Detail',
-  'Customer Service', 'Presentation Skills', 'Negotiation', 'Conflict Resolution',
+  // Business & Technical Tools
+  'Google Analytics', 'Salesforce', 'HubSpot', 'CRM', 'ERP', 'Business Intelligence'
+];
+
+const COMPETENTIAL_SKILLS = [
+  // Leadership & Management
+  'Leadership', 'Team Leadership', 'Project Management', 'Team Management', 'Strategic Planning',
+  'Decision Making', 'Delegation', 'Mentoring', 'Coaching', 'Performance Management',
+  'Change Management', 'Risk Management', 'Conflict Resolution', 'Stakeholder Management',
   
-  // Business & Industry
-  'Digital Marketing', 'SEO', 'SEM', 'Social Media Marketing', 'Content Marketing',
-  'Email Marketing', 'Google Analytics', 'E-commerce', 'CRM', 'ERP', 'Salesforce',
-  'HubSpot', 'Finance', 'Accounting', 'Business Intelligence', 'Market Research',
-  'Strategic Planning', 'Risk Management', 'Compliance', 'Operations Management'
+  // Communication & Interpersonal
+  'Communication', 'Written Communication', 'Verbal Communication', 'Public Speaking',
+  'Presentation Skills', 'Active Listening', 'Interpersonal Skills', 'Negotiation',
+  'Customer Service', 'Client Relations', 'Cross-Cultural Communication', 'Multilingual Communication',
+  
+  // Problem Solving & Analysis
+  'Problem Solving', 'Critical Thinking', 'Analytical Thinking', 'Creative Thinking',
+  'Innovation', 'Research Skills', 'Data Analysis', 'Strategic Thinking', 'Systems Thinking',
+  
+  // Personal & Professional Development
+  'Adaptability', 'Flexibility', 'Learning Agility', 'Continuous Learning', 'Self-Motivation',
+  'Initiative', 'Proactivity', 'Resilience', 'Stress Management', 'Work-Life Balance',
+  
+  // Collaboration & Teamwork
+  'Teamwork', 'Collaboration', 'Cross-Functional Collaboration', 'Remote Collaboration',
+  'Cultural Sensitivity', 'Empathy', 'Emotional Intelligence', 'Social Skills',
+  
+  // Organization & Time Management
+  'Time Management', 'Organization', 'Planning', 'Prioritization', 'Multitasking',
+  'Attention to Detail', 'Quality Focus', 'Efficiency', 'Productivity', 'Goal Setting',
+  
+  // Business & Industry Skills
+  'Business Acumen', 'Market Research', 'Customer Focus', 'Sales Skills', 'Marketing Skills',
+  'Financial Literacy', 'Budget Management', 'Cost Management', 'Operations Management',
+  
+  // Methodologies & Approaches
+  'Agile', 'Scrum', 'Kanban', 'Waterfall', 'Lean', 'Six Sigma', 'Design Thinking',
+  'User Experience', 'User Interface', 'User Research', 'Usability Testing',
+  
+  // Digital & Modern Skills
+  'Digital Marketing', 'Social Media Marketing', 'Content Marketing', 'Email Marketing',
+  'SEO', 'SEM', 'E-commerce', 'Digital Transformation', 'Remote Work', 'Virtual Leadership'
 ];
 
 // Predefined languages list for autocomplete
@@ -105,6 +130,7 @@ interface Education {
   diploma: string;
   startDate: string;
   endDate: string;
+  certificate?: File | null; 
 }
 
 interface Experience {
@@ -121,7 +147,8 @@ interface Certification {
   title: string;
   issuer: string;
   date: string;
-  // url?: string;
+  url?: string;
+  certificate?: File | null;
 }
 
 interface Reference {
@@ -140,8 +167,25 @@ interface SocialMedia {
 interface Language {
   language: string;
   level: string;
+  learnedFrom?: string; // Add where the language was learned
+  certificate?: File | null;
 }
 
+const LANGUAGE_LEARNING_SOURCES = [
+  'Self-taught',
+  'School/University',
+  'Language Institute',
+  'Online Course',
+  'Private Tutor',
+  'Immersion/Living Abroad',
+  'Family/Native',
+  'Work Environment',
+  'Language Exchange',
+  'Mobile Apps',
+  'Books/Literature',
+  'Movies/TV Shows',
+  'Other'
+];
 interface FormData {
   offerId: string;
   fullName: string;
@@ -154,7 +198,8 @@ interface FormData {
   education: Education[];
   certifications: Certification[];
   experience: Experience[];
-  skills: string[];
+  technicalSkills: string[]; // Changed from skills to technicalSkills
+  competentialSkills: string[];
   languages: Language[];
   socialMedia: SocialMedia[];
   practicalExperience: string;
@@ -162,6 +207,10 @@ interface FormData {
   cv: File | null;
   videoIntroSubmitted: boolean;
   videoFile: File | null;
+
+ skillExperiences: { [skill: string]: number[] };
+  skillEducation: { [skill: string]: number[] };
+  
 }
 
 const countryCodes = [
@@ -177,6 +226,170 @@ const countryCodes = [
   { code: '+213', name: 'Algeria', iso: 'DZ' },
 ];
 
+
+
+const SkillDisplay: React.FC<{
+  skill: string;
+  onRemove: () => void;
+  formData: FormData;
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  skillType: 'technical' | 'competential';
+   }> = ({ skill, onRemove, formData, setFormData, skillType }) => {
+  const badgeColor = skillType === 'technical' ? 'bg-teal-100 text-teal-800' : 'bg-yellow-100 text-yellow-800';
+  const iconColor = skillType === 'technical' ? 'text-teal-600' : 'text-yellow-600';
+
+  return (
+    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-3">
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${badgeColor}`}>
+              {skill}
+            </span>
+          </div>
+        </div>
+        
+        <button
+          onClick={onRemove}
+          className="text-gray-400 hover:text-red-500 transition-colors p-1"
+          title="Remove skill"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Experience Selection */}
+      <div className="mb-4">
+        <h4 className={`text-sm font-medium text-gray-700 mb-2 flex items-center gap-2`}>
+          <Briefcase className={`w-4 h-4 ${iconColor}`} />
+          Related Experience:
+        </h4>
+        <div className="space-y-2 max-h-40 overflow-y-auto">
+          {formData.experience.length === 0 ? (
+            <p className="text-xs text-gray-400 italic">No experience entries added yet</p>
+          ) : (
+            formData.experience.map((exp, expIndex) => (
+              <label key={expIndex} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded border cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.skillExperiences[skill]?.includes(expIndex) || false}
+                  onChange={(e) => {
+                    const newSkillExperiences = { ...formData.skillExperiences };
+                    
+                    if (e.target.checked) {
+                      if (!newSkillExperiences[skill]) {
+                        newSkillExperiences[skill] = [];
+                      }
+                      if (!newSkillExperiences[skill].includes(expIndex)) {
+                        newSkillExperiences[skill].push(expIndex);
+                      }
+                    } else {
+                      if (newSkillExperiences[skill]) {
+                        newSkillExperiences[skill] = newSkillExperiences[skill].filter(i => i !== expIndex);
+                        if (newSkillExperiences[skill].length === 0) {
+                          delete newSkillExperiences[skill];
+                        }
+                      }
+                    }
+                    
+                    setFormData(prev => ({
+                      ...prev,
+                      skillExperiences: newSkillExperiences
+                    }));
+                  }}
+                  className={`w-4 h-4 border-gray-300 rounded focus:ring-2 mt-0.5 ${
+                    skillType === 'technical' ? 'text-teal-600 focus:ring-teal-500' : 'text-blue-600 focus:ring-blue-500'
+                  }`}
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-700 truncate">
+                    {exp.jobTitle || 'Untitled Position'}
+                  </div>
+                  <div className="text-xs text-gray-500 truncate">
+                    {exp.company || 'Unknown Company'} • {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
+                  </div>
+                </div>
+              </label>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Education Selection */}
+      <div className="mb-4">
+        <h4 className={`text-sm font-medium text-gray-700 mb-2 flex items-center gap-2`}>
+          <GraduationCap className={`w-4 h-4 ${iconColor}`} />
+          Related Education:
+        </h4>
+        <div className="space-y-2 max-h-40 overflow-y-auto">
+          {formData.education.length === 0 ? (
+            <p className="text-xs text-gray-400 italic">No education entries added yet</p>
+          ) : (
+            formData.education.map((edu, eduIndex) => (
+              <label key={eduIndex} className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded border cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.skillEducation[skill]?.includes(eduIndex) || false}
+                  onChange={(e) => {
+                    const newSkillEducation = { ...formData.skillEducation };
+                    
+                    if (e.target.checked) {
+                      if (!newSkillEducation[skill]) {
+                        newSkillEducation[skill] = [];
+                      }
+                      if (!newSkillEducation[skill].includes(eduIndex)) {
+                        newSkillEducation[skill].push(eduIndex);
+                      }
+                    } else {
+                      if (newSkillEducation[skill]) {
+                        newSkillEducation[skill] = newSkillEducation[skill].filter(i => i !== eduIndex);
+                        if (newSkillEducation[skill].length === 0) {
+                          delete newSkillEducation[skill];
+                        }
+                      }
+                    }
+                    
+                    setFormData(prev => ({
+                      ...prev,
+                      skillEducation: newSkillEducation
+                    }));
+                  }}
+                  className={`w-4 h-4 border-gray-300 rounded focus:ring-2 mt-0.5 ${
+                    skillType === 'technical' ? 'text-teal-600 focus:ring-teal-500' : 'text-blue-600 focus:ring-blue-500'
+                  }`}
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-700 truncate">
+                    {edu.diploma || 'Untitled Diploma'}
+                  </div>
+                  <div className="text-xs text-gray-500 truncate">
+                    {edu.place || 'Unknown Institution'} • {new Date(edu.startDate).getFullYear() || ''} - {new Date(edu.endDate).getFullYear() || ''}
+                  </div>
+                </div>
+              </label>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Summary */}
+      <div className="border-t pt-3">
+        <div className="flex items-center gap-4 text-xs text-gray-600">
+          <span className="flex items-center gap-1">
+            <Briefcase className="w-3 h-3" />
+            {formData.skillExperiences[skill]?.length || 0} experience(s)
+          </span>
+          <span className="flex items-center gap-1">
+            <GraduationCap className="w-3 h-3" />
+            {formData.skillEducation[skill]?.length || 0} education(s)
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 const MultiStepForm: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -191,16 +404,20 @@ const MultiStepForm: React.FC = () => {
     dateOfBirth: '',
     address: '',
     education: [{ place: '', diploma: '', startDate: '', endDate: '' }],
-    certifications: [{ title: '', issuer: '', date: '' }],
+    certifications: [{ title: '', issuer: '', date: '', url: '', certificate: null }],
     experience: [{ company: '', jobTitle: '', startDate: '', endDate: '', description: '', achievements: '', current: false }],
-    skills: [''],
-    languages: [{ language: '', level: '' }],
+     technicalSkills: [''], // Changed from skills
+  competentialSkills: [''], // Added
+    languages: [{ language: '', level: '', learnedFrom: '', certificate: null }],
     socialMedia: [{ platform: '', url: '' }],
     practicalExperience: '',
     references: [{ name: '', title: '', email: '',phone: '', note: '' }],
     cv: null,
     videoIntroSubmitted: false,
     videoFile: null,
+
+     skillExperiences: {},
+    skillEducation: {},
   });
   const [submitted, setSubmitted] = useState(false);
   const [cvParsing, setCvParsing] = useState(false);
@@ -216,6 +433,209 @@ const MultiStepForm: React.FC = () => {
   const [languageSuggestions, setLanguageSuggestions] = useState<{[key: number]: string[]}>({});
   const [activeLanguageIndex, setActiveLanguageIndex] = useState<number | null>(null);
   const stepsRef = useRef<HTMLDivElement>(null);
+
+  // Skill input state for step 4
+  const [technicalSkillInput, setTechnicalSkillInput] = useState<string>('');
+  const [competentialSkillInput, setCompetentialSkillInput] = useState<string>('');
+  const [technicalSkillSuggestions, setTechnicalSkillSuggestions] = useState<{[key: number]: string[]}>({});
+const [competentialSkillSuggestions, setCompetentialSkillSuggestions] = useState<{[key: number]: string[]}>({});
+
+const removeTechnicalSkill = (skillToRemove: string) => {
+  setFormData(prev => ({
+    ...prev,
+    technicalSkills: prev.technicalSkills.filter(skill => skill !== skillToRemove),
+    skillExperiences: Object.fromEntries(
+      Object.entries(prev.skillExperiences).filter(([skill]) => skill !== skillToRemove)
+    ),
+    skillEducation: Object.fromEntries(
+      Object.entries(prev.skillEducation).filter(([skill]) => skill !== skillToRemove)
+    )
+  }));
+};
+
+const removeCompetentialSkill = (skillToRemove: string) => {
+  setFormData(prev => ({
+    ...prev,
+    competentialSkills: prev.competentialSkills.filter(skill => skill !== skillToRemove),
+    skillExperiences: Object.fromEntries(
+      Object.entries(prev.skillExperiences).filter(([skill]) => skill !== skillToRemove)
+    ),
+    skillEducation: Object.fromEntries(
+      Object.entries(prev.skillEducation).filter(([skill]) => skill !== skillToRemove)
+    )
+  }));
+};
+
+
+
+const detectSkillsInText = (text: string): string[] => {
+  const detectedSkills: string[] = [];
+  const lowerText = text.toLowerCase();
+  
+  // Check both technical and competential skills
+  [...TECHNICAL_SKILLS, ...COMPETENTIAL_SKILLS].forEach(skill => {
+    const skillLower = skill.toLowerCase();
+    if (lowerText.includes(skillLower)) {
+      detectedSkills.push(skill);
+    }
+  });
+  
+  return detectedSkills;
+};
+
+// Function to update skill relationships when education changes
+const updateSkillEducationRelationships = () => {
+  const newSkillEducation: { [skill: string]: number[] } = {};
+  
+  formData.education.forEach((edu, eduIndex) => {
+    const allEducationText = `${edu.place} ${edu.diploma}`.toLowerCase();
+    
+    // Check technical skills
+    formData.technicalSkills.forEach(skill => {
+      if (skill.trim() === '') return;
+      const skillLower = skill.toLowerCase();
+      if (allEducationText.includes(skillLower)) {
+        if (!newSkillEducation[skill]) {
+          newSkillEducation[skill] = [];
+        }
+        if (!newSkillEducation[skill].includes(eduIndex)) {
+          newSkillEducation[skill].push(eduIndex);
+        }
+      }
+    });
+    
+    // Check competential skills
+    formData.competentialSkills.forEach(skill => {
+      if (skill.trim() === '') return;
+      const skillLower = skill.toLowerCase();
+      if (allEducationText.includes(skillLower)) {
+        if (!newSkillEducation[skill]) {
+          newSkillEducation[skill] = [];
+        }
+        if (!newSkillEducation[skill].includes(eduIndex)) {
+          newSkillEducation[skill].push(eduIndex);
+        }
+      }
+    });
+  });
+  
+  setFormData(prev => ({
+    ...prev,
+    skillEducation: newSkillEducation
+  }));
+};
+// Function to update skill relationships when experience changes
+const updateSkillExperienceRelationships = () => {
+  const newSkillExperiences: { [skill: string]: number[] } = {};
+  
+  formData.experience.forEach((exp, expIndex) => {
+    const allExperienceText = `${exp.company} ${exp.jobTitle} ${exp.description} ${exp.achievements}`.toLowerCase();
+    
+    // Check technical skills
+    formData.technicalSkills.forEach(skill => {
+      if (skill.trim() === '') return;
+      const skillLower = skill.toLowerCase();
+      if (allExperienceText.includes(skillLower)) {
+        if (!newSkillExperiences[skill]) {
+          newSkillExperiences[skill] = [];
+        }
+        if (!newSkillExperiences[skill].includes(expIndex)) {
+          newSkillExperiences[skill].push(expIndex);
+        }
+      }
+    });
+    
+    // Check competential skills
+    formData.competentialSkills.forEach(skill => {
+      if (skill.trim() === '') return;
+      const skillLower = skill.toLowerCase();
+      if (allExperienceText.includes(skillLower)) {
+        if (!newSkillExperiences[skill]) {
+          newSkillExperiences[skill] = [];
+        }
+        if (!newSkillExperiences[skill].includes(expIndex)) {
+          newSkillExperiences[skill].push(expIndex);
+        }
+      }
+    });
+  });
+  
+  setFormData(prev => ({
+    ...prev,
+    skillExperiences: newSkillExperiences
+  }));
+};
+
+// Function to update all skill relationships
+const updateAllSkillRelationships = () => {
+  updateSkillEducationRelationships();
+  updateSkillExperienceRelationships();
+};
+
+  // Handler for skill input change (for step 4)
+  const handleTechnicalSkillInputChange = (value: string) => {
+  setTechnicalSkillInput(value);
+
+  if (value.trim().length > 0) {
+    const searchTerm = value.toLowerCase();
+    const filtered = TECHNICAL_SKILLS
+      .filter(skill =>
+        skill.toLowerCase().includes(searchTerm) &&
+        !formData.technicalSkills.some(existingSkill => existingSkill.toLowerCase() === skill.toLowerCase())
+      )
+      .sort((a, b) => {
+        const aLower = a.toLowerCase();
+        const bLower = b.toLowerCase();
+
+        if (aLower === searchTerm) return -1;
+        if (bLower === searchTerm) return 1;
+        if (aLower.startsWith(searchTerm) && !bLower.startsWith(searchTerm)) return -1;
+        if (bLower.startsWith(searchTerm) && !aLower.startsWith(searchTerm)) return 1;
+        return a.localeCompare(b);
+      })
+      .slice(0, 8);
+
+    setTechnicalSkillSuggestions({ ...technicalSkillSuggestions, 0: filtered });
+  } else {
+    setTechnicalSkillSuggestions(prev => {
+      const newSuggestions = { ...prev };
+      delete newSuggestions[0];
+      return newSuggestions;
+    });
+  }
+};
+
+const handleCompetentialSkillInputChange = (value: string) => {
+  setCompetentialSkillInput(value);
+
+  if (value.trim().length > 0) {
+    const searchTerm = value.toLowerCase();
+    const filtered = COMPETENTIAL_SKILLS
+      .filter(skill =>
+        skill.toLowerCase().includes(searchTerm) &&
+        !formData.competentialSkills.some(existingSkill => existingSkill.toLowerCase() === skill.toLowerCase())
+      )
+      .sort((a, b) => {
+        const aLower = a.toLowerCase();
+        const bLower = b.toLowerCase();
+
+        if (aLower === searchTerm) return -1;
+        if (bLower === searchTerm) return 1;
+        if (aLower.startsWith(searchTerm) && !bLower.startsWith(searchTerm)) return -1;
+        if (bLower.startsWith(searchTerm) && !aLower.startsWith(searchTerm)) return 1;
+        return a.localeCompare(b);
+      })
+      .slice(0, 8);
+
+    setCompetentialSkillSuggestions({ ...competentialSkillSuggestions, 0: filtered });
+  } else {
+    setCompetentialSkillSuggestions(prev => {
+      const newSuggestions = { ...prev };
+      delete newSuggestions[0];
+      return newSuggestions;
+    });
+  }
+};
 
   const steps = [
     { number: 1, title: 'Personal Information' },
@@ -336,6 +756,13 @@ const MultiStepForm: React.FC = () => {
     }
   }, [searchParams]);
 
+useEffect(() => {
+  if ((formData.technicalSkills.length > 0 || formData.competentialSkills.length > 0) && 
+      (formData.education.length > 0 || formData.experience.length > 0)) {
+    updateAllSkillRelationships();
+  }
+}, [formData.technicalSkills, formData.competentialSkills, formData.education, formData.experience]);
+
   // Convert form data to backend API format
   const convertToApplicationData = (): ApplicationData => {
     return {
@@ -363,7 +790,10 @@ const MultiStepForm: React.FC = () => {
         major_achievements: exp.achievements,
         location: ''
       })),
-      skills: formData.skills.filter(skill => skill.trim() !== ''),
+     skills: [
+  ...formData.technicalSkills.filter(skill => skill.trim() !== ''),
+  ...formData.competentialSkills.filter(skill => skill.trim() !== '')
+],
       practical_experience: formData.practicalExperience,
       certifications: formData.certifications
         .filter(cert => cert.title.trim() !== '')
@@ -498,114 +928,94 @@ const MultiStepForm: React.FC = () => {
     }));
   };
 
-  const updateEducationField = (index: number, field: keyof Education, value: string) => {
-    const updated = [...formData.education];
+ 
+const updateEducationField = (index: number, field: keyof Education, value: string) => {
+  const updated = [...formData.education];
+  // Ensure correct type for 'certificate' field
+  if (field === 'certificate') {
+    updated[index][field] = value as unknown as File | null;
+  } else {
     updated[index][field] = value;
-    setFormData({ ...formData, education: updated });
-  };
+  }
+  setFormData({ ...formData, education: updated });
+  
+  // Update skill relationships after education changes
+  setTimeout(() => {
+    updateSkillEducationRelationships();
+  }, 100);
+};
 
-  const updateCertificationField = (index: number, field: keyof Certification, value: string) => {
-    const updated = [...formData.certifications];
-    updated[index][field] = value;
-    setFormData({ ...formData, certifications: updated });
-  };
+ const updateCertificationField = (index: number, field: keyof Certification, value: string | File | null) => {
+  const updated = [...formData.certifications];
+  if (field === 'certificate') {
+    updated[index][field] = value as File | null;
+  } else {
+    updated[index][field] = value as string;
+  }
+  setFormData({ ...formData, certifications: updated });
+};
 
-  const updateExperienceField = (index: number, field: keyof Experience, value: string | boolean) => {
-    const updated = [...formData.experience];
-    (updated[index] as any)[field] = value;
-    setFormData({ ...formData, experience: updated });
-  };
+ const updateExperienceField = (index: number, field: keyof Experience, value: string | boolean) => {
+  const updated = [...formData.experience];
+  (updated[index] as any)[field] = value;
+  setFormData({ ...formData, experience: updated });
+  
+  // Update skill relationships after experience changes
+  setTimeout(() => {
+    updateSkillExperienceRelationships();
+  }, 100);
+};
 
-  const updateLanguageField = (index: number, field: keyof Language, value: string) => {
-    const updated = [...formData.languages];
-    updated[index][field] = value;
-    setFormData({ ...formData, languages: updated });
+const updateLanguageField = (index: number, field: keyof Language, value: string | File | null) => {
+  const updated = [...formData.languages];
+  
+  if (field === 'certificate') {
+    updated[index][field] = value as File | null;
+  } else {
+    updated[index][field] = value as string;
+  }
+  
+  setFormData({ ...formData, languages: updated });
+  
+  // Update suggestions based on the input for language field only
+  if (field === 'language' && typeof value === 'string' && value.trim().length > 0) {
+    const filteredLanguages = PREDEFINED_LANGUAGES.filter(lang =>
+      lang.toLowerCase().includes(value.toLowerCase())
+    ).sort((a, b) => {
+      const aLower = a.toLowerCase();
+      const bLower = b.toLowerCase();
+      const valueLower = value.toLowerCase();
+      
+      // Exact match first
+      if (aLower === valueLower) return -1;
+      if (bLower === valueLower) return 1;
+      
+      // Starts with match second
+      if (aLower.startsWith(valueLower) && !bLower.startsWith(valueLower)) return -1;
+      if (bLower.startsWith(valueLower) && !aLower.startsWith(valueLower)) return 1;
+      
+      // Then alphabetical
+      return a.localeCompare(b);
+    }).slice(0, 8); // Limit to 8 suggestions
     
-    // Update suggestions based on the input for language field only
-    if (field === 'language' && value.trim().length > 0) {
-      const filteredLanguages = PREDEFINED_LANGUAGES.filter(lang =>
-        lang.toLowerCase().includes(value.toLowerCase())
-      ).sort((a, b) => {
-        const aLower = a.toLowerCase();
-        const bLower = b.toLowerCase();
-        const valueLower = value.toLowerCase();
-        
-        // Exact match first
-        if (aLower === valueLower) return -1;
-        if (bLower === valueLower) return 1;
-        
-        // Starts with match second
-        if (aLower.startsWith(valueLower) && !bLower.startsWith(valueLower)) return -1;
-        if (bLower.startsWith(valueLower) && !aLower.startsWith(valueLower)) return 1;
-        
-        // Then alphabetical
-        return a.localeCompare(b);
-      }).slice(0, 8); // Limit to 8 suggestions
-      
-      setLanguageSuggestions({ ...languageSuggestions, [index]: filteredLanguages });
-      setActiveLanguageIndex(index);
-    } else if (field === 'language') {
-      // Clear suggestions if input is empty
-      const newSuggestions = { ...languageSuggestions };
-      delete newSuggestions[index];
-      setLanguageSuggestions(newSuggestions);
-      setActiveLanguageIndex(null);
-    }
-  };
+    setLanguageSuggestions({ ...languageSuggestions, [index]: filteredLanguages });
+    setActiveLanguageIndex(index);
+  } else if (field === 'language') {
+    // Clear suggestions if input is empty
+    const newSuggestions = { ...languageSuggestions };
+    delete newSuggestions[index];
+    setLanguageSuggestions(newSuggestions);
+    setActiveLanguageIndex(null);
+  }
+};
 
-  const updateSkill = (index: number, value: string) => {
-    const updated = [...formData.skills];
-    updated[index] = value;
-    setFormData({ ...formData, skills: updated });
-    
-    // Update suggestions based on the input
-    if (value.trim().length > 0) {
-      const searchTerm = value.toLowerCase();
-      
-      // Filter and sort suggestions: exact matches first, then starts with, then contains
-      const filtered = PREDEFINED_SKILLS
-        .filter(skill => {
-          const skillLower = skill.toLowerCase();
-          return skillLower.includes(searchTerm) &&
-                 !formData.skills.some(existingSkill => 
-                   existingSkill.toLowerCase() === skillLower
-                 );
-        })
-        .sort((a, b) => {
-          const aLower = a.toLowerCase();
-          const bLower = b.toLowerCase();
-          
-          // Exact match first
-          if (aLower === searchTerm) return -1;
-          if (bLower === searchTerm) return 1;
-          
-          // Starts with match second
-          if (aLower.startsWith(searchTerm) && !bLower.startsWith(searchTerm)) return -1;
-          if (bLower.startsWith(searchTerm) && !aLower.startsWith(searchTerm)) return 1;
-          
-          // Alphabetical for the rest
-          return a.localeCompare(b);
-        })
-        .slice(0, 8); // Limit to 8 suggestions
-      
-      setSkillSuggestions(prev => ({
-        ...prev,
-        [index]: filtered
-      }));
-    } else {
-      setSkillSuggestions(prev => {
-        const newSuggestions = { ...prev };
-        delete newSuggestions[index];
-        return newSuggestions;
-      });
-    }
-  };
+ 
 
   // Function to handle suggestion selection
   const selectSkillSuggestion = (index: number, skill: string) => {
-    const updated = [...formData.skills];
+    const updated = [...formData.technicalSkills];
     updated[index] = skill;
-    setFormData({ ...formData, skills: updated });
+    setFormData({ ...formData, technicalSkills: updated });
     
     // Clear suggestions for this index
     setSkillSuggestions(prev => {
@@ -701,10 +1111,12 @@ const MultiStepForm: React.FC = () => {
           formData.practicalExperience.trim() !== ''
         );
       case 4:
-        return (
-          formData.skills.length > 0 &&
-          formData.skills.every(skill => skill.trim() !== '')
-        );
+  return (
+    formData.technicalSkills.length > 0 &&
+    formData.technicalSkills.every(skill => skill.trim() !== '') &&
+    formData.competentialSkills.length > 0 &&
+    formData.competentialSkills.every(skill => skill.trim() !== '')
+  );
       case 5:
         return (
           formData.languages.length > 0 &&
@@ -777,20 +1189,22 @@ const MultiStepForm: React.FC = () => {
         ],
         
         // Certifications
-        certifications: [
-          { 
-            title: "React Developer Certification", 
-            issuer: "Coursera", 
-            date: "2020-06-01", 
-            url: "https://coursera.org/cert/react-dev" 
-          },
-          { 
-            title: "AWS Cloud Practitioner", 
-            issuer: "Amazon Web Services", 
-            date: "2021-03-15", 
-            url: "https://aws.amazon.com/certification/" 
-          }
-        ],
+      certifications: [
+        { 
+          title: "React Developer Certification", 
+          issuer: "Coursera", 
+          date: "2020-06-01", 
+          url: "https://coursera.org/cert/react-dev",
+          certificate: null // Will be populated if user uploads
+        },
+        { 
+          title: "AWS Cloud Practitioner", 
+          issuer: "Amazon Web Services", 
+          date: "2021-03-15", 
+          url: "https://aws.amazon.com/certification/",
+          certificate: null // Will be populated if user uploads
+        }
+      ],
         
         // Professional Experience
         experience: [
@@ -815,15 +1229,35 @@ const MultiStepForm: React.FC = () => {
         ],
         
         // Skills
-        skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "PHP", "MySQL", "MongoDB", "AWS", "Git"],
+        technicalSkills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "AWS", "Git", "MySQL", "MongoDB"],
+competentialSkills: ["Leadership", "Communication", "Problem Solving", "Team Management", "Project Management"],
         
-        // Languages
-        languages: [
-          { language: "Arabic", level: "Native" },
-          { language: "French", level: "Advanced" },
-          { language: "English", level: "Proficient" },
-          { language: "Spanish", level: "Intermediate" }
-        ],
+       languages: [
+  { 
+    language: "Arabic", 
+    level: "Native", 
+    learnedFrom: "Family/Native", 
+    certificate: null 
+  },
+  { 
+    language: "French", 
+    level: "Advanced", 
+    learnedFrom: "School/University", 
+    certificate: null 
+  },
+  { 
+    language: "English", 
+    level: "Proficient", 
+    learnedFrom: "Language Institute", 
+    certificate: null 
+  },
+  { 
+    language: "Spanish", 
+    level: "Intermediate", 
+    learnedFrom: "Online Course", 
+    certificate: null 
+  }
+],
         
         // Practical Experience
         practicalExperience: "Contributed to several open-source projects including a recruitment portal system. Developed personal projects using modern web technologies. Participated in hackathons and coding competitions. Experience with both frontend and backend development, database design, and cloud deployment.",
@@ -850,7 +1284,18 @@ const MultiStepForm: React.FC = () => {
             note: "Former supervisor who can provide insights on work ethic and problem-solving skills." 
           }
         ],
-        
+         // Initialize skill relationships
+        skillExperiences: {
+        "JavaScript": [0, 1], // Both experience entries mention JavaScript
+        "React": [0], // First experience mentions React
+        "Node.js": [0], // First experience mentions Node.js
+        "PHP": [1], // Second experience mentions PHP
+        "MySQL": [1], // Second experience mentions MySQL
+      },
+      skillEducation: {
+        "JavaScript": [0], // Computer Science education related to JavaScript
+        "Python": [0], // Computer Science education covers Python
+      },
         // Keep the uploaded CV but leave video empty as requested
         cv: file,
         videoFile: null,
@@ -948,84 +1393,274 @@ const MultiStepForm: React.FC = () => {
         );
 
       case 2:
-        return (
-          <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-semibold text-teal-600">Education & Professional Certifications</h2>
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" /> Education
-                </h3>
-                <button
-                  onClick={() => setFormData((prev) => ({ ...prev, education: [...prev.education, { place: '', diploma: '', startDate: '', endDate: '' }] }))}
-                  className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white text-sm font-medium rounded-lg transition"
-                >
-                  <Plus className="w-4 h-4 mr-2" /> Add
-                </button>
-              </div>
-              {formData.education.length === 0 && (
-                <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
-                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-gray-500">No education entries added yet. Click "Add" to start.</p>
-                </div>
-              )}
-              {formData.education.map((edu, index) => (
-                <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
-                  <InputField label="School" id={`school-${index}` as keyof FormData} value={edu.place} placeholder="School/University" onChange={(_, value) => updateEducationField(index, 'place', value)} />
-                  <InputField label="Diploma" id={`diploma-${index}` as keyof FormData} value={edu.diploma} placeholder="e.g. Bachelor's, Master's" onChange={(_, value) => updateEducationField(index, 'diploma', value)} />
-                  <InputField label="Start Date" id={`startDate-${index}` as keyof FormData} type="date" value={edu.startDate} onChange={(_, value) => updateEducationField(index, 'startDate', value)} />
-                  <InputField label="End Date" id={`endDate-${index}` as keyof FormData} type="date" value={edu.endDate} onChange={(_, value) => updateEducationField(index, 'endDate', value)} />
-                  {formData.education.length > 1 && (
-                    <button
-                      onClick={() => setFormData({ ...formData, education: formData.education.filter((_, i) => i !== index) })}
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
-                      title="Remove education entry"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="border-t border-gray-200 pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" />Professional Certifications
-                </h3>
-                <button
-                  onClick={() => setFormData((prev) => ({ ...prev, certifications: [...prev.certifications, { title: '', issuer: '', date: '', url: '' }] }))}
-                  className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
-                >
-                  <Plus className="w-4 h-4 mr-2" /> Add
-                </button>
-              </div>
-              {formData.certifications.length === 0 && (
-                <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
-                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-gray-500">No certifications added yet. Click "Add" to start.</p>
-                </div>
-              )}
-              {formData.certifications.map((cert, index) => (
-                <div key={index} className="group relative grid md:grid-cols-1 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
-                  <InputField label="Certificate Title" id={`cert-title-${index}` as keyof FormData} value={cert.title} placeholder="e.g. React Developer" onChange={(_, value) => updateCertificationField(index, 'title', value)} />
-                  <InputField label="Issuing Organization" id={`cert-issuer-${index}` as keyof FormData} value={cert.issuer} placeholder="e.g. Coursera" onChange={(_, value) => updateCertificationField(index, 'issuer', value)} />
-                  <InputField label="Date Received" id={`cert-date-${index}` as keyof FormData} type="date" value={cert.date} onChange={(_, value) => updateCertificationField(index, 'date', value)} />
-                  {/* <InputField label="Certificate URL (Optional)" id={`cert-url-${index}` as keyof FormData} value={cert.url || ''} placeholder="e.g. https://coursera.org/cert/..." onChange={(_, value) => updateCertificationField(index, 'url', value)} /> */}
-                  {formData.certifications.length > 1 && (
-                    <button
-                      onClick={() => setFormData({ ...formData, certifications: formData.certifications.filter((_, i) => i !== index) })}
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
-                      title="Remove certification entry"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
+  return (
+    <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
+      <h2 className="text-2xl font-semibold text-teal-600">Education & Professional Certifications</h2>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
+            <BookOpen className="w-5 h-5" /> Education
+          </h3>
+          <button
+            onClick={() => setFormData((prev) => ({ ...prev, education: [...prev.education, { place: '', diploma: '', startDate: '', endDate: '', certificate: null }] }))}
+            className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white text-sm font-medium rounded-lg transition"
+          >
+            <Plus className="w-4 h-4 mr-2" /> Add Education
+          </button>
+        </div>
+        {formData.education.length === 0 && (
+          <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
+            <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+            <p className="text-gray-500">No education entries added yet. Click "Add Education" to start.</p>
           </div>
-        );
+        )}
+        {formData.education.map((edu, index) => (
+          <div key={index} className="group relative p-6 rounded-lg border bg-white shadow-sm mb-6">
+            {/* Education Information Grid */}
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <InputField 
+                label="School/University" 
+                id={`school-${index}` as keyof FormData} 
+                value={edu.place} 
+                placeholder="Institution name" 
+                onChange={(_, value) => updateEducationField(index, 'place', value)} 
+              />
+              <InputField 
+                label="Diploma/Degree" 
+                id={`diploma-${index}` as keyof FormData} 
+                value={edu.diploma} 
+                placeholder="e.g. Bachelor's, Master's, PhD" 
+                onChange={(_, value) => updateEducationField(index, 'diploma', value)} 
+              />
+              <InputField 
+                label="Start Date" 
+                id={`startDate-${index}` as keyof FormData} 
+                type="date" 
+                value={edu.startDate} 
+                onChange={(_, value) => updateEducationField(index, 'startDate', value)} 
+              />
+              <InputField 
+                label="End Date" 
+                id={`endDate-${index}` as keyof FormData} 
+                type="date" 
+                value={edu.endDate} 
+                onChange={(_, value) => updateEducationField(index, 'endDate', value)} 
+              />
+            </div>
 
+            {/* Certificate Upload Section */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                <Download className="w-4 h-4 text-teal-600" />
+                Education Certificate/Diploma (Optional)
+              </h4>
+              
+              <div className="flex items-center gap-4">
+                {/* Upload Button */}
+                <label className="cursor-pointer flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition">
+                  <Download className="w-4 h-4 mr-2" />
+                  {edu.certificate ? 'Change Certificate' : 'Upload Certificate'}
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const updated = [...formData.education];
+                        updated[index].certificate = file;
+                        setFormData({ ...formData, education: updated });
+                      }
+                    }}
+                  />
+                </label>
+
+                {/* File Info Display */}
+                {edu.certificate && (
+                  <div className="flex items-center gap-2 flex-1">
+                    <div className="flex items-center gap-2 px-3 py-2 bg-teal-50 border border-teal-200 rounded-lg text-sm">
+                      <FileText className="w-4 h-4 text-teal-600" />
+                      <span className="text-teal-700 font-medium truncate max-w-[200px]">
+                        {edu.certificate.name}
+                      </span>
+                      <span className="text-teal-600 text-xs">
+                        ({(edu.certificate.size / (1024 * 1024)).toFixed(2)} MB)
+                      </span>
+                    </div>
+                    
+                    {/* Remove Certificate Button */}
+                    <button
+                      onClick={() => {
+                        const updated = [...formData.education];
+                        updated[index].certificate = null;
+                        setFormData({ ...formData, education: updated });
+                      }}
+                      className="text-red-500 hover:text-red-700 p-1 rounded transition"
+                      title="Remove certificate"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* File Format Info */}
+              <p className="text-xs text-gray-500 mt-2">
+                Accepted formats: PDF, JPG, PNG, DOC, DOCX (Max: 10MB)
+              </p>
+            </div>
+
+            {/* Remove Education Entry Button */}
+            {formData.education.length > 1 && (
+              <button
+                onClick={() => setFormData({ 
+                  ...formData, 
+                  education: formData.education.filter((_, i) => i !== index) 
+                })}
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
+                title="Remove education entry"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Professional Certifications Section (unchanged) */}
+     <div className="border-t border-gray-200 pt-6">
+  <div className="flex items-center justify-between mb-4">
+    <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
+      <BookOpen className="w-5 h-5" />
+      Professional Certifications
+    </h3>
+    <button
+      onClick={() => setFormData((prev) => ({ ...prev, certifications: [...prev.certifications, { title: '', issuer: '', date: '', url: '', certificate: null }] }))}
+      className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
+    >
+      <Plus className="w-4 h-4 mr-2" /> Add Certification
+    </button>
+  </div>
+  {formData.certifications.length === 0 && (
+    <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
+      <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+      <p className="text-gray-500">No certifications added yet. Click "Add Certification" to start.</p>
+    </div>
+  )}
+  {formData.certifications.map((cert, index) => (
+    <div key={index} className="group relative p-6 rounded-lg border bg-white shadow-sm mb-6">
+      {/* Certification Information Grid */}
+      <div className="grid md:grid-cols-2 gap-4 mb-4">
+        <InputField 
+          label="Certificate Title" 
+          id={`cert-title-${index}` as keyof FormData} 
+          value={cert.title} 
+          placeholder="e.g. React Developer Certification" 
+          onChange={(_, value) => updateCertificationField(index, 'title', value)} 
+        />
+        <InputField 
+          label="Issuing Organization" 
+          id={`cert-issuer-${index}` as keyof FormData} 
+          value={cert.issuer} 
+          placeholder="e.g. Coursera, Google, Microsoft" 
+          onChange={(_, value) => updateCertificationField(index, 'issuer', value)} 
+        />
+        <InputField 
+          label="Date Received" 
+          id={`cert-date-${index}` as keyof FormData} 
+          type="date" 
+          value={cert.date} 
+          onChange={(_, value) => updateCertificationField(index, 'date', value)} 
+        />
+        <InputField 
+          label="Certificate URL (Optional)" 
+          id={`cert-url-${index}` as keyof FormData} 
+          value={cert.url || ''} 
+          placeholder="e.g. https://coursera.org/verify/123456" 
+          onChange={(_, value) => updateCertificationField(index, 'url', value)} 
+        />
+      </div>
+
+      {/* Certificate Upload Section */}
+      <div className="border-t pt-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+          <Download className="w-4 h-4 text-teal-600" />
+          Certificate File (Optional)
+        </h4>
+        
+        <div className="flex items-center gap-4">
+          {/* Upload Button */}
+          <label className="cursor-pointer flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition">
+            <Download className="w-4 h-4 mr-2" />
+            {cert.certificate ? 'Change Certificate' : 'Upload Certificate'}
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const updated = [...formData.certifications];
+                  updated[index].certificate = file;
+                  setFormData({ ...formData, certifications: updated });
+                }
+              }}
+            />
+          </label>
+
+          {/* File Info Display */}
+          {cert.certificate && (
+            <div className="flex items-center gap-2 flex-1">
+              <div className="flex items-center gap-2 px-3 py-2 bg-teal-50 border border-teal-200 rounded-lg text-sm">
+                <FileText className="w-4 h-4 text-teal-600" />
+                <span className="text-teal-700 font-medium truncate max-w-[200px]">
+                  {cert.certificate.name}
+                </span>
+                <span className="text-teal-600 text-xs">
+                  ({(cert.certificate.size / (1024 * 1024)).toFixed(2)} MB)
+                </span>
+              </div>
+              
+              {/* Remove Certificate Button */}
+              <button
+                onClick={() => {
+                  const updated = [...formData.certifications];
+                  updated[index].certificate = null;
+                  setFormData({ ...formData, certifications: updated });
+                }}
+                className="text-red-500 hover:text-red-700 p-1 rounded transition"
+                title="Remove certificate"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* File Format Info */}
+        <p className="text-xs text-gray-500 mt-2">
+          Accepted formats: PDF, JPG, PNG, DOC, DOCX (Max: 10MB)
+        </p>
+      </div>
+
+      {/* Remove Certification Entry Button */}
+      {formData.certifications.length > 1 && (
+        <button
+          onClick={() => setFormData({ 
+            ...formData, 
+            certifications: formData.certifications.filter((_, i) => i !== index) 
+          })}
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
+          title="Remove certification entry"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      )}
+    </div>
+  ))}
+</div>
+    </div>
+  );
       case 3:
         return (
           <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
@@ -1127,242 +1762,414 @@ const MultiStepForm: React.FC = () => {
           </div>
         );
 
-      case 4:
-        return (
-          <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-semibold text-teal-600">Skills</h2>
+ case 4:
+  return (
+    <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
+      <h2 className="text-2xl font-semibold text-teal-600">Skills</h2>
 
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" /> Skills
-                </h3>
+      {/* Technical Skills Section */}
+      <div className="bg-white p-6 rounded-lg border shadow-sm">
+        <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
+          <Plus className="w-5 h-5" /> Technical Skills
+        </h3>
+        
+        {/* Technical Skill Input */}
+        <div className="relative mb-4">
+          <input
+            type="text"
+            value={technicalSkillInput}
+            onChange={(e) => handleTechnicalSkillInputChange(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400"
+            placeholder="Type a technical skill (e.g. JavaScript, Python, AWS...)"
+          />
+          
+          {/* Technical Skill Suggestions */}
+          {technicalSkillSuggestions[0] && technicalSkillSuggestions[0].length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+              {technicalSkillSuggestions[0].map((suggestion, suggestionIndex) => (
                 <button
-                  onClick={() => setFormData((prev) => ({ ...prev, skills: [...prev.skills, ''] }))}
-                  className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
+                  key={suggestionIndex}
+                  type="button"
+                  onClick={() => {
+                    setFormData(prev => ({
+                      ...prev,
+                      technicalSkills: [...prev.technicalSkills, suggestion]
+                    }));
+                    setTechnicalSkillInput('');
+                    setTechnicalSkillSuggestions(prev => {
+                      const newSuggestions = { ...prev };
+                      delete newSuggestions[0];
+                      return newSuggestions;
+                    });
+                    
+                    setTimeout(() => {
+                      updateAllSkillRelationships();
+                    }, 100);
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-teal-50 hover:text-teal-700 focus:bg-teal-50 focus:text-teal-700 focus:outline-none transition-colors"
                 >
-                  <Plus className="w-4 h-4 mr-2" /> Add
+                  <span className="font-medium">{suggestion}</span>
                 </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Technical Skills Display */}
+        <div className="space-y-4">
+          <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
+            <BookOpen className="w-4 h-4" />
+            Your Technical Skills ({formData.technicalSkills.filter(skill => skill.trim() !== '').length})
+          </h4>
+          
+          {formData.technicalSkills.filter(skill => skill.trim() !== '').length === 0 ? (
+            <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
+              <p className="text-sm">No technical skills added yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {formData.technicalSkills
+                .filter(skill => skill.trim() !== '')
+                .map((skill, index) => (
+                <SkillDisplay 
+                  key={`tech-${index}`}
+                  skill={skill}
+                  onRemove={() => removeTechnicalSkill(skill)}
+                  formData={formData}
+                  setFormData={setFormData}
+                  skillType="technical"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Competential Skills Section */}
+      <div className="bg-white p-6 rounded-lg border shadow-sm">
+        <h3 className="text-lg font-medium text-teal-700 mb-4 flex items-center gap-2">
+          <Plus className="w-5 h-5" /> Competential Skills
+        </h3>
+        
+        {/* Competential Skill Input */}
+        <div className="relative mb-4">
+          <input
+            type="text"
+            value={competentialSkillInput}
+            onChange={(e) => handleCompetentialSkillInputChange(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm placeholder-gray-400"
+            placeholder="Type a competential skill (e.g. Leadership, Communication, Problem Solving...)"
+          />
+          
+          {/* Competential Skill Suggestions */}
+          {competentialSkillSuggestions[0] && competentialSkillSuggestions[0].length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+              {competentialSkillSuggestions[0].map((suggestion, suggestionIndex) => (
+                <button
+                  key={suggestionIndex}
+                  type="button"
+                  onClick={() => {
+                    setFormData(prev => ({
+                      ...prev,
+                      competentialSkills: [...prev.competentialSkills, suggestion]
+                    }));
+                    setCompetentialSkillInput('');
+                    setCompetentialSkillSuggestions(prev => {
+                      const newSuggestions = { ...prev };
+                      delete newSuggestions[0];
+                      return newSuggestions;
+                    });
+                    
+                    setTimeout(() => {
+                      updateAllSkillRelationships();
+                    }, 100);
+                  }}
+                  className="w-full text-left px-4 py-2 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 focus:outline-none transition-colors"
+                >
+                  <span className="font-medium">{suggestion}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Competential Skills Display */}
+        <div className="space-y-4">
+          <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
+            <BookOpen className="w-4 h-4" />
+            Your Competential Skills ({formData.competentialSkills.filter(skill => skill.trim() !== '').length})
+          </h4>
+          
+          {formData.competentialSkills.filter(skill => skill.trim() !== '').length === 0 ? (
+            <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg">
+              <p className="text-sm">No competential skills added yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {formData.competentialSkills
+                .filter(skill => skill.trim() !== '')
+                .map((skill, index) => (
+                <SkillDisplay 
+                  key={`comp-${index}`}
+                  skill={skill}
+                  onRemove={() => removeCompetentialSkill(skill)}
+                  formData={formData}
+                  setFormData={setFormData}
+                  skillType="competential"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+case 5:
+  return (
+    <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
+      <h2 className="text-2xl font-semibold text-teal-600">Languages</h2>
+
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
+            <BookOpen className="w-5 h-5" /> Languages
+          </h3>
+          <button
+            onClick={() => setFormData((prev) => ({ 
+              ...prev, 
+              languages: [...prev.languages, { language: '', level: '', learnedFrom: '', certificate: null }] 
+            }))}
+            className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
+          >
+            <Plus className="w-4 h-4 mr-2" /> Add Language
+          </button>
+        </div>
+        
+        {formData.languages.length === 0 && (
+          <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
+            <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+            <p className="text-gray-500">No languages added yet. Click "Add Language" to start.</p>
+          </div>
+        )}
+        
+        {formData.languages.map((language, index) => (
+          <div key={index} className="group relative p-6 rounded-lg border bg-white shadow-sm mb-6">
+            {/* Language Information Grid */}
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              {/* Language Input with Autocomplete */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={language.language}
+                  onChange={e => updateLanguageField(index, 'language', e.target.value)}
+                  onBlur={() => clearLanguageSuggestions(index)}
+                  className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer placeholder-transparent"
+                  placeholder="e.g. English, French, Arabic..."
+                />
+                <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+                  language.language 
+                    ? 'top-2 text-xs text-teal-600 font-medium' 
+                    : 'top-1/2 -translate-y-1/2 text-base text-gray-500'
+                } peer-focus:top-2 peer-focus:text-xs peer-focus:text-teal-600 peer-focus:font-medium`}>
+                  Language
+                </label>
+                {/* Language Autocomplete Suggestions */}
+                {languageSuggestions[index] && languageSuggestions[index].length > 0 && (
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    {languageSuggestions[index].map((suggestion, suggestionIndex) => (
+                      <button
+                        key={suggestionIndex}
+                        type="button"
+                        onClick={() => selectLanguageSuggestion(index, suggestion)}
+                        className="w-full text-left px-4 py-2 hover:bg-teal-50 hover:text-teal-700 focus:bg-teal-50 focus:text-teal-700 focus:outline-none transition-colors"
+                      >
+                        <span className="font-medium">{suggestion}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               
-              {formData.skills.filter(skill => skill.trim() !== '').length === 0 && (
-                <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
-                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-gray-500">No skills added yet. Click "Add" to start.</p>
-                </div>
-              )}
+              {/* Proficiency Level */}
+              <div className="relative">
+                <select
+                  value={language.level}
+                  onChange={e => updateLanguageField(index, 'level', e.target.value)}
+                  className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer"
+                >
+                  <option value=""></option>
+                  <option value="Beginner">Beginner (A1)</option>
+                  <option value="Elementary">Elementary (A2)</option>
+                  <option value="Intermediate">Intermediate (B1)</option>
+                  <option value="Upper Intermediate">Upper Intermediate (B2)</option>
+                  <option value="Advanced">Advanced (C1)</option>
+                  <option value="Proficient">Proficient (C2)</option>
+                  <option value="Native">Native</option>
+                </select>
+                <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+                  language.level 
+                    ? 'top-2 text-xs text-teal-600 font-medium' 
+                    : 'top-1/2 -translate-y-1/2 text-base text-gray-500'
+                } peer-focus:top-2 peer-focus:text-xs peer-focus:text-teal-600 peer-focus:font-medium`}>
+                  Proficiency Level
+                </label>
+              </div>
+
+              {/* Where Language Was Learned */}
+              <div className="relative">
+                <select
+                  value={language.learnedFrom || ''}
+                  onChange={e => updateLanguageField(index, 'learnedFrom', e.target.value)}
+                  className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer"
+                >
+                  <option value=""></option>
+                  {LANGUAGE_LEARNING_SOURCES.map((source) => (
+                    <option key={source} value={source}>{source}</option>
+                  ))}
+                </select>
+                <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${
+                  language.learnedFrom 
+                    ? 'top-2 text-xs text-teal-600 font-medium' 
+                    : 'top-1/2 -translate-y-1/2 text-base text-gray-500'
+                } peer-focus:top-2 peer-focus:text-xs peer-focus:text-teal-600 peer-focus:font-medium`}>
+                  Where Did You Learn It?
+                </label>
+              </div>
+
+              {/* Placeholder for grid alignment */}
+              <div></div>
+            </div>
+
+            {/* Language Certificate Upload Section */}
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                <Download className="w-4 h-4 text-teal-600" />
+                Language Certificate (Optional)
+              </h4>
               
-              {/* Skills Input Fields */}
-              {formData.skills.map((skill, index) => (
-                <div key={index} className="group relative mb-4">
-                  <div className="flex items-center gap-4 p-4 rounded-lg border bg-white shadow-sm">
-                    <div className="flex-1 relative">
-                      <input
-                        type="text"
-                        value={skill}
-                        onChange={e => updateSkill(index, e.target.value)}
-                        onBlur={() => clearSkillSuggestions(index)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm placeholder-gray-400"
-                        placeholder="e.g. JavaScript, React, Python..."
-                      />
-                      {/* Autocomplete Suggestions */}
-                      {skillSuggestions[index] && skillSuggestions[index].length > 0 && (
-                        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                          {skillSuggestions[index].map((suggestion, suggestionIndex) => (
-                            <button
-                              key={suggestionIndex}
-                              type="button"
-                              onClick={() => selectSkillSuggestion(index, suggestion)}
-                              className="w-full text-left px-4 py-2 hover:bg-teal-50 hover:text-teal-700 focus:bg-teal-50 focus:text-teal-700 focus:outline-none transition-colors"
-                            >
-                              <span className="font-medium">{suggestion}</span>
-                            </button>
-                          ))}
-                        </div>
+              <div className="flex items-center gap-4">
+                {/* Upload Button */}
+                <label className="cursor-pointer flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 transition">
+                  <Download className="w-4 h-4 mr-2" />
+                  {language.certificate ? 'Change Certificate' : 'Upload Certificate'}
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const updated = [...formData.languages];
+                        updated[index].certificate = file;
+                        setFormData({ ...formData, languages: updated });
+                      }
+                    }}
+                  />
+                </label>
+
+                {/* File Info Display */}
+                {language.certificate && (
+                  <div className="flex items-center gap-2 flex-1">
+                    <div className="flex items-center gap-2 px-3 py-2 bg-teal-50 border border-teal-200 rounded-lg text-sm">
+                      <FileText className="w-4 h-4 text-teal-600" />
+                      <span className="text-teal-700 font-medium truncate max-w-[200px]">
+                        {language.certificate.name}
+                      </span>
+                      <span className="text-teal-600 text-xs">
+                        ({(language.certificate.size / (1024 * 1024)).toFixed(2)} MB)
+                      </span>
+                    </div>
+                    
+                    {/* Remove Certificate Button */}
+                    <button
+                      onClick={() => {
+                        const updated = [...formData.languages];
+                        updated[index].certificate = null;
+                        setFormData({ ...formData, languages: updated });
+                      }}
+                      className="text-red-500 hover:text-red-700 p-1 rounded transition"
+                      title="Remove certificate"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* File Format Info */}
+              <p className="text-xs text-gray-500 mt-2">
+                Accepted formats: PDF, JPG, PNG, DOC, DOCX (Max: 10MB)
+              </p>
+            </div>
+            
+            {/* Remove Language Entry Button */}
+            {formData.languages.length > 1 && (
+              <button
+                onClick={() => setFormData({ 
+                  ...formData, 
+                  languages: formData.languages.filter((_, i) => i !== index) 
+                })}
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
+                title="Remove language entry"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+        ))}
+        
+        {/* Language Summary Badges */}
+        {formData.languages.filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '').length > 0 && (
+          <div className="bg-white p-4 rounded-lg border shadow-sm">
+            <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              Your Languages Summary
+            </h4>
+            <div className="space-y-2">
+              {formData.languages
+                .filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '')
+                .map((lang, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium">
+                        <span>{lang.language} - {lang.level}</span>
+                      </div>
+                      {lang.learnedFrom && (
+                        <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                          {lang.learnedFrom}
+                        </span>
+                      )}
+                      {lang.certificate && (
+                        <span className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded flex items-center gap-1">
+                          <FileText className="w-3 h-3" />
+                          Certified
+                        </span>
                       )}
                     </div>
-                    {formData.skills.length > 1 && (
-                      <button
-                        onClick={() => setFormData({ ...formData, skills: formData.skills.filter((_, i) => i !== index) })}
-                        className="opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200"
-                        title="Remove skill"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-              
-              {/* Skills Badges */}
-              {formData.skills.filter(skill => skill.trim() !== '').length > 0 && (
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" />
-                    Your Skills
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {formData.skills
-                      .filter(skill => skill.trim() !== '')
-                      .map((skill, index) => (
-                        <div
-                          key={index}
-                          className="inline-flex items-center gap-2 bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm"
-                        >
-                          <span>{skill}</span>
-                          <button
-                            onClick={() => {
-                              const newSkills = formData.skills.filter(s => s !== skill);
-                              if (newSkills.length === 0) newSkills.push('');
-                              setFormData({ ...formData, skills: newSkills });
-                            }}
-                            className="text-teal-600 hover:text-teal-800 transition-colors"
-                            title="Remove skill"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-
-      case 5:
-        return (
-          <div className="space-y-8 bg-gray-50 p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-semibold text-teal-600">Languages</h2>
-
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-teal-700 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" /> Languages
-                </h3>
-                <button
-                  onClick={() => setFormData((prev) => ({ ...prev, languages: [...prev.languages, { language: '', level: '' }] }))}
-                  className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-lg transition"
-                >
-                  <Plus className="w-4 h-4 mr-2" /> Add
-                </button>
-              </div>
-              
-              {formData.languages.length === 0 && (
-                <div className="text-center py-8 bg-white rounded-lg border shadow-sm">
-                  <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                  <p className="text-gray-500">No languages added yet. Click "Add" to start.</p>
-                </div>
-              )}
-              
-              {formData.languages.map((language, index) => (
-                <div key={index} className="group relative grid md:grid-cols-2 gap-4 p-4 rounded-lg border bg-white shadow-sm mb-4">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={language.language}
-                      onChange={e => updateLanguageField(index, 'language', e.target.value)}
-                      onBlur={() => clearLanguageSuggestions(index)}
-                      className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer placeholder-transparent"
-                      placeholder="e.g. English, French, Arabic..."
-                    />
-                    <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-                      language.language 
-                        ? 'top-2 text-xs text-teal-600 font-medium' 
-                        : 'top-1/2 -translate-y-1/2 text-base text-gray-500'
-                    } peer-focus:top-2 peer-focus:text-xs peer-focus:text-teal-600 peer-focus:font-medium`}>
-                      Language
-                    </label>
-                    {/* Language Autocomplete Suggestions */}
-                    {languageSuggestions[index] && languageSuggestions[index].length > 0 && (
-                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        {languageSuggestions[index].map((suggestion, suggestionIndex) => (
-                          <button
-                            key={suggestionIndex}
-                            type="button"
-                            onClick={() => selectLanguageSuggestion(index, suggestion)}
-                            className="w-full text-left px-4 py-2 hover:bg-teal-50 hover:text-teal-700 focus:bg-teal-50 focus:text-teal-700 focus:outline-none transition-colors"
-                          >
-                            <span className="font-medium">{suggestion}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="relative">
-                    <select
-                      value={language.level}
-                      onChange={e => updateLanguageField(index, 'level', e.target.value)}
-                      className="w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white shadow-sm peer"
-                    >
-                      <option value=""></option>
-                      <option value="Beginner">Beginner (A1)</option>
-                      <option value="Elementary">Elementary (A2)</option>
-                      <option value="Intermediate">Intermediate (B1)</option>
-                      <option value="Upper Intermediate">Upper Intermediate (B2)</option>
-                      <option value="Advanced">Advanced (C1)</option>
-                      <option value="Proficient">Proficient (C2)</option>
-                      <option value="Native">Native</option>
-                    </select>
-                    <label className={`absolute left-4 transition-all duration-200 pointer-events-none ${
-                      language.level 
-                        ? 'top-2 text-xs text-teal-600 font-medium' 
-                        : 'top-1/2 -translate-y-1/2 text-base text-gray-500'
-                    } peer-focus:top-2 peer-focus:text-xs peer-focus:text-teal-600 peer-focus:font-medium`}>
-                      Proficiency Level
-                    </label>
-                  </div>
-                  
-                  {formData.languages.length > 1 && (
                     <button
-                      onClick={() => setFormData({ ...formData, languages: formData.languages.filter((_, i) => i !== index) })}
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all duration-200 z-10"
-                      title="Remove language entry"
+                      onClick={() => {
+                        const newLanguages = formData.languages.filter(l => l !== lang);
+                        if (newLanguages.length === 0) {
+                          newLanguages.push({ language: '', level: '', learnedFrom: '', certificate: null });
+                        }
+                        setFormData({ ...formData, languages: newLanguages });
+                      }}
+                      className="text-red-500 hover:text-red-700 transition-colors p-1"
+                      title="Remove language"
                     >
-                      <X className="w-3 h-3" />
+                      <X className="w-4 h-4" />
                     </button>
-                  )}
-                </div>
-              ))}
-              
-              {/* Language Badges */}
-              {formData.languages.filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '').length > 0 && (
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" />
-                    Your Languages
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {formData.languages
-                      .filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '')
-                      .map((lang, index) => (
-                        <div
-                          key={index}
-                          className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                        >
-                          <span>{lang.language} - {lang.level}</span>
-                          <button
-                            onClick={() => {
-                              const newLanguages = formData.languages.filter(l => l !== lang);
-                              if (newLanguages.length === 0) newLanguages.push({ language: '', level: '' });
-                              setFormData({ ...formData, languages: newLanguages });
-                            }}
-                            className="text-blue-600 hover:text-blue-800 transition-colors"
-                            title="Remove language"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
                   </div>
-                </div>
-              )}
+                ))}
             </div>
           </div>
-        );
-
-      case 6:
+        )}
+      </div>
+    </div>
+  );
       case 6:
         return (
           <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-sm">
@@ -1714,36 +2521,69 @@ const MultiStepForm: React.FC = () => {
                   </ul>
                 )}
               </div>
-              <div>
-                <h3 className="text-lg font-medium text-teal-700 mb-3">Skills</h3>
-                {formData.skills.length === 0 ? (
-                  <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No skills provided.</div>
-                ) : (
-                  <ul className="flex flex-wrap gap-2 p-4 rounded-lg border bg-white shadow-sm">
-                    {formData.skills.map((skill, idx) => (
-                      <li key={idx} className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-teal-700 mb-3">Languages</h3>
-                {formData.languages.filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '').length === 0 ? (
-                  <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No languages provided.</div>
-                ) : (
-                  <ul className="flex flex-wrap gap-2 p-4 rounded-lg border bg-white shadow-sm">
-                    {formData.languages
-                      .filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '')
-                      .map((lang, idx) => (
-                        <li key={idx} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                          {lang.language} - {lang.level}
-                        </li>
-                      ))}
-                  </ul>
-                )}
-              </div>
+            <div>
+  <h3 className="text-lg font-medium text-teal-700 mb-3">Technical Skills</h3>
+  {formData.technicalSkills.filter(skill => skill.trim() !== '').length === 0 ? (
+    <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No technical skills provided.</div>
+  ) : (
+    <ul className="flex flex-wrap gap-2 p-4 rounded-lg border bg-white shadow-sm">
+      {formData.technicalSkills
+        .filter(skill => skill.trim() !== '')
+        .map((skill, idx) => (
+          <li key={idx} className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">
+            {skill}
+          </li>
+        ))}
+    </ul>
+  )}
+</div>
+<div>
+  <h3 className="text-lg font-medium text-teal-700 mb-3">Competential Skills</h3>
+  {formData.competentialSkills.filter(skill => skill.trim() !== '').length === 0 ? (
+    <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No competential skills provided.</div>
+  ) : (
+    <ul className="flex flex-wrap gap-2 p-4 rounded-lg border bg-white shadow-sm">
+      {formData.competentialSkills
+        .filter(skill => skill.trim() !== '')
+        .map((skill, idx) => (
+          <li key={idx} className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">
+            {skill}
+          </li>
+        ))}
+    </ul>
+  )}
+</div>
+            <div>
+  <h3 className="text-lg font-medium text-teal-700 mb-3">Languages</h3>
+  {formData.languages.filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '').length === 0 ? (
+    <div className="text-gray-500 p-4 rounded-lg border bg-white shadow-sm">No languages provided.</div>
+  ) : (
+    <div className="space-y-3 p-4 rounded-lg border bg-white shadow-sm">
+      {formData.languages
+        .filter(lang => lang.language.trim() !== '' && lang.level.trim() !== '')
+        .map((lang, idx) => (
+          <div key={idx} className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg">
+            <div className="flex items-center gap-3">
+              <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium">
+                {lang.language} - {lang.level}
+              </span>
+              {lang.learnedFrom && (
+                <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                  Learned from: {lang.learnedFrom}
+                </span>
+              )}
+              {lang.certificate && (
+                <span className="text-xs text-yellow-600 bg-yellow-100 px-2 py-1 rounded flex items-center gap-1">
+                  <FileText className="w-3 h-3" />
+                  Certificate: {lang.certificate.name}
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+    </div>
+  )}
+</div>
               <div>
                 <h3 className="text-lg font-medium text-teal-700 mb-3">Practical Experience</h3>
                 {formData.practicalExperience ? (

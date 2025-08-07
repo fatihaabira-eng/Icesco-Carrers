@@ -174,7 +174,6 @@ const allJobs = [
     skills: ["Leadership", "Teamwork", "Community Engagement"],
   },
 ];
-
 const businessUnits = [
   "Education",
   "Science & Technology",
