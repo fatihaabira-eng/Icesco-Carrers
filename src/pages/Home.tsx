@@ -159,8 +159,12 @@ export default function Home() {
     navigate("/about");
   };
   const handleProgramSelect = (programId: string) => {
-    navigate(`/opportunities`);
-  };
+  if (programId === "education") {
+    navigate("/opportunities?program=youth");
+  } else {
+    navigate("/opportunities");
+  }
+};
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
