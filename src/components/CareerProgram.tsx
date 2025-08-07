@@ -4,62 +4,60 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge"; // assuming you use this
-import { Button } from "@/components/ui/button"; // ✅ Corrected import
+import { Button } from "@/components/ui/button";
 import { GraduationCap, Lightbulb, Users } from "lucide-react";
 import HeroSection from "./HeroSection";
 
 const programs = [
   {
     id: "science",
-    title: "ICESCOs Positions",
+    title: "ICESCO Positions",
     description:
       "Fostering your career innovation to address global challenges and opportunities.",
     icon: Lightbulb,
-    color: "bg-green-500"
+    color: "bg-green-500",
   },
   {
-    id: "education",
-    title: " Youth Programs",
+    id: "youth",
+    title: "Youth Programs",
     description:
-      "Empowering young leaders through peacebuilding and professional development opportunities.Youth Peace Ambassador Program (YPA) / Youth Professionals Program (YPP).",
+      "Empowering young leaders through peacebuilding and professional development opportunities: Youth Peace Ambassador Program (YPA) / Youth Professionals Program (YPP).",
     icon: GraduationCap,
-    color: "bg-blue-500"
+    color: "bg-blue-500",
   },
-  
   {
-    id: "culture",
-    title: " Internship Program",
+    id: "internship",
+    title: "Internship Program",
     description:
-      "Preserving, promoting, and celebrating the rich cultural heritage and diversity of the Islamic civilization.",
+      "Preserving, promoting, and celebrating the rich cultural heritage and diversity of the Islamic civilization through hands-on internships.",
     icon: Users,
-    color: "bg-purple-500"
-  }
+    color: "bg-purple-500",
+  },
 ];
 
 export default function ProgramSelection() {
   const navigate = useNavigate();
 
   const handleProgramSelect = (programId: string) => {
-    navigate(`/opportunities`);
+    console.log(`Navigating to /opportunities?program=${programId}`); //
+    navigate(`/opportunities?program=${programId}`);
   };
 
   return (
     <div className="min-h-screen bg-background">
-        <HeroSection
-          title="Choose Your Program"
-          subtitle=" Select a program area to explore opportunities that align with your expertise and career goals"
-          background={{
-            type: "video",
-            src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4"
-          }}
-          showVideo={true}
-        />
+      <HeroSection
+        title="Start your journey at ICESCO"
+        subtitle=""
+        background={{
+          type: "video",
+          src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4",
+        }}
+        showVideo={true}
+      />
       {/* Program Cards Section */}
-      <section className=" bg-muted/30">
-
+      <section className="bg-muted/30">
         <div className="container mx-auto px-4 py-14">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {programs.map((program, index) => {
