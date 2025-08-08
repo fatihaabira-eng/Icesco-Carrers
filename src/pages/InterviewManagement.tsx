@@ -407,9 +407,7 @@ const InterviewManagement: React.FC = () => {
                         <TableCell className="font-normal text-gray-600 py-4">
                           
                           <div className="flex items-center gap-3">
-                            <Button size="icon" variant="ghost" className="text-primary hover:bg-blue-100">
-                              <Eye className="h-4 w-4" />
-                            </Button>
+                            
                             <Avatar className="h-10 w-10">
                               <AvatarImage src={interview.candidate.avatar} alt={interview.candidate.name} />
                               <AvatarFallback>
@@ -418,8 +416,10 @@ const InterviewManagement: React.FC = () => {
                             </Avatar>
                             <div>
                               <p className="text-sm text-gray-800">{interview.candidate.name}</p>
-                              <p className="text-xs text-gray-600">{interview.businessUnit}</p>
                             </div>
+                            <Button size="icon" variant="ghost" className="ml-auto text-primary hover:bg-blue-100">
+                              <Eye className="h-4 w-4" />
+                            </Button>
                           </div>
                         </TableCell>
                         <TableCell className="font-normal text-gray-600 py-4">
