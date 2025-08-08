@@ -379,7 +379,6 @@ const HRCandidates: React.FC = () => {
                   <TableHead className="font-bold text-gray-900">Years of Experience</TableHead>
                   <TableHead className="font-bold text-gray-900">Applied Date</TableHead>
                   <TableHead className="font-bold text-gray-900">Status</TableHead>
-                  <TableHead className="font-bold text-gray-900">Job Matching</TableHead>
                   <TableHead className="font-bold text-gray-900">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -436,11 +435,11 @@ const HRCandidates: React.FC = () => {
                             {stages.find(stage => stage.id === candidate.status)?.title}
                           </span>
                         </TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           <Badge className={`${getStatusColor(candidate.status)} bg-opacity-50`}>
                             {candidate.score}%
                           </Badge>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <div className="flex space-x-2">
                             <Button 

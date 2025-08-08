@@ -366,8 +366,8 @@ const InterviewManagement: React.FC = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Rounds</SelectItem>
-                      <SelectItem value="Engineering">Technical</SelectItem>
                       <SelectItem value="Marketing">HR</SelectItem>
+                      <SelectItem value="Engineering">Technical</SelectItem>
                       <SelectItem value="Education">Committee</SelectItem>
                     </SelectContent>
                   </Select>

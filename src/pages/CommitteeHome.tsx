@@ -78,6 +78,7 @@ const CommitteeHome: React.FC = () => {
                   src={member.photoUrl}
                   alt={member.name}
                   className="w-20 h-20 rounded-full object-cover mb-3 border"
+                  style={{ objectPosition: 'top' }}
                 />
                 <div className="font-semibold text-center">{member.name}</div>
                 <div className="text-sm text-gray-700 text-center">{member.title}</div>
