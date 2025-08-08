@@ -107,7 +107,35 @@ const mockLocations = [
 ];
 
 const mockBusinessUnits = [
-  "Engineering", "Product", "Marketing", "Sales", "Operations", "Human Resources", "Education"
+  { name: "Education Sector", type: "sector" },
+  { name: "Sector of Strategy and Institutional Excellence", type: "sector" },
+  { name: "Sector of Partnerships and International Cooperation", type: "sector" },
+  { name: "Science and Environment Sector", type: "sector" },
+  { name: "Culture and Communication Sector", type: "sector" },
+  { name: "Social and Human Sciences Sector", type: "sector" },
+  { name: "Media and Communication Sector", type: "sector" },
+  { name: "External Specialized Offices and Centers", type: "center" },
+  { name: "Center of Chairs, Scholarships and Prizes", type: "center" },
+  { name: "Poetry and Literature Center", type: "center" },
+  { name: "Calligraphie and Manuscript Center", type: "center" },
+  { name: "Training Center", type: "center" },
+  { name: "Center of Foresight and Artificial Intelligence", type: "center" },
+  { name: "Civilizational Dialogue Center", type: "center" },
+  { name: "Arabic Language Center for Non-Arabic Speakers", type: "center" },
+  { name: "Islamic World Heritage Center", type: "center" },
+  { name: "Center of Translation and Publishing", type: "center" },
+  { name: "Director General Office", type: "support unit" },
+  { name: "General Secretariat of National Commissions and Conferences", type: "support unit" },
+  { name: "Department of legal affairs and international standards", type: "support unit" },
+  { name: "Deputy Director General for Programs", type: "support unit" },
+  { name: "Federation of Universities of the Islamic World", type: "support unit" },
+  { name: "Department of Administrative Operations", type: "support unit" },
+  { name: "Department of Digital Transformation", type: "support unit" },
+  { name: "Department of Financial Operations", type: "support unit" },
+  { name: "Internal Audit Department", type: "support unit" },
+  { name: "Department of Public Relations and Protocol", type: "support unit" },
+  { name: "Department of Design and Printing", type: "support unit" },
+  { name: "Department of Human Capital Management", type: "support unit" },
 ];
 
 
@@ -157,25 +185,36 @@ const [showQuestions, setShowQuestions] = useState(false);
   }
 
   const handleSubmit = () => {
-    if (candidate === undefined || !jobPosition || !location || (interviewType === 'BU' && !businessUnit)) {
-      return
-    }
+  if (
+  candidate === undefined ||
+  !jobPosition ||
+  !location ||
+  (interviewType === 'BU' && selectedBusinessUnits.length === 0)
+) {
+  return
+}
 
     const interviewData: InterviewData = {
-      date: selectedSlot.date,
-      time: selectedSlot.time,
-      type: interviewType,
-      candidate: mockCandidates.find(c => c.id === candidate)?.name || '',
-      jobPosition,
-      location,
-      ...(interviewType === 'BU' && { businessUnit })
-    }
-
+  date: selectedSlot.date,
+  time: selectedSlot.time,
+  type: interviewType,
+  candidate: mockCandidates.find(c => c.id === candidate)?.name || '',
+  jobPosition,
+  location,
+  ...(interviewType === 'BU' && { businessUnit: selectedBusinessUnits.join(', ') })
+}
     onSchedule(interviewData)
   }
 
-  const isFormValid = candidate !== undefined && jobPosition && location && (interviewType !== 'BU' || businessUnit)
-
+ const isFormValid =
+  candidate !== undefined &&
+  jobPosition &&
+  location &&
+  (
+    interviewType !== 'BU'
+      ? true
+      : selectedBusinessUnits.length > 0
+  )
   const getInterviewTypeIcon = (type: string) => {
     switch (type) {
       case 'HR': return User
@@ -374,69 +413,72 @@ const [showQuestions, setShowQuestions] = useState(false);
 </div>
 
             {/* Business Unit(s) */}
-            {(interviewType === 'BU' || interviewType === 'HR') && (
-              <div className="space-y-2">
-                <Label htmlFor="business-unit" className="text-sm font-medium flex items-center space-x-2">
-                  <Building2 className="h-4 w-4" />
-                  <span>Business Unit(s)</span>
-                </Label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={businessUnit}
-                    onChange={e => setBusinessUnit(e.target.value)}
-                    placeholder="Type or select business unit"
-                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                    autoComplete="off"
-                  />
-                  {businessUnit.trim().length > 0 && (
-                    <div className="absolute z-10 left-0 right-0 bg-white border rounded shadow mt-1 max-h-40 overflow-y-auto">
-                      {mockBusinessUnits
-                        .filter(unit =>
-                          unit.toLowerCase().includes(businessUnit.toLowerCase()) &&
-                          !selectedBusinessUnits.includes(unit)
-                        )
-                        .map(unit => (
-                          <div
-                            key={unit}
-                            className="px-3 py-2 cursor-pointer hover:bg-muted"
-                            onClick={() => {
-                              setSelectedBusinessUnits([...selectedBusinessUnits, unit]);
-                              setBusinessUnit('');
-                            }}
-                          >
-                            {unit}
-                          </div>
-                        ))}
-                      {mockBusinessUnits.filter(unit =>
-                        unit.toLowerCase().includes(businessUnit.toLowerCase()) &&
-                        !selectedBusinessUnits.includes(unit)
-                      ).length === 0 && (
-                        <div className="px-3 py-2 text-muted-foreground text-sm">No match</div>
-                      )}
-                    </div>
-                  )}
-                  {selectedBusinessUnits.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {selectedBusinessUnits.map(unit => (
-                        <Badge key={unit} variant="outline" className="text-base flex items-center gap-1">
-                          {unit}
-                          <button
-                            type="button"
-                            className="ml-1 text-red-500 hover:text-red-700"
-                            onClick={() =>
-                              setSelectedBusinessUnits(selectedBusinessUnits.filter(u => u !== unit))
-                            }
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
+           {interviewType === 'BU' && (
+  <div className="space-y-2">
+    <Label htmlFor="business-unit" className="text-sm font-medium flex items-center space-x-2">
+      <Building2 className="h-4 w-4" />
+      <span>Business Unit(s)</span>
+    </Label>
+    <div className="relative">
+      <input
+        type="text"
+        value={businessUnit}
+        onChange={e => setBusinessUnit(e.target.value)}
+        placeholder="Type or select business unit"
+        className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        autoComplete="off"
+      />
+      {businessUnit.trim().length > 0 && (
+        <div className="absolute z-10 left-0 right-0 bg-white border rounded shadow mt-1 max-h-40 overflow-y-auto">
+          {mockBusinessUnits
+            .filter(unit =>
+              unit.name.toLowerCase().includes(businessUnit.toLowerCase()) &&
+              !selectedBusinessUnits.includes(unit.name)
+            )
+            .map(unit => (
+              <div
+                key={unit.name}
+                className="px-3 py-2 cursor-pointer hover:bg-muted flex items-center gap-2"
+                onClick={() => {
+                  setSelectedBusinessUnits([...selectedBusinessUnits, unit.name]);
+                  setBusinessUnit('');
+                }}
+              >
+                <span>{unit.name}</span>
               </div>
-            )}
+            ))}
+          {mockBusinessUnits.filter(unit =>
+            unit.name.toLowerCase().includes(businessUnit.toLowerCase()) &&
+            !selectedBusinessUnits.includes(unit.name)
+          ).length === 0 && (
+            <div className="px-3 py-2 text-muted-foreground text-sm">No match</div>
+          )}
+        </div>
+      )}
+      {selectedBusinessUnits.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {selectedBusinessUnits.map(unitName => {
+            const unit = mockBusinessUnits.find(u => u.name === unitName);
+            return (
+              <Badge key={unitName} variant="outline" className="text-base flex items-center gap-1">
+                {unitName}
+                <button
+                  type="button"
+                  className="ml-1 text-red-500 hover:text-red-700"
+                  onClick={() =>
+                    setSelectedBusinessUnits(selectedBusinessUnits.filter(u => u !== unitName))
+                  }
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </div>
+)}
 
             {/* Location */}
             <div className="space-y-2">

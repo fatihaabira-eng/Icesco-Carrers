@@ -16,7 +16,6 @@ export interface InterviewData {
   location: string
   businessUnit?: string
 }
-
 const mockFixedInterviews: InterviewData[] = [
   {
     date: '2025-08-08',
@@ -25,16 +24,16 @@ const mockFixedInterviews: InterviewData[] = [
     candidate: 'John Smith',
     jobPosition: 'Software Engineer',
     location: 'Conference Room A',
-    businessUnit: 'Engineering'
+    businessUnit: 'Education Sector' // <-- must match a name in allBusinessUnits
   },
   {
     date: '2025-08-06',
-    time: '10:00', // changed from 10:30 to 10:00
+    time: '10:00',
     type: 'committee',
     candidate: 'Sarah Johnson',
     jobPosition: 'Product Manager',
     location: 'Conference Room B',
-    businessUnit: 'Product'
+    businessUnit: 'Sector of Strategy and Institutional Excellence'
   },
   {
     date: '2025-08-05',
@@ -43,10 +42,9 @@ const mockFixedInterviews: InterviewData[] = [
     candidate: 'Michael Brown',
     jobPosition: 'UX Designer',
     location: 'Virtual Meeting',
-    businessUnit: 'Marketing'
+    businessUnit: 'Culture and Communication Sector'
   }
 ];
-
 
 
 export default function App() {
@@ -57,10 +55,61 @@ export default function App() {
   const [jobFilter, setJobFilter] = useState('');
 const [jobSuggestions, setJobSuggestions] = useState<string[]>([]);
 const [buFilter, setBUFilter] = useState('');
-const [buSuggestions, setBUSuggestions] = useState<string[]>([]);
+const [buSuggestions, setBUSuggestions] = useState<{name: string, type: string}[]>([]);
 
 const allJobPositions = Array.from(new Set(interviews.map(i => i.jobPosition)));
-const allBusinessUnits = Array.from(new Set(interviews.map(i => i.businessUnit || '')));
+const allBusinessUnits = [
+  { name: "Education Sector", type: "sector" },
+  { name: "Sector of Strategy and Institutional Excellence", type: "sector" },
+  { name: "Sector of Partnerships and International Cooperation", type: "sector" },
+  { name: "Science and Environment Sector", type: "sector" },
+  { name: "Culture and Communication Sector", type: "sector" },
+  { name: "Social and Human Sciences Sector", type: "sector" },
+  { name: "Media and Communication Sector", type: "sector" },
+  { name: "External Specialized Offices and Centers", type: "center" },
+  { name: "Center of Chairs, Scholarships and Prizes", type: "center" },
+  { name: "Poetry and Literature Center", type: "center" },
+  { name: "Calligraphie and Manuscript Center", type: "center" },
+  { name: "Training Center", type: "center" },
+  { name: "Center of Foresight and Artificial Intelligence", type: "center" },
+  { name: "Civilizational Dialogue Center", type: "center" },
+  { name: "Arabic Language Center for Non-Arabic Speakers", type: "center" },
+  { name: "Islamic World Heritage Center", type: "center" },
+  { name: "Center of Translation and Publishing", type: "center" },
+  { name: "Director General Office", type: "support unit" },
+  { name: "General Secretariat of National Commissions and Conferences", type: "support unit" },
+  { name: "Department of legal affairs and international standards", type: "support unit" },
+  { name: "Deputy Director General for Programs", type: "support unit" },
+  { name: "Federation of Universities of the Islamic World", type: "support unit" },
+  { name: "Department of Administrative Operations", type: "support unit" },
+  { name: "Department of Digital Transformation", type: "support unit" },
+  { name: "Department of Financial Operations", type: "support unit" },
+  { name: "Internal Audit Department", type: "support unit" },
+  { name: "Department of Public Relations and Protocol", type: "support unit" },
+  { name: "Department of Design and Printing", type: "support unit" },
+  { name: "Department of Human Capital Management", type: "support unit" },
+];
+const handleBUFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setBUFilter(value);
+  setBUSuggestions(
+    allBusinessUnits.filter(bu =>
+      bu.name.toLowerCase().includes(value.toLowerCase())
+    )
+  );
+  setJobFilter('');
+};
+
+const handleBUSuggestionClick = (buName: string) => {
+  setBUFilter(buName);
+  setBUSuggestions([]);
+  setJobFilter('');
+};
+
+
+const handleBUInputFocus = () => setBUSuggestions(allBusinessUnits);
+
+
 
   const handleSlotClick = (date: string, time: string) => {
     setSelectedSlot({ date, time })
@@ -88,11 +137,12 @@ const allBusinessUnits = Array.from(new Set(interviews.map(i => i.businessUnit |
     return date.toISOString().split('T')[0]
   }
 
-  let filteredInterviews = interviews;
+let filteredInterviews = interviews;
 if (jobFilter) {
-  filteredInterviews = interviews.filter(i => i.jobPosition === jobFilter);
-} else if (buFilter) {
-  filteredInterviews = interviews.filter(i => (i.businessUnit || '') === buFilter);
+  filteredInterviews = filteredInterviews.filter(i => i.jobPosition === jobFilter);
+}
+if (buFilter) {
+  filteredInterviews = filteredInterviews.filter(i => (i.businessUnit || '') === buFilter);
 }
 
   const formatCurrentWeek = (date: Date) => {
@@ -130,7 +180,7 @@ if (jobFilter) {
   jobFilter={jobFilter}
   buFilter={buFilter}
   jobSuggestions={jobSuggestions}
-  buSuggestions={buSuggestions}
+  buSuggestions={buSuggestions} 
   onJobFilterChange={e => {
     const value = e.target.value;
     setJobFilter(value);
@@ -152,7 +202,7 @@ if (jobFilter) {
     setBUFilter(value);
     setBUSuggestions(
       allBusinessUnits.filter(bu =>
-        bu.toLowerCase().includes(value.toLowerCase())
+        bu.name.toLowerCase().includes(value.toLowerCase())
       )
     );
     setJobFilter('');

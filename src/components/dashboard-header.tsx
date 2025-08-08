@@ -12,7 +12,7 @@ interface DashboardHeaderProps {
   jobFilter: string
   buFilter: string
   jobSuggestions: string[]
-  buSuggestions: string[]
+  buSuggestions: { name: string, type: string }[] // <-- fix this line
   onJobFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onJobSuggestionClick: (suggestion: string) => void
   onJobInputFocus: () => void
@@ -20,6 +20,8 @@ interface DashboardHeaderProps {
   onBUSuggestionClick: (suggestion: string) => void
   onBUInputFocus: () => void
 }
+
+
 
 export function DashboardHeader({
   title,
@@ -87,30 +89,31 @@ export function DashboardHeader({
         )}
       </div>
       {/* BU Filter */}
-      <div className="relative">
-        <input
-          type="text"
-          value={buFilter}
-          onChange={onBUFilterChange}
-          placeholder="Filter by BU"
-          className="border border-input rounded-md px-2 py-1 text-sm bg-background"
-          autoComplete="off"
-          onFocus={onBUInputFocus}
-        />
-        {buFilter && buSuggestions.length > 0 && (
-          <div className="absolute z-10 left-0 right-0 bg-white border rounded shadow mt-1 max-h-40 overflow-y-auto">
-            {buSuggestions.map(bu => (
-              <div
-                key={bu}
-                className="px-3 py-2 cursor-pointer hover:bg-muted"
-                onClick={() => onBUSuggestionClick(bu)}
-              >
-                {bu}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+     <div className="relative">
+  <input
+    type="text"
+    value={buFilter}
+    onChange={onBUFilterChange}
+    placeholder="Filter by BU"
+    className="border border-input rounded-md px-2 py-1 text-sm bg-background"
+    autoComplete="off"
+    onFocus={onBUInputFocus}
+  />
+  {buFilter && buSuggestions.length > 0 && (
+    <div className="absolute z-10 left-0 right-0 bg-white border rounded shadow mt-1 max-h-40 overflow-y-auto">
+      {buSuggestions.map(bu => (
+        <div
+          key={bu.name}
+          className="px-3 py-2 cursor-pointer hover:bg-muted flex items-center gap-2"
+          onClick={() => onBUSuggestionClick(bu.name)}
+        >
+          <span>{bu.name}</span>
+          <span className="ml-auto text-xs text-muted-foreground">{bu.type}</span>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
         <Button 
           onClick={onTodayClick}
           variant="outline"
