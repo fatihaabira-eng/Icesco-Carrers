@@ -368,7 +368,7 @@ const CandidateAssessmentScore: React.FC = () => {
       </style>
       <DashboardHeader
         title="Candidate Assessment Scores"
-        description="Track and evaluate candidate performance across different assessment stages"
+        description="Track candidates performance across different assessment stages"
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         dateRange={dateRange}
@@ -402,9 +402,9 @@ const CandidateAssessmentScore: React.FC = () => {
               <TableHeader>
                 <TableRow className="bg-muted">
                   <TableHead className="font-bold text-foreground">Job Position</TableHead>
-                  <TableHead className="font-bold text-foreground">Candidate Name</TableHead>
+                  <TableHead className="font-bold text-foreground">Candidate</TableHead>
                   <TableHead className="font-bold text-foreground">Interview Date</TableHead>
-                  <TableHead className="font-bold text-foreground">Duration</TableHead>
+                  <TableHead className="font-bold text-foreground">Interview Duration</TableHead>
                   <TableHead className="font-bold text-foreground">Committee Score</TableHead>
                   <TableHead className="font-bold text-foreground">Technical Score</TableHead>
                   <TableHead className="font-bold text-foreground">Total Score</TableHead>

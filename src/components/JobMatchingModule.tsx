@@ -48,7 +48,7 @@ interface Candidate {
 
 const JobMatchingModule: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBusinessUnit, setSelectedBusinessUnit] = useState('all');
+  const [selectedJobRef, setSelectedJobRef] = useState('all');
   const [sortBy, setSortBy] = useState('score');
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isEvaluationOpen, setIsEvaluationOpen] = useState(false);
@@ -247,12 +247,14 @@ const JobMatchingModule: React.FC = () => {
     },
   ]);
 
-  const businessUnits = [
-    { value: 'all', label: 'All Business Units' },
-    { value: 'digital transformation', label: 'Digital Transformation' },
-    { value: 'education', label: 'Education' },
-    { value: 'human resources', label: 'Human Resources' },
-    { value: 'finance', label: 'Finance' },
+  // Create unique job references with their corresponding titles
+  const jobOffers = [
+    { value: 'all', label: 'All Job Offers' },
+    ...Array.from(
+      new Map(
+        candidatesData.map((candidate) => [candidate.ref, { value: candidate.ref, label: `${candidate.ref} - ${candidate.position}` }])
+      ).values()
+    ),
   ];
 
   const getHrActionColor = (action: string) => {
@@ -321,8 +323,8 @@ const JobMatchingModule: React.FC = () => {
     )
     .filter(
       (candidate) =>
-        selectedBusinessUnit === 'all' ||
-        candidate.position.toLowerCase().includes(selectedBusinessUnit.toLowerCase())
+        selectedJobRef === 'all' ||
+        candidate.ref === selectedJobRef
     )
     .sort((a, b) => {
       switch (sortBy) {
@@ -356,15 +358,15 @@ const JobMatchingModule: React.FC = () => {
                   className="pl-10 w-full sm:w-64"
                 />
               </div>
-              <Select value={selectedBusinessUnit} onValueChange={setSelectedBusinessUnit}>
+              <Select value={selectedJobRef} onValueChange={setSelectedJobRef}>
                 <SelectTrigger className="w-full sm:w-48">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {businessUnits.map((businessUnit) => (
-                    <SelectItem key={businessUnit.value} value={businessUnit.value}>
-                      {businessUnit.label}
+                  {jobOffers.map((jobOffer) => (
+                    <SelectItem key={jobOffer.value} value={jobOffer.value}>
+                      {jobOffer.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
