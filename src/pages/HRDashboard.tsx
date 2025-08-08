@@ -159,6 +159,31 @@ const HRDashboard: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Recruitment Efficiency KPIs Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Target className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-xl">Recruitment Efficiency</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Metrics evaluating the effectiveness of the recruitment process
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <KpiCard icon={<Target className="h-6 w-6 text-primary" />} title="Overall Efficiency" value={`${recruitmentEfficiencyData.overallEfficiency}%`} />
+            <KpiCard icon={<UserPlus className="h-6 w-6 text-primary" />} title="Successful Hires" value={`${recruitmentEfficiencyData.successfulHires}%`} />
+            <KpiCard icon={<CheckCircle className="h-6 w-6 text-primary" />} title="Probation Success" value={`${recruitmentEfficiencyData.probationSuccess}%`} />
+            <KpiCard icon={<TrendingUp className="h-6 w-6 text-primary" />} title="One Year Performance" value={`${recruitmentEfficiencyData.oneYearPerformance}%`} />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Job Offers Status KPIs Section */}
       <Card>
@@ -187,30 +212,6 @@ const HRDashboard: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Recruitment Efficiency KPIs Section */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Target className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <CardTitle className="text-xl">Recruitment Efficiency</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Metrics evaluating the effectiveness of the recruitment process
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <KpiCard icon={<Target className="h-6 w-6 text-primary" />} title="Overall Efficiency" value={`${recruitmentEfficiencyData.overallEfficiency}%`} />
-            <KpiCard icon={<UserPlus className="h-6 w-6 text-primary" />} title="Successful Hires" value={`${recruitmentEfficiencyData.successfulHires}%`} />
-            <KpiCard icon={<CheckCircle className="h-6 w-6 text-primary" />} title="Probation Success" value={`${recruitmentEfficiencyData.probationSuccess}%`} />
-            <KpiCard icon={<TrendingUp className="h-6 w-6 text-primary" />} title="One Year Performance" value={`${recruitmentEfficiencyData.oneYearPerformance}%`} />
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Declined Offers Reasons KPIs Section */}
       <Card>

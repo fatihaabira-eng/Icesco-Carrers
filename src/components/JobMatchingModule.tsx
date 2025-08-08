@@ -68,7 +68,7 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'English', 'French'],
       phase: 'Technical Interview',
       decision: 'hired',
-      avatar: '/api/placeholder/40/40',
+      avatar: 'https://randomuser.me/api/portraits/men/75.jpg',
       hrAction: 'not-reviewed',
       appliedDate: '2025-01-15',
       email: 'ahmed.elmasri@email.com',
@@ -107,7 +107,7 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'French', 'English'],
       phase: 'Final Interview',
       decision: 'hired',
-      avatar: '/api/placeholder/40/40',
+      avatar: 'https://randomuser.me/api/portraits/women/75.jpg',
       hrAction: 'not-reviewed',
       status: 'new',
       appliedDate: '2025-01-14',
@@ -147,7 +147,7 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'English'],
       phase: 'HR Interview',
       decision: 'rejected',
-      avatar: '/api/placeholder/40/40',
+      avatar: 'https://randomuser.me/api/portraits/men/76.jpg',
       hrAction: 'not-reviewed',
       appliedDate: '2025-01-13',
       email: 'omar.alrashid@email.com',
@@ -185,7 +185,7 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'French', 'English'],
       phase: 'Screening',
       decision: 'rejected',
-      avatar: '/api/placeholder/40/40',
+      avatar: 'https://randomuser.me/api/portraits/women/76.jpg',
       hrAction: 'not-reviewed',
       appliedDate: '2025-01-12',
       email: 'amina.diabate@email.com',
@@ -223,7 +223,7 @@ const JobMatchingModule: React.FC = () => {
       languages: ['Arabic', 'French', 'English'],
       phase: 'Portfolio Review',
       decision: 'hired',
-      avatar: '/api/placeholder/40/40',
+      avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
       hrAction: 'not-reviewed',
       appliedDate: '2025-01-11',
       email: 'youssef.mohamed@email.com',
@@ -419,6 +419,7 @@ const JobMatchingModule: React.FC = () => {
                     </TableCell>
                     <TableCell className="font-medium text-gray-600 py-3 text-left">
                       <div className="flex items-center gap-3">
+                        <img src={candidate.avatar} alt={candidate.name} className="h-10 w-10 rounded-full object-cover" />
                         <div>
                           <p className="text-sm">{candidate.name}</p>
                         </div>

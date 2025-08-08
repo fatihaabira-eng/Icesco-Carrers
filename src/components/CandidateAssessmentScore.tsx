@@ -11,11 +11,6 @@ import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
-import sallyimage from '@/assets/dr-sally-mabrouk.png';
-import nidalimage from '@/assets/dr-nidal.jpg';
-import albanyanimage from '@/assets/dr-ahmed-albanyan.webp';
-import karimovimage from '@/assets/dr-anar.jpg';
-import raheelimage from '@/assets/dr-rahel.jpg';
 
 interface CommitteeMember {
   id: string;
@@ -39,10 +34,12 @@ interface CandidateAssessment {
   id: string;
   position: string;
   candidateName: string;
+  avatar?: string;
   overallScore: number;
   committeeMembers: CommitteeMember[];
   technicalInterviewers: TechnicalInterviewer[];
   assessmentDate: string;
+  duration: string;
 }
 
 const CandidateAssessmentScore: React.FC = () => {
@@ -52,20 +49,22 @@ const CandidateAssessmentScore: React.FC = () => {
   const [selectedAssessment, setSelectedAssessment] = useState<CandidateAssessment | null>(null);
   const [dialogType, setDialogType] = useState<'full' | 'committee' | 'technical' | null>(null);
 
-  // Mock data for candidate assessments
+  // Mock data for candidate assessments with added images and duration
   const candidateAssessments: CandidateAssessment[] = [
     {
       id: 'ASSESS-001',
       position: 'Senior Software Engineer',
       candidateName: 'Alice Smith',
       overallScore: 85,
+      avatar: 'https://randomuser.me/api/portraits/men/75.jpg',
       assessmentDate: '2025-01-15',
+      duration: '2h 30m',
       committeeMembers: [
         {
           id: 'CM-5',
           name: 'Prof. Dr. Raheel Qamar',
           position: 'Chief of Sciences and Technologies Sector',
-          image: raheelimage,
+          image: 'https://randomuser.me/api/portraits/men/1.jpg',
           score: 87,
           comments: 'Impressive technical background and relevant experience. Good understanding of educational technology.'
         },
@@ -73,7 +72,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-2',
           name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
           position: 'Director of the Administrative Affairs Department',
-          image: nidalimage,
+          image: 'https://randomuser.me/api/portraits/men/2.jpg',
           score: 82,
           comments: 'Good communication skills and team collaboration. Needs some improvement in system architecture knowledge.'
         },
@@ -81,7 +80,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-3',
           name: 'Dr. Ahmed Albanyan',
           position: 'Director of the Center of Translation and Publishing',
-          image: albanyanimage,
+          image: 'https://randomuser.me/api/portraits/men/3.jpg',
           score: 90,
           comments: 'Outstanding technical expertise and innovative thinking. Highly recommended for the position.'
         },
@@ -89,16 +88,15 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-4',
           name: 'Mr. ANAR KARIMOV',
           position: 'Chief of Partnerships and International Cooperation Sector',
-          image: karimovimage,
+          image: 'https://randomuser.me/api/portraits/men/4.jpg',
           score: 85,
           comments: 'Strong cultural fit and excellent interpersonal skills. Demonstrates good leadership potential.'
         },
-        
         {
           id: 'CM-1',
           name: 'Dr. Sally Mabrouk',
           position: 'Director of the Office of Director General',
-          image: sallyimage,
+          image: 'https://randomuser.me/api/portraits/women/1.jpg',
           score: 88,
           comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
         },
@@ -108,7 +106,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'TI-1',
           name: 'Eng. Youssef Amrani',
           position: 'Senior Software Architect',
-          image: '/src/assets/icesco-team-2.jfif',
+          image: 'https://randomuser.me/api/portraits/men/5.jpg',
           score: 92,
           comments: 'Excellent coding skills and deep understanding of modern frameworks. Strong problem-solving approach.'
         },
@@ -116,7 +114,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'TI-2',
           name: 'Dr. Amina El-Khattabi',
           position: 'Technical Director',
-          image: '/src/assets/icesco-team-3.jfif',
+          image: 'https://randomuser.me/api/portraits/women/2.jpg',
           score: 89,
           comments: 'Very good system design skills and architecture knowledge. Shows strong analytical thinking.'
         }
@@ -128,20 +126,22 @@ const CandidateAssessmentScore: React.FC = () => {
       candidateName: 'David Lee',
       overallScore: 78,
       assessmentDate: '2025-01-12',
+      avatar: 'https://randomuser.me/api/portraits/women/75.jpg',
+      duration: '2h 15m',
       committeeMembers: [
         {
           id: 'CM-5',
           name: 'Prof. Dr. Raheel Qamar',
           position: 'Chief of Sciences and Technologies Sector',
-          image: '/src/assets/dr-rahel.jpg',
+          image: 'https://randomuser.me/api/portraits/men/1.jpg',
           score: 67,
-          comments: ' Good understanding of educational technology.'
+          comments: 'Good understanding of educational technology.'
         },
         {
           id: 'CM-2',
           name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
           position: 'Director of the Administrative Affairs Department',
-          image: '/src/assets/dr-nidal.jpg',
+          image: 'https://randomuser.me/api/portraits/men/2.jpg',
           score: 72,
           comments: 'Good communication skills and team collaboration. Needs some improvement in system architecture knowledge.'
         },
@@ -149,7 +149,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-3',
           name: 'Dr. Ahmed Albanyan',
           position: 'Director of the Center of Translation and Publishing',
-          image: '/src/assets/dr-ahmed-albanyan.webp',
+          image: 'https://randomuser.me/api/portraits/men/3.jpg',
           score: 60,
           comments: 'Lacks technical expertise and innovative thinking. Not recommended for the position.'
         },
@@ -157,7 +157,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-4',
           name: 'Mr. ANAR KARIMOV',
           position: 'Chief of Partnerships and International Cooperation Sector',
-          image: '/src/assets/dr-anar.jpg',
+          image: 'https://randomuser.me/api/portraits/men/4.jpg',
           score: 45,
           comments: 'Weak cultural fit and bad interpersonal skills.'
         },
@@ -165,7 +165,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-1',
           name: 'Dr. Sally Mabrouk',
           position: 'Director of the Office of Director General',
-          image: '/src/assets/dr-sally-mabrouk.png',
+          image: 'https://randomuser.me/api/portraits/women/1.jpg',
           score: 50,
           comments: 'Bad technical skills and problem-solving abilities.'
         }
@@ -175,7 +175,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'TI-6',
           name: 'Ms. Fatima Zahra',
           position: 'Digital Marketing Specialist',
-          image: '/src/assets/icesco-leadership.jfif',
+          image: 'https://randomuser.me/api/portraits/women/3.jpg',
           score: 85,
           comments: 'Excellent digital marketing skills and good understanding of analytics tools.'
         },
@@ -183,7 +183,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'TI-7',
           name: 'Eng. Karim Alami',
           position: 'Marketing Technology Lead',
-          image: '/src/assets/icesco-team.jfif',
+          image: 'https://randomuser.me/api/portraits/men/6.jpg',
           score: 81,
           comments: 'Good technical understanding of marketing platforms and automation tools.'
         },
@@ -191,7 +191,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'TI-8',
           name: 'Dr. Layla Benjelloun',
           position: 'Content Strategy Director',
-          image: '/src/assets/icesco-team-2.jfif',
+          image: 'https://randomuser.me/api/portraits/women/4.jpg',
           score: 83,
           comments: 'Strong content creation skills and good understanding of brand positioning.'
         },
@@ -199,7 +199,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'TI-9',
           name: 'Mr. Hassan Tazi',
           position: 'Social Media Manager',
-          image: '/src/assets/icesco-team-3.jfif',
+          image: 'https://randomuser.me/api/portraits/men/7.jpg',
           score: 79,
           comments: 'Good social media experience but needs improvement in strategic planning.'
         },
@@ -207,7 +207,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'TI-10',
           name: 'Ms. Zineb Fassi',
           position: 'Marketing Analytics Specialist',
-          image: '/src/assets/icesco-leadership.jfif',
+          image: 'https://randomuser.me/api/portraits/women/5.jpg',
           score: 87,
           comments: 'Excellent analytical skills and good understanding of marketing metrics.'
         }
@@ -285,9 +285,6 @@ const CandidateAssessmentScore: React.FC = () => {
             <Icon className="h-5 w-5" />
             {title}
           </h3>
-          {/* <Badge className='bg-primary text-primary-foreground'>
-            {average}
-          </Badge> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           {items.map((item) => (
@@ -349,7 +346,6 @@ const CandidateAssessmentScore: React.FC = () => {
         </div>
       )}
       
-
       {(dialogType === 'full' || dialogType === 'committee') && renderScoreSection('committee', assessment)}
       {(dialogType === 'full' || dialogType === 'technical') && renderScoreSection('technical', assessment)}
     </div>
@@ -407,10 +403,11 @@ const CandidateAssessmentScore: React.FC = () => {
                 <TableRow className="bg-muted">
                   <TableHead className="font-bold text-foreground">Job Position</TableHead>
                   <TableHead className="font-bold text-foreground">Candidate Name</TableHead>
-                  <TableHead className="font-bold text-foreground">Total Score</TableHead>
+                  <TableHead className="font-bold text-foreground">Interview Date</TableHead>
+                  <TableHead className="font-bold text-foreground">Duration</TableHead>
                   <TableHead className="font-bold text-foreground">Committee Score</TableHead>
                   <TableHead className="font-bold text-foreground">Technical Score</TableHead>
-                  <TableHead className="font-bold text-foreground">Interview Details</TableHead>
+                  <TableHead className="font-bold text-foreground">Total Score</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -423,26 +420,18 @@ const CandidateAssessmentScore: React.FC = () => {
                 ) : (
                   filteredAssessments.map((assessment) => (
                     <TableRow key={assessment.id}>
-                      {/* <TableCell className="text-muted-foreground">
-                        <Button 
-                          className="bg-primary text-primary-foreground hover:bg-primary/90"
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            setSelectedAssessment(assessment);
-                            setDialogType('full');
-                          }}
-                        >
-                          View Scores
-                        </Button>
-                      </TableCell> */}
                       <TableCell className="font-medium text-muted-foreground">{assessment.position}</TableCell>
-                      <TableCell className="text-muted-foreground">{assessment.candidateName}</TableCell>
                       <TableCell className="text-muted-foreground">
-                        <Badge className={`${getScoreColor(assessment.overallScore)}`}>
-                          {assessment.overallScore}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={assessment.avatar} alt={assessment.candidateName} />
+                            <AvatarFallback>{assessment.candidateName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                          </Avatar>
+                          {assessment.candidateName}
+                        </div>
                       </TableCell>
+                      <TableCell className="text-muted-foreground">{format(new Date(assessment.assessmentDate), 'MMM d, yyyy')}</TableCell>
+                      <TableCell className="text-muted-foreground">{assessment.duration}</TableCell>
                       <TableCell className="text-muted-foreground">
                         <div className="flex items-center gap-2">
                           <Badge className={`${getScoreColor(getCommitteeAverage(assessment.committeeMembers))}`}>
@@ -477,7 +466,11 @@ const CandidateAssessmentScore: React.FC = () => {
                           </Button>
                         </div>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">{format(new Date(assessment.assessmentDate), 'MMM d, yyyy')}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        <Badge className={`${getScoreColor(assessment.overallScore)}`}>
+                          {assessment.overallScore}
+                        </Badge>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
@@ -487,7 +480,6 @@ const CandidateAssessmentScore: React.FC = () => {
         </Card>
       </DashboardSection>
 
-      {/* Single Dialog for all types */}
       <Dialog.Root open={!!selectedAssessment && !!dialogType} onOpenChange={(open) => {
         if (!open) {
           setSelectedAssessment(null);
