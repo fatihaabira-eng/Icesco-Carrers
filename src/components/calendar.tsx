@@ -110,14 +110,14 @@ const isSelectedDay = (date: Date) => {
           {days.map((day, dayIndex) => {
             const dateStr = formatDate(day)
             const todayClass = isToday(day) ? 'bg-teal-50 border-l-2 border-l-primary' : ''
-            const selectedClass = isSelectedDay(day) ? 'ring-2 ring-primary ring-inset' : ''
+            const selectedClass = isSelectedDay(day) ? 'ring-inset' : ''
             
             
             return (
               <div
                 key={dateStr}
                 className={`grid grid-cols-10 border-b border-border last:border-b-0 hover:bg-accent/30 transition-colors ${todayClass} ${selectedClass}`}
-                style={isSelectedDay(day) ? { backgroundColor: '#e0f2fe' } : {}}
+                style={isSelectedDay(day) ? { backgroundColor: '#e4ebf0ff' } : {}}
               >
                 {/* Day name */}
                 <div className={`col-span-1 p-4 border-r border-border bg-muted/30 flex items-center justify-center ${isSelectedDay(day) ? 'font-bold text-primary' : ''}`}>
