@@ -30,7 +30,7 @@ interface Candidate {
   name: string;
   position: string;
   businessUnit: string;
-  status: 'new' | 'under_review' | 'interview' | 'offer' | 'hired' | 'rejected';
+  status: 'new' | 'shortlisted' | 'technical_interview' | 'negotiation_salary' | 'committee_interview' | 'rejected_by_icesco' | 'declined_by_candidate';
   score: number;
   appliedDate: string;
   avatar?: string;
@@ -58,11 +58,12 @@ interface Candidate {
 
 const stages = [
   { id: 'new', title: 'New', color: 'bg-gray-100 text-gray-800' },
-  { id: 'under_review', title: 'Under Review', color: 'bg-yellow-100 text-yellow-800' },
-  { id: 'interview', title: 'Interview', color: 'bg-blue-100 text-blue-800' },
-  { id: 'offer', title: 'Offer', color: 'bg-green-100 text-green-800' },
-  { id: 'hired', title: 'Hired', color: 'bg-teal-100 text-teal-800' },
-  { id: 'rejected', title: 'Rejected', color: 'bg-red-100 text-red-800' },
+  { id: 'shortlisted', title: 'Shortlisted', color: 'bg-yellow-100 text-yellow-800' },
+  { id: 'technical_interview', title: 'Technical Interview', color: 'bg-blue-100 text-blue-800' },
+  { id: 'negotiation_salary', title: 'Negotiation Salary', color: 'bg-purple-100 text-purple-800' },
+  { id: 'committee_interview', title: 'Committee Interview', color: 'bg-teal-100 text-teal-800' },
+  { id: 'rejected_by_icesco', title: 'Rejected by ICESCO', color: 'bg-red-100 text-red-800' },
+  { id: 'declined_by_candidate', title: 'Declined by Candidate', color: 'bg-orange-100 text-orange-800' },
 ] as const;
 
 const HRCandidates: React.FC = () => {
@@ -79,7 +80,7 @@ const HRCandidates: React.FC = () => {
       name: 'Ahmed Hassan El-Masri',
       position: 'Senior Software Engineer',
       businessUnit: 'Digital Transformation',
-      status: 'interview',
+      status: 'technical_interview',
       score: 95,
       appliedDate: '2025-01-15',
       avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
@@ -125,7 +126,7 @@ const HRCandidates: React.FC = () => {
       name: 'Fatima Al-Zahra Benali',
       position: 'Marketing Manager',
       businessUnit: 'Communications',
-      status: 'offer',
+      status: 'negotiation_salary',
       score: 92,
       appliedDate: '2025-01-14',
       avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
@@ -170,7 +171,7 @@ const HRCandidates: React.FC = () => {
       name: 'Omar Khalil Al-Rashid',
       position: 'Education Program Manager',
       businessUnit: 'Education',
-      status: 'hired',
+      status: 'committee_interview',
       score: 89,
       appliedDate: '2025-01-13',
       avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
@@ -272,9 +273,9 @@ const HRCandidates: React.FC = () => {
 
   // Calculate KPIs
   const totalCandidates = filteredCandidates.length;
-  const activeApplications = filteredCandidates.filter(c => ['new', 'under_review', 'interview', 'offer'].includes(c.status)).length;
-  const interviewScheduled = filteredCandidates.filter(c => c.status === 'interview').length;
-  const hired = filteredCandidates.filter(c => c.status === 'hired').length;
+  const activeApplications = filteredCandidates.filter(c => ['new', 'shortlisted', 'technical_interview', 'negotiation_salary', 'committee_interview'].includes(c.status)).length;
+  const interviewScheduled = filteredCandidates.filter(c => ['technical_interview', 'committee_interview'].includes(c.status)).length;
+  const hired = filteredCandidates.filter(c => c.status === 'committee_interview').length;
 
   const kpiCards = [
     {
@@ -374,8 +375,7 @@ const HRCandidates: React.FC = () => {
                 <TableRow className="bg-gray-50">
                   <TableHead className="w-[50px] font-bold text-gray-900"></TableHead>
                   <TableHead className="font-bold text-gray-900">Candidate Name</TableHead>
-                  <TableHead className="font-bold text-gray-900">Position</TableHead>
-                  <TableHead className="font-bold text-gray-900">Business Unit</TableHead>
+                  <TableHead className="font-bold text-gray-900">Degree</TableHead>
                   <TableHead className="font-bold text-gray-900">Years of Experience</TableHead>
                   <TableHead className="font-bold text-gray-900">Applied Date</TableHead>
                   <TableHead className="font-bold text-gray-900">Status</TableHead>
@@ -386,7 +386,7 @@ const HRCandidates: React.FC = () => {
               <TableBody>
                 {filteredCandidates.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-gray-500 py-8">
+                    <TableCell colSpan={8} className="text-center text-gray-500 py-8">
                       No candidates found.
                     </TableCell>
                   </TableRow>
@@ -426,8 +426,7 @@ const HRCandidates: React.FC = () => {
                             <div className="font-medium text-gray-700">{candidate.name}</div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-gray-600">{candidate.position}</TableCell>
-                        <TableCell className="text-gray-600">{candidate.businessUnit}</TableCell>
+                        <TableCell className="text-gray-600">{candidate.education}</TableCell>
                         <TableCell className="text-gray-600">{candidate.experience}</TableCell>
                         <TableCell className="text-gray-600">{format(new Date(candidate.appliedDate), 'PPP')}</TableCell>
                         <TableCell>
@@ -471,7 +470,7 @@ const HRCandidates: React.FC = () => {
                       </TableRow>
                       {expandedCandidate === candidate.id && (
                         <TableRow>
-                          <TableCell colSpan={9} className="p-0">
+                          <TableCell colSpan={8} className="p-0">
                             <div className="p-4 bg-gray-50">
                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div>

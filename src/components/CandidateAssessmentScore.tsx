@@ -11,6 +11,11 @@ import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
+import raheelimage from '@/assets/dr-rahel.jpg';
+import nidalimage from '@/assets/dr-nidal.jpg';
+import albanyanimage from '@/assets/dr-ahmed-albanyan.webp';
+import anarimage from '@/assets/dr-anar.jpg';
+import sallyimage from '@/assets/dr-sally-mabrouk.png';
 
 interface CommitteeMember {
   id: string;
@@ -62,17 +67,17 @@ const CandidateAssessmentScore: React.FC = () => {
       committeeMembers: [
         {
           id: 'CM-5',
-          name: 'Prof. Dr. Raheel Qamar',
-          position: 'Chief of Sciences and Technologies Sector',
-          image: 'https://randomuser.me/api/portraits/men/1.jpg',
+          name: 'Prof. Dr.Raheel Qamar',
+          position: 'Chief of sciences and technologies sector',
+          image: raheelimage,
           score: 87,
           comments: 'Impressive technical background and relevant experience. Good understanding of educational technology.'
         },
         {
           id: 'CM-2',
           name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
-          position: 'Director of the Administrative Affairs Department',
-          image: 'https://randomuser.me/api/portraits/men/2.jpg',
+          position: 'Director of the administrative affairs departement',
+          image: nidalimage,
           score: 82,
           comments: 'Good communication skills and team collaboration. Needs some improvement in system architecture knowledge.'
         },
@@ -80,7 +85,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-3',
           name: 'Dr. Ahmed Albanyan',
           position: 'Director of the Center of Translation and Publishing',
-          image: 'https://randomuser.me/api/portraits/men/3.jpg',
+          image: albanyanimage,
           score: 90,
           comments: 'Outstanding technical expertise and innovative thinking. Highly recommended for the position.'
         },
@@ -88,7 +93,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-4',
           name: 'Mr. ANAR KARIMOV',
           position: 'Chief of Partnerships and International Cooperation Sector',
-          image: 'https://randomuser.me/api/portraits/men/4.jpg',
+          image: anarimage,
           score: 85,
           comments: 'Strong cultural fit and excellent interpersonal skills. Demonstrates good leadership potential.'
         },
@@ -96,7 +101,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-1',
           name: 'Dr. Sally Mabrouk',
           position: 'Director of the Office of Director General',
-          image: 'https://randomuser.me/api/portraits/women/1.jpg',
+          image: sallyimage,
           score: 88,
           comments: 'Excellent technical skills and strong problem-solving abilities. Shows great potential for leadership roles.'
         },
@@ -133,7 +138,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-5',
           name: 'Prof. Dr. Raheel Qamar',
           position: 'Chief of Sciences and Technologies Sector',
-          image: 'https://randomuser.me/api/portraits/men/1.jpg',
+          image: raheelimage,
           score: 67,
           comments: 'Good understanding of educational technology.'
         },
@@ -141,7 +146,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-2',
           name: 'Dr. Nidal Mohammad Zaidan Abuzuhri',
           position: 'Director of the Administrative Affairs Department',
-          image: 'https://randomuser.me/api/portraits/men/2.jpg',
+          image: nidalimage,
           score: 72,
           comments: 'Good communication skills and team collaboration. Needs some improvement in system architecture knowledge.'
         },
@@ -149,7 +154,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-3',
           name: 'Dr. Ahmed Albanyan',
           position: 'Director of the Center of Translation and Publishing',
-          image: 'https://randomuser.me/api/portraits/men/3.jpg',
+          image: albanyanimage,
           score: 60,
           comments: 'Lacks technical expertise and innovative thinking. Not recommended for the position.'
         },
@@ -157,7 +162,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-4',
           name: 'Mr. ANAR KARIMOV',
           position: 'Chief of Partnerships and International Cooperation Sector',
-          image: 'https://randomuser.me/api/portraits/men/4.jpg',
+          image: anarimage,
           score: 45,
           comments: 'Weak cultural fit and bad interpersonal skills.'
         },
@@ -165,7 +170,7 @@ const CandidateAssessmentScore: React.FC = () => {
           id: 'CM-1',
           name: 'Dr. Sally Mabrouk',
           position: 'Director of the Office of Director General',
-          image: 'https://randomuser.me/api/portraits/women/1.jpg',
+          image: sallyimage,
           score: 50,
           comments: 'Bad technical skills and problem-solving abilities.'
         }

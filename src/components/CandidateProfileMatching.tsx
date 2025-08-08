@@ -104,7 +104,6 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
     'Unavailability full time to Morocco',
     'Salary requirements not met',
     'Requires another title/position',
-    'Accepted another offer',
     'Skills mismatch',
     'Experience level not suitable',
     'Other'
@@ -350,7 +349,7 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
 
                   {/* Phase Options */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Change Phase:</label>
+                    <label className="text-sm font-medium">Update Phase:</label>
                     <div className="flex flex-wrap gap-2">
                       {phases.map((phase) => (
                         <Button
