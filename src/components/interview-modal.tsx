@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { X, User, Users, Building2, MapPin,Video, Briefcase, Calendar, Clock, CheckCircle, Plus } from 'lucide-react'
+import { X, User, Users,Trash2, Building2, MapPin,Video, Briefcase, Calendar, Clock, CheckCircle, Plus } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
@@ -45,6 +45,53 @@ const mockCandidates = [
   }
 ];
 
+const defaultQuestions = [
+  {
+    key: "q1",
+    label: "💡 Motivation / Culture Fit",
+    content: "In your video, you mentioned your alignment with ICESCO’s mission. Can you elaborate on how your previous work reflects a commitment to inclusive and sustainable education?"
+  },
+  {
+    key: "q2",
+    label: "💻 Technical Skills – EMIS / EdTech",
+    content: (
+      <>
+        <div>You worked on an EMIS project with UNICEF. What were the main challenges in implementing that system, and how did you overcome them?</div>
+        <div className="mt-2">What criteria do you use to select EdTech tools for rural or low-resource environments, and how did you apply this in your previous digitalization project?</div>
+      </>
+    )
+  },
+  {
+    key: "q3",
+    label: "🤝 Behavioral (STAR Method) / Project Management",
+    content: "Tell us about a time you managed a cross-cultural education team across multiple countries. What difficulties did you face, and how did you ensure collaboration?"
+  },
+  {
+    key: "q4",
+    label: "📈 Fundraising / Stakeholder Engagement",
+    content: "Have you ever led or contributed to fundraising efforts for an education project? If so, how did you present the value proposition to donors?"
+  },
+  {
+    key: "q5",
+    label: "👶 Early Childhood Development (ECD) / Inclusion",
+    content: "What approaches have you used to ensure inclusive access to early childhood education, particularly in communities with linguistic or cultural diversity?"
+  },
+  {
+    key: "q6",
+    label: "🗣️ Communication & International Relations",
+    content: "Being fluent in three languages is a major asset. Can you give an example where your multilingual skills helped resolve a communication issue or build trust with stakeholders?"
+  }
+];
+
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 const mockJobPositions = [
   "sh-113-003-softwareengineer",
   "sh-113-004-productmanager",
@@ -69,6 +116,9 @@ export function InterviewModal({ selectedSlot, onSchedule, onClose }: InterviewM
   const [interviewType, setInterviewType] = useState<'HR' | 'committee' | 'BU'>('HR')
   const [questionJobFilter, setQuestionJobFilter] = useState('');
   const [questionBUFilter, setQuestionBUFilter] = useState('');
+
+ const [questions, setQuestions] = useState(defaultQuestions);
+
 
   const [candidateSearch, setCandidateSearch] = useState('');
   const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>([]);
@@ -437,55 +487,47 @@ const [showQuestions, setShowQuestions] = useState(false);
     <Plus className="h-4 w-4 mr-2" />
     Add New Question
   </Button>
-  <div className="w-full">
+ <div className="w-full">
   {!showQuestions ? (
     <div className="rounded-lg border bg-muted/30 p-4 text-center text-muted-foreground">
       Click the button to generate questions related to CV, video, and job position.
     </div>
   ) : (
-    <Accordion type="single" collapsible className="rounded-lg border bg-muted/30 p-2 w-full">
-      <AccordionItem value="q1">
-        <AccordionTrigger className="!underline-0 !border-0">💡 Motivation / Culture Fit</AccordionTrigger>
-        <AccordionContent>
-          In your video, you mentioned your alignment with ICESCO’s mission. Can you elaborate on how your previous work reflects a commitment to inclusive and sustainable education?
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="q2">
-        <AccordionTrigger>💻 Technical Skills – EMIS / EdTech</AccordionTrigger>
-        <AccordionContent>
-          <div>
-            You worked on an EMIS project with UNICEF. What were the main challenges in implementing that system, and how did you overcome them?
-          </div>
-          <div className="mt-2">
-            What criteria do you use to select EdTech tools for rural or low-resource environments, and how did you apply this in your previous digitalization project?
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="q3">
-        <AccordionTrigger>🤝 Behavioral (STAR Method) / Project Management</AccordionTrigger>
-        <AccordionContent>
-          Tell us about a time you managed a cross-cultural education team across multiple countries. What difficulties did you face, and how did you ensure collaboration?
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="q4">
-        <AccordionTrigger>📈 Fundraising / Stakeholder Engagement</AccordionTrigger>
-        <AccordionContent>
-          Have you ever led or contributed to fundraising efforts for an education project? If so, how did you present the value proposition to donors?
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="q5">
-        <AccordionTrigger>👶 Early Childhood Development (ECD) / Inclusion</AccordionTrigger>
-        <AccordionContent>
-          What approaches have you used to ensure inclusive access to early childhood education, particularly in communities with linguistic or cultural diversity?
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="q6">
-        <AccordionTrigger>🗣️ Communication & International Relations</AccordionTrigger>
-        <AccordionContent>
-          Being fluent in three languages is a major asset. Can you give an example where your multilingual skills helped resolve a communication issue or build trust with stakeholders?
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+    <>
+      <Accordion type="single" collapsible className="rounded-lg border bg-muted/30 p-2 w-full">
+        {questions.map(q => (
+          <AccordionItem key={q.key} value={q.key}>
+            <div className="flex items-center justify-between pr-2">
+              <AccordionTrigger className="!underline-0 !border-0">{q.label}</AccordionTrigger>
+              <button
+                type="button"
+                className="ml-2 text-red-500 hover:text-red-700"
+                onClick={() => setQuestions(questions.filter(qq => qq.key !== q.key))}
+                title="Remove question"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+            <AccordionContent>
+              {q.content}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+      <div className="flex justify-end gap-2 mt-4">
+        <Button
+          variant="outline"
+          onClick={() => setQuestions(shuffleArray(defaultQuestions))}
+        >
+          Reload
+        </Button>
+        <Button
+          onClick={() => setShowQuestions(false)}
+        >
+          Accept
+        </Button>
+      </div>
+    </>
   )}
 </div>
 </div>
