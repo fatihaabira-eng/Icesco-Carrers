@@ -11,7 +11,9 @@ import {
   XCircle,
   AlertCircle,
  Languages,
-X
+X,
+UserPlus,
+TrendingUp
   
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -59,7 +61,7 @@ const CommitteeDashboard: React.FC = () => {
       id: 'PROP-001',
       candidateName: 'Alice Smith',
       position: 'Senior Software Engineer',
-      proposedDate: '2024-02-15',
+      proposedDate: '2025-02-15',
       proposedTime: '10:00 AM',
       status: 'pending',
       businessUnit: 'Digital Transformation'
@@ -68,7 +70,7 @@ const CommitteeDashboard: React.FC = () => {
       id: 'PROP-002',
       candidateName: 'Bob Johnson',
       position: 'Marketing Manager',
-      proposedDate: '2024-02-16',
+      proposedDate: '2025-02-16',
       proposedTime: '2:00 PM',
       status: 'pending',
       businessUnit: 'Communications'
@@ -77,7 +79,7 @@ const CommitteeDashboard: React.FC = () => {
       id: 'PROP-003',
       candidateName: 'Clara Brown',
       position: 'Research Analyst',
-      proposedDate: '2024-02-17',
+      proposedDate: '2025-02-17',
       proposedTime: '11:00 AM',
       status: 'accepted',
       businessUnit: 'Research Center'
@@ -90,7 +92,7 @@ const CommitteeDashboard: React.FC = () => {
       id: 'SCHED-001',
       candidateName: 'David Lee',
       position: 'Senior Software Engineer',
-      scheduledDate: '2024-02-20',
+      scheduledDate: '2025-02-20',
       scheduledTime: '10:00 AM',
       status: 'upcoming',
       businessUnit: 'Digital Transformation'
@@ -99,7 +101,7 @@ const CommitteeDashboard: React.FC = () => {
       id: 'SCHED-002',
       candidateName: 'Emma Wilson',
       position: 'Marketing Manager',
-      scheduledDate: '2024-02-18',
+      scheduledDate: '2025-02-18',
       scheduledTime: '2:00 PM',
       status: 'completed',
       businessUnit: 'Communications'
@@ -114,7 +116,7 @@ const CommitteeDashboard: React.FC = () => {
       businessUnit: 'Digital Transformation',
       candidatesCount: 5,
       status: 'active',
-      assignedDate: '2024-01-15'
+      assignedDate: '2025-01-15'
     },
     {
       id: 'POS-002',
@@ -122,7 +124,7 @@ const CommitteeDashboard: React.FC = () => {
       businessUnit: 'Communications',
       candidatesCount: 3,
       status: 'active',
-      assignedDate: '2024-01-10'
+      assignedDate: '2025-01-10'
     },
     {
       id: 'POS-003',
@@ -130,7 +132,7 @@ const CommitteeDashboard: React.FC = () => {
       businessUnit: 'Research Center',
       candidatesCount: 2,
       status: 'active',
-      assignedDate: '2024-01-20'
+      assignedDate: '2025-01-20'
     }
   ];
 
@@ -158,7 +160,13 @@ const CommitteeDashboard: React.FC = () => {
     { title: 'Missed Interviews', value: activePositions, icon: FileText, description: 'Not evaluated candidates' },
     { title: 'Total Interviews', value: totalCandidates, icon: Users, description: 'Total candidates to be evaluated' }
   ];
-
+  // Mock data for Recruitment Efficiency KPIs
+const recruitmentEfficiencyData = [
+  { title: 'Overall Efficiency', value: "80%", icon: Clock, description: 'Awaiting your response' },
+  { title: 'Successful Hires', value:  "70%", icon: UserPlus, description: 'Percentage of Successful Hired' },
+  { title: 'Probation Success', value:  "68%", icon: CheckCircle, description: 'Percentage of passing the probation period successfully' },
+  { title: 'One Year Performance', value:  "80%", icon: TrendingUp, description: 'Percentage of One Year Performance' },
+];
    const kpiCards_reject = [
     { title: 'Language', value: "10%", icon: Languages, description: '' },
     { title: 'Integrity', value: "50%", icon: CheckCircle, description: '' },
@@ -198,6 +206,14 @@ const CommitteeDashboard: React.FC = () => {
       />
 
       {/* KPI Cards */}
+      <DashboardSection
+        title="Recruitment Efficiency Overview"
+        description=""
+        icon={Award}
+      >
+        <KPICards cards={recruitmentEfficiencyData} />
+      </DashboardSection>
+
       <DashboardSection
         title="Candidates Interviews Overview"
         description="Key metrics for your committee activities"
@@ -341,6 +357,7 @@ const CommitteeDashboard: React.FC = () => {
           )}
         </div>
       </DashboardSection> */}
+      
     </div>
   );
 };

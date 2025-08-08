@@ -20,7 +20,8 @@ import {
   Building,
   Icon,
   Shield,
-  MoreHorizontal
+  MoreHorizontal,
+  Target
 } from 'lucide-react';
 
 // Mock Data for the KPI Cards
@@ -31,7 +32,6 @@ const jobOfferStatusData = {
   neglected: 2,
   negotiation: 3,
   declined: 5,
-  
 };
 
 const declinedReasonsData = [
@@ -62,6 +62,14 @@ const recruitmentOutreachData = {
   referral: 45,
   internal: 15,
   external: 80,
+};
+
+// Mock data for Recruitment Efficiency KPIs
+const recruitmentEfficiencyData = {
+  overallEfficiency: 88,
+  successfulHires: 92,
+  probationSuccess: 85,
+  oneYearPerformance: 78,
 };
 
 const HRDashboard: React.FC = () => {
@@ -144,7 +152,6 @@ const HRDashboard: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            
             <KpiCard icon={<FileText className="h-6 w-6 text-primary" />} title="Requested Positions" value={icescoVacanciesData.requestedPositions} />
             <KpiCard icon={<CheckCircle className="h-6 w-6 text-primary" />} title="Approved Positions" value={icescoVacanciesData.approvedPositions} />
             <KpiCard icon={<Briefcase className="h-6 w-6 text-primary" />} title="Published Positions" value={icescoVacanciesData.openPositions} />
@@ -171,11 +178,36 @@ const HRDashboard: React.FC = () => {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
             <KpiCard icon={<FileText className="h-6 w-6 text-primary" />} title="Offers Sent" value={jobOfferStatusData.sent} />
-            <KpiCard icon={<CheckCircle className="h-6 w-6 text-green-500" />} title="Offers Accepted" value={jobOfferStatusData.accepted} />
-            <KpiCard icon={<Clock className="h-6 w-6 text-yellow-500" />} title="Offers Pending" value={jobOfferStatusData.pending} />
-            <KpiCard icon={<AlertCircle className="h-6 w-6 text-gray-500" />} title="Offers Neglected" value={jobOfferStatusData.neglected} />
-            <KpiCard icon={<MessageSquare className="h-6 w-6 text-blue-500" />} title="Ongoing Negotiation" value={jobOfferStatusData.negotiation} />
-            <KpiCard icon={<XCircle className="h-6 w-6 text-red-500" />} title="Offers Declined" value={jobOfferStatusData.declined} />
+            <KpiCard icon={<CheckCircle className="h-6 w-6 text-primary" />} title="Offers Accepted" value={jobOfferStatusData.accepted} />
+            <KpiCard icon={<Clock className="h-6 w-6 text-primary" />} title="Offers Pending" value={jobOfferStatusData.pending} />
+            <KpiCard icon={<AlertCircle className="h-6 w-6 text-primary" />} title="Offers Neglected" value={jobOfferStatusData.neglected} />
+            <KpiCard icon={<MessageSquare className="h-6 w-6 text-primary" />} title="Ongoing Negotiation" value={jobOfferStatusData.negotiation} />
+            <KpiCard icon={<XCircle className="h-6 w-6 text-primary" />} title="Offers Declined" value={jobOfferStatusData.declined} />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recruitment Efficiency KPIs Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Target className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-xl">Recruitment Efficiency</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Metrics evaluating the effectiveness of the recruitment process
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <KpiCard icon={<Target className="h-6 w-6 text-primary" />} title="Overall Efficiency" value={`${recruitmentEfficiencyData.overallEfficiency}%`} />
+            <KpiCard icon={<UserPlus className="h-6 w-6 text-primary" />} title="Successful Hires" value={`${recruitmentEfficiencyData.successfulHires}%`} />
+            <KpiCard icon={<CheckCircle className="h-6 w-6 text-primary" />} title="Probation Success" value={`${recruitmentEfficiencyData.probationSuccess}%`} />
+            <KpiCard icon={<TrendingUp className="h-6 w-6 text-primary" />} title="One Year Performance" value={`${recruitmentEfficiencyData.oneYearPerformance}%`} />
           </div>
         </CardContent>
       </Card>

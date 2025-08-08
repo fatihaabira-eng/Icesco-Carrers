@@ -405,7 +405,11 @@ const InterviewManagement: React.FC = () => {
                     {filteredInterviews.length > 0 ? filteredInterviews.map(interview => (
                       <TableRow key={interview.id} className="hover:bg-gray-50 transition-colors border-b border-gray-100">
                         <TableCell className="font-normal text-gray-600 py-4">
+                          
                           <div className="flex items-center gap-3">
+                            <Button size="icon" variant="ghost" className="text-primary hover:bg-blue-100">
+                              <Eye className="h-4 w-4" />
+                            </Button>
                             <Avatar className="h-10 w-10">
                               <AvatarImage src={interview.candidate.avatar} alt={interview.candidate.name} />
                               <AvatarFallback>
@@ -451,9 +455,7 @@ const InterviewManagement: React.FC = () => {
                         </TableCell>
                         <TableCell className="font-normal text-gray-600 py-4">
                           <div className="flex items-center justify-center gap-2">
-                            <Button size="icon" variant="ghost" className="text-blue-600 hover:bg-blue-100">
-                              <Eye className="h-4 w-4" />
-                            </Button>
+                            
                             <Button size="icon" variant="ghost" className="text-orange-600 hover:bg-orange-100">
                               <Edit className="h-4 w-4" />
                             </Button>
