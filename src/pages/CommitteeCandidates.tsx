@@ -43,14 +43,14 @@ const ThreePeopleShare = () => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    {/* Three person silhouettes */}
-    <circle cx="6" cy="6" r="3" />
-    <circle cx="18" cy="6" r="3" />
-    <circle cx="12" cy="12" r="3" />
-    {/* Arrows indicating sharing */}
-    <path d="M6 9v3h6" />
-    <path d="M18 9v3h-6" />
-    <path d="M9 12h3" />
+    {/* Three connected circles */}
+    <circle cx="12" cy="4" r="2.5" />
+    <circle cx="5" cy="18" r="2.5" />
+    <circle cx="19" cy="18" r="2.5" />
+    {/* Connecting curved paths */}
+    <path d="M10.5 5.5 C7 8, 5.5 12, 5 15" />
+    <path d="M13.5 5.5 C17 8, 18.5 12, 19 15" />
+    <path d="M7.5 18.5 C10 20, 14 20, 16.5 18.5" />
   </svg>
 );
 
@@ -63,7 +63,7 @@ interface Candidate {
   phone: string;
   experience: string;
   education: string;
-  status: 'pending' | 'evaluated' | 'shortlisted' | 'rejected';
+  status: 'pending' | 'evaluated' | 'shortlisted' | 'not aligned'| 'recommanded for another position';
   applicationDate: string;
   lastEvaluationDate?: string;
   committeeScore?: number;
@@ -111,7 +111,7 @@ const CommitteeCandidates: React.FC = () => {
       phone: '+1-555-0124',
       experience: '4 years',
       education: 'MBA in Marketing',
-      status: 'evaluated',
+      status: 'shortlisted',
       applicationDate: '2024-01-10',
       lastEvaluationDate: '2024-01-20',
       committeeScore: 85,
@@ -131,10 +131,10 @@ const CommitteeCandidates: React.FC = () => {
       phone: '+1-555-0125',
       experience: '3 years',
       education: 'Master in Research Methods',
-      status: 'shortlisted',
+      status: 'recommanded for another position',
       applicationDate: '2024-01-12',
       lastEvaluationDate: '2024-01-25',
-      committeeScore: 92,
+      committeeScore: 62,
       committeeComments: 'Excellent analytical skills and research background. Highly recommended.',
       resumeUrl: '/resumes/clara-brown.pdf',
       videoUrl: '/videos/clara-brown-interview.mp4',
@@ -151,10 +151,10 @@ const CommitteeCandidates: React.FC = () => {
       phone: '+1-555-0126',
       experience: '6 years',
       education: 'Bachelor in Software Engineering',
-      status: 'rejected',
+      status: 'not aligned',
       applicationDate: '2024-01-08',
       lastEvaluationDate: '2024-01-18',
-      committeeScore: 65,
+      committeeScore: 40,
       committeeComments: 'Technical skills are adequate but lacks the required leadership experience.',
       resumeUrl: '/resumes/david-lee.pdf',
       videoUrl: '/videos/david-lee-interview.mp4',
@@ -176,7 +176,7 @@ const CommitteeCandidates: React.FC = () => {
   const pendingEvaluations = filteredCandidates.filter(c => c.status === 'pending').length;
   const evaluatedCandidates = filteredCandidates.filter(c => c.status === 'evaluated').length;
   const shortlistedCandidates = filteredCandidates.filter(c => c.status === 'shortlisted').length;
-  const rejectedCandidates = filteredCandidates.filter(c => c.status === 'rejected').length;
+  const rejectedCandidates = filteredCandidates.filter(c => c.status === 'not aligned').length;
   const averageScore = filteredCandidates
     .filter(c => c.committeeScore)
     .reduce((sum, c) => sum + (c.committeeScore || 0), 0) / 
@@ -193,7 +193,8 @@ const CommitteeCandidates: React.FC = () => {
       'pending': 'bg-yellow-100 text-yellow-800',
       'evaluated': 'bg-blue-100 text-blue-800',
       'shortlisted': 'bg-green-100 text-green-800',
-      'rejected': 'bg-red-100 text-red-800'
+      'not aligned': 'bg-red-100 text-red-800',
+      'recommanded for another position': 'bg-purple-100 text-purple-800'
     };
     return colorMap[status] || 'bg-gray-100 text-gray-800';
   };
@@ -270,7 +271,7 @@ const CommitteeCandidates: React.FC = () => {
                   <TableHead className="text-center font-bold">Job Position</TableHead>
                   <TableHead className="text-center font-bold">Candidate</TableHead>
                   <TableHead className="text-center font-bold">Application Date</TableHead>
-                  <TableHead className="text-center font-bold">Status</TableHead>
+                  <TableHead className="text-center font-bold">Review</TableHead>
                   <TableHead className="text-center font-bold">Score</TableHead>
                   <TableHead className="text-center font-bold">Share</TableHead>
                 </TableRow>
