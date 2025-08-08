@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { X, User, Users,Trash2, Building2, MapPin,Video, Briefcase, Calendar, Clock, CheckCircle, Plus } from 'lucide-react'
+import { X, User, Users,Trash2, Building2, MapPin,Video, Briefcase, Calendar, Clock, CheckCircle, Plus, BrainCircuit } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
@@ -146,6 +146,7 @@ export function InterviewModal({ selectedSlot, onSchedule, onClose }: InterviewM
   const [questionBUFilter, setQuestionBUFilter] = useState('');
 
  const [questions, setQuestions] = useState(defaultQuestions);
+const [questionsReadOnly, setQuestionsReadOnly] = useState(false);
 
 
   const [candidateSearch, setCandidateSearch] = useState('');
@@ -522,11 +523,11 @@ const [showQuestions, setShowQuestions] = useState(false);
           {/* Right Block: Generate Interview Question Button */}
               <div className="w-full md:w-1/2 flex flex-col items-center justify-start pt-4">
   <Button
-    className="w-md mb-4"
+    className="w-md mb-4 text-white"
     variant="secondary"
     onClick={() => setShowQuestions(true)}
   >
-    <Plus className="h-4 w-4 mr-2" />
+    <BrainCircuit className="h-4 w-4 mr-2" />
     Add New Question
   </Button>
  <div className="w-full">
@@ -536,26 +537,30 @@ const [showQuestions, setShowQuestions] = useState(false);
     </div>
   ) : (
     <>
-      <Accordion type="single" collapsible className="rounded-lg border bg-muted/30 p-2 w-full">
-        {questions.map(q => (
-          <AccordionItem key={q.key} value={q.key}>
-            <div className="flex items-center justify-between pr-2">
-              <AccordionTrigger className="!underline-0 !border-0">{q.label}</AccordionTrigger>
-              <button
-                type="button"
-                className="ml-2 text-red-500 hover:text-red-700"
-                onClick={() => setQuestions(questions.filter(qq => qq.key !== q.key))}
-                title="Remove question"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </div>
-            <AccordionContent>
-              {q.content}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+     {showQuestions && (
+  <Accordion type="single" collapsible className="rounded-lg border bg-muted/30 p-2 w-full">
+    {questions.map(q => (
+      <AccordionItem key={q.key} value={q.key}>
+        <div className="flex items-center justify-between pr-2">
+          <AccordionTrigger className="!underline-0 !border-0">{q.label}</AccordionTrigger>
+          {!questionsReadOnly && (
+            <button
+              type="button"
+              className="ml-2 text-red-500 hover:text-red-700"
+              onClick={() => setQuestions(questions.filter(qq => qq.key !== q.key))}
+              title="Remove question"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        <AccordionContent>
+          {q.content}
+        </AccordionContent>
+      </AccordionItem>
+    ))}
+  </Accordion>
+)}
       <div className="flex justify-end gap-2 mt-4">
         <Button
           variant="outline"
@@ -563,8 +568,11 @@ const [showQuestions, setShowQuestions] = useState(false);
         >
           Reload
         </Button>
-        <Button
-          onClick={() => setShowQuestions(false)}
+       <Button
+          onClick={() => {
+            setQuestionsReadOnly(true);
+            setShowQuestions(true);
+          }}
         >
           Accept
         </Button>
