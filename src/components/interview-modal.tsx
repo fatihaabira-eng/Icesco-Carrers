@@ -528,7 +528,7 @@ const [showQuestions, setShowQuestions] = useState(false);
     onClick={() => setShowQuestions(true)}
   >
     <BrainCircuit className="h-4 w-4 mr-2" />
-    Add New Question
+    Generate Questions
   </Button>
  <div className="w-full">
   {!showQuestions ? (
