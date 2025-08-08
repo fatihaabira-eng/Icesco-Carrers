@@ -242,17 +242,17 @@ const HRJobOffers: React.FC = () => {
               <Table className="w-full">
                 <TableHeader>
                   <TableRow className="bg-gray-100 border-none">
-                    <TableHead className="w-[50px] font-semibold text-xs uppercase tracking-wider py-4"></TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Reference</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Business Unit</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Job Offer</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4 text-center">N° Applied</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4 text-center">N° Shortlisted</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4 text-center">N° Rejected</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Published Date</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Closing Date</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Status</TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider py-4">Actions</TableHead>
+                    <TableHead className="w-[50px] font-semibold text-xs  tracking-wider py-4"></TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4">Reference</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4">Business Unit</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4">Job Offer</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4 text-center">N° Applied</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4 text-center">N° Shortlisted</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4 text-center">N° Rejected</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4">Published Date</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4">Closing Date</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4">Status</TableHead>
+                    <TableHead className="font-semibold text-xs  tracking-wider py-4">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
