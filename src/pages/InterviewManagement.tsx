@@ -365,12 +365,10 @@ const InterviewManagement: React.FC = () => {
                       <SelectValue placeholder="Business Unit" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Units</SelectItem>
-                      <SelectItem value="Engineering">Engineering</SelectItem>
-                      <SelectItem value="Marketing">Marketing</SelectItem>
-                      <SelectItem value="Education">Education</SelectItem>
-                      <SelectItem value="Finance">Finance</SelectItem>
-                      <SelectItem value="Research">Research</SelectItem>
+                      <SelectItem value="all">All Rounds</SelectItem>
+                      <SelectItem value="Engineering">Technical</SelectItem>
+                      <SelectItem value="Marketing">HR</SelectItem>
+                      <SelectItem value="Education">Committee</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
