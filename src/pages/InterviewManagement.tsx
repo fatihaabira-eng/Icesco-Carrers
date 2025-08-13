@@ -257,61 +257,6 @@ const InterviewManagement: React.FC = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
-        {/* <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <Card className="border-blue-200 shadow-sm">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Scheduled Interviews</p>
-                <p className="text-2xl font-bold text-blue-800">{weeklyStats.total}</p>
-              </div>
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="h-6 w-6 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-green-200 shadow-sm">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Confirmed Interviews</p>
-                <p className="text-2xl font-bold text-green-800">{weeklyStats.confirmed}</p>
-              </div>
-              <div className="p-2 bg-green-100 rounded-lg">
-                <CheckCircle className="h-6 w-6 text-green-600" />
-      _200 shadow-sm">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending Interviews</p>
-                <p className="text-2xl font-bold text-yellow-800">{weeklyStats.pending}</p>
-              </div>
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <AlertCircle className="h-6 w-6 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-gray-200 shadow-sm">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Completed Interviews</p>
-                <p className="text-2xl font-bold text-gray-800">{weeklyStats.completed}</p>
-              </div>
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <CheckCircle className="h-6 w-6 text-gray-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-red-200 shadow-sm">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Cancelled Interviews</p>
-                <p className="text-2xl font-bold text-red-800">{weeklyStats.cancelled}</p>
-              </div>
-              <div className="p-2 bg-red-100 rounded-lg">
-                <XCircle className="h-6 w-6 text-red-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div> */}
 
         {/* Filters and Controls */}
         <Card className="border-gray-200 shadow-sm">

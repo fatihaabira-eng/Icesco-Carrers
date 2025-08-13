@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Search, Filter, Star, ArrowUpDown, Eye } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import CandidateProfile from '@/components/CandidateProfileMatching';
+import { InterviewModal } from '@/components/interview-shortlisted-modal';
 
 // Updated Candidate interface to match HRCandidates
 interface Candidate {
@@ -46,12 +47,27 @@ interface Candidate {
   };
 }
 
-const JobMatchingModule: React.FC = () => {
+interface InterviewData {
+  date: string;
+  time: string;
+  type?: string;
+  candidate?: string;
+  jobPosition?: string;
+  location?: string;
+  duration?: string;
+  businessUnit?: string;
+  questions?: any[];
+}
+
+const ShortlistedCandidates: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedJobRef, setSelectedJobRef] = useState('all');
   const [sortBy, setSortBy] = useState('score');
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [isEvaluationOpen, setIsEvaluationOpen] = useState(false);
+  const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
+  const [selectedInterviewCandidate, setSelectedInterviewCandidate] = useState<Candidate | null>(null);
+  const [scheduledInterviews, setScheduledInterviews] = useState<{ [ref: string]: InterviewData }>({});
   const [candidatesData, setCandidatesData] = useState<Candidate[]>([
     {
       ref: 'SHS25003',
@@ -198,40 +214,6 @@ const JobMatchingModule: React.FC = () => {
         'Strong financial background',
         'Excellent analytical skills',
       ],
-    },
-    // ...other candidate objects...
-    {
-      ref: 'SHS25006',
-      id: 'SHS25006',
-      score: 87,
-      businessUnit: 'Finance',
-      name: 'Amina Kone Diabate',
-      nationality: 'Mali',
-      status: 'new',
-      flag: 'https://flagcdn.com/w40/ml.png',
-      age: 31,
-      degree: 'Master Finance',
-      university: 'University of Bamako',
-      experience: '7 years',
-      position: 'Financial Analyst',
-      matchingScore: 87,
-      skills: ['Financial Analysis', 'Risk Management', 'Budgeting'],
-      languages: ['Arabic', 'French', 'English'],
-      phase: 'Screening',
-      decision: 'rejected',
-      avatar: 'https://randomuser.me/api/portraits/women/76.jpg',
-      hrAction: 'not-reviewed',
-      appliedDate: '2025-01-12',
-      email: 'amina.diabate@email.com',
-      phone: '+223-7-1234-5678',
-      location: 'Bamako, Mali',
-      year: 2025,
-      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-      aiScreeningScore: 83,
-      aiRecommendations: [
-        'Strong financial background',
-        'Excellent analytical skills',
-      ],
       resumeData: {
         extractedSkills: ['Financial Analysis', 'Excel', 'Budgeting'],
         workExperience: ['Financial Analyst at FinanceCorp (2021-2024)'],
@@ -349,6 +331,11 @@ const JobMatchingModule: React.FC = () => {
     );
   };
 
+  const handleScheduleInterview = (candidateRef: string, interviewData: InterviewData) => {
+    setScheduledInterviews(prev => ({ ...prev, [candidateRef]: interviewData }));
+    setIsInterviewModalOpen(false);
+  };
+
   const filteredCandidates = candidatesData
     .filter(
       (candidate) =>
@@ -376,8 +363,16 @@ const JobMatchingModule: React.FC = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Job Matching Review</h1>
-        <p className="text-muted-foreground">Find the best candidate matches for your open positions.</p>
+        <div className="flex items-center space-x-2">
+        
+          <h1 className="text-3xl font-bold tracking-tight">Shortlisted Candidates</h1>
+
+            <Badge variant="outline" className="text-xs bg-blue-100 text-blue-800 border-blue-200">
+            Shortlisted
+          </Badge>
+        </div>
+      
+        <p className="text-muted-foreground">Review and manage your shortlisted candidates.</p>
       </div>
       <Card className="mt-6">
         <CardHeader>
@@ -405,17 +400,6 @@ const JobMatchingModule: React.FC = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full sm:w-40">
-                  <ArrowUpDown className="h-4 w-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="score">Match Score</SelectItem>
-                  <SelectItem value="name">Name</SelectItem>
-                  <SelectItem value="age">Age</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
         </CardHeader>
@@ -430,8 +414,7 @@ const JobMatchingModule: React.FC = () => {
                   <TableHead className="font-semibold text-gray-700 py-3 text-center">Nationality</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-center">Years of Experience</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-left">Degree</TableHead>
-                  <TableHead className="font-semibold text-gray-700 py-3 text-center">Matching</TableHead>
-                  <TableHead className="font-semibold text-gray-700 py-3 text-left">Action</TableHead>
+                  <TableHead className="font-semibold text-gray-700 py-3 text-center">Plan Interview</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -459,7 +442,8 @@ const JobMatchingModule: React.FC = () => {
                         <div>
                           <p className="text-sm">{candidate.name}</p>
                         </div>
-                        <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
+                        
+                        <Button size="sm" variant="default" onClick={() => handleCandidateClick(candidate)}>
                           <Eye className="h-4 w-4" />
                         </Button>
                       </div>
@@ -481,29 +465,15 @@ const JobMatchingModule: React.FC = () => {
                       <p className="text-sm">{candidate.degree}</p>
                     </TableCell>
                     <TableCell className="text-center font-medium text-gray-600 py-3">
-                      <div className="flex items-center justify-center gap-1">
-                        <Star className={`h-4 w-4 ${getScoreColor(candidate.matchingScore)}`} />
-                        <span className={`font-semibold ${getScoreColor(candidate.matchingScore)}`}>
-                          {candidate.matchingScore}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium text-gray-600 py-3 text-left">
-                      <Select
-                        value={candidate.hrAction}
-                        onValueChange={(value: 'shortlist' | 'reject' | 'not-reviewed') =>
-                          handleHrActionChange(candidate.ref, value)
-                        }
-                      >
-                        <SelectTrigger className={`w-40 ${getHrActionColor(candidate.hrAction)} text-left p-1`}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="shortlist" className="text-green-600">Shortlist</SelectItem>
-                          <SelectItem value="reject" className="text-red-600">Reject</SelectItem>
-                          <SelectItem value="not-reviewed" className="text-gray-600">Not Reviewed</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      {scheduledInterviews[candidate.ref] ? (
+                        <Button size="sm" variant="outline" onClick={() => { setSelectedInterviewCandidate(candidate); setIsInterviewModalOpen(true); }}>
+                          Interview Planified
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="default" onClick={() => { setSelectedInterviewCandidate(candidate); setIsInterviewModalOpen(true); }}>
+                          Plan Interview
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -527,8 +497,19 @@ const JobMatchingModule: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Interview Planning Modal */}
+      {isInterviewModalOpen && selectedInterviewCandidate && (
+        <InterviewModal
+          selectedSlot={scheduledInterviews[selectedInterviewCandidate.ref]
+            ? scheduledInterviews[selectedInterviewCandidate.ref]
+            : { date: '', time: '' }}
+          onSchedule={(data) => handleScheduleInterview(selectedInterviewCandidate.ref, data)}
+          onClose={() => setIsInterviewModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
 
-export default JobMatchingModule;
+export default ShortlistedCandidates;

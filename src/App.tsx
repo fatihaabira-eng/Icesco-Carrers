@@ -1,4 +1,7 @@
+
+         
 import React, { useState } from "react";
+import ShortlistedCandidates from "./pages/ShortlistedCandidates";
 import { useLocation, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -202,6 +205,16 @@ const AppContent = () => {
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <HRCandidates />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            } 
+          />
+           <Route 
+            path="/manpower/hr/short-scores" 
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <ShortlistedCandidates />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
             } 

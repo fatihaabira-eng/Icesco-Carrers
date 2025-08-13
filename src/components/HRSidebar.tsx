@@ -84,6 +84,13 @@ const HRSidebar: React.FC<HRSidebarProps> = ({ onLogout }) => {
           description: 'Candidate evaluation scores',
           path: '/manpower/hr/assessment-scores'
         },
+         {
+          id: 'short-scores',
+          label: 'Shortlisted Candidates',
+          icon: Award,
+          description: 'Candidates who passed initial screening',
+          path: '/manpower/hr/short-scores'
+        },
       ]
     },
   ];

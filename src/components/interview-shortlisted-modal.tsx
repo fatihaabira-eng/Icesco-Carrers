@@ -1,24 +1,61 @@
 import { useState } from "react"
-import { X, User, Users,Trash2, Building2, MapPin,Video, Briefcase, Calendar, Clock, CheckCircle, Plus, BrainCircuit } from 'lucide-react'
+import { X, User, Users,Trash2, Building2, MapPin,Video, Briefcase, Calendar, Clock, CheckCircle, Plus, BrainCircuit, HourglassIcon } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { InterviewData } from "../pages/ScheduleInterview"
-import { getShortlistedCandidates } from "../data/candidatesData"
+
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
-import { candidatesData } from "../data/candidatesData";
-
-interface InterviewModalProps {
-  selectedSlot: { date: string; time: string }
-  onSchedule: (data: InterviewData) => void
-  onClose: () => void
+interface InterviewData {
+  date: string;
+  time: string;
+  type?: string;
+  candidate?: string;
+  jobPosition?: string;
+  location?: string;
+  duration?: string;
+  businessUnit?: string;
+  questions?: any[];
 }
 
+interface InterviewModalProps {
+  selectedSlot: InterviewData;
+  onSchedule: (data: InterviewData) => void;
+  onClose: () => void;
+}
 
+const mockCandidates = [
+  {
+    id: 1,
+    name: 'Ahmed Hassan El-Masri',
+    position: 'Senior Software Engineer',
+    email: 'ahmed.hassan@email.com',
+    phone: '+20 123 456 789',
+    avatar: '/api/placeholder/40/40',
+    status: 'Shortlisted'
+  },
+  {
+    id: 2,
+    name: 'Fatima Al-Zahra Benali',
+    position: 'Marketing Manager',
+    email: 'fatima.benali@email.com',
+    phone: '+212 123 456 789',
+    avatar: '/api/placeholder/40/40',
+    status: 'Technical Round'
+  },
+  {
+    id: 3,
+    name: 'Omar Khalil Al-Rashid',
+    position: 'Education Specialist',
+    email: 'omar.rashid@email.com',
+    phone: '+962 123 456 789',
+    avatar: '/api/placeholder/40/40',
+    status: 'HR Interview'
+  }
+];
 
 const defaultQuestions = [
   {
@@ -116,31 +153,37 @@ const mockBusinessUnits = [
 
 
 export function InterviewModal({ selectedSlot, onSchedule, onClose }: InterviewModalProps) {
-  const [interviewType, setInterviewType] = useState<'HR' | 'committee' | 'BU'>('HR')
+  const [interviewType, setInterviewType] = useState<'HR' | 'committee' | 'BU'>(
+    selectedSlot.type === 'HR' || selectedSlot.type === 'committee' || selectedSlot.type === 'BU'
+      ? selectedSlot.type
+      : 'HR'
+  );
   const [questionJobFilter, setQuestionJobFilter] = useState('');
   const [questionBUFilter, setQuestionBUFilter] = useState('');
 
- const [questions, setQuestions] = useState(defaultQuestions);
-const [questionsReadOnly, setQuestionsReadOnly] = useState(false);
-
+  const [questions, setQuestions] = useState(selectedSlot.questions || defaultQuestions);
+  const [questionsReadOnly, setQuestionsReadOnly] = useState(false);
 
   const [candidateSearch, setCandidateSearch] = useState('');
-  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>([]);
-  const [candidate, setCandidate] = useState<string | undefined>(undefined)
-  const [jobPosition, setJobPosition] = useState('')
-  const [location, setLocation] = useState('')
-  const [businessUnit, setBusinessUnit] = useState('')
-const [showQuestions, setShowQuestions] = useState(false);
-
-let allCandidates: any[] = [];
-  if (interviewType === 'HR') {
-    allCandidates = candidatesData.filter(c => c.hrAction === 'shortlist');
-  } else if (interviewType === 'BU') {
-    allCandidates = candidatesData.filter(c => c.hrAction === 'under-review');
-  } else {
-    allCandidates = candidatesData.filter(c => c.hrAction !== 'shortlist' && c.hrAction !== 'under-review');
-  }
-
+  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>(selectedSlot.businessUnit ? selectedSlot.businessUnit.split(',').map(bu => bu.trim()) : []);
+  const [candidate, setCandidate] = useState<number | undefined>(
+    selectedSlot.candidate
+      ? mockCandidates.find(c => c.name === selectedSlot.candidate)?.id
+      : undefined
+  );
+  const [jobPosition, setJobPosition] = useState(selectedSlot.jobPosition || '');
+  const [location, setLocation] = useState(selectedSlot.location || '');
+  const [businessUnit, setBusinessUnit] = useState('');
+  // Automatically show questions if selectedSlot.questions exists (planified interview)
+  const [showQuestions, setShowQuestions] = useState(!!selectedSlot.questions);
+  const [interviewDateTime, setInterviewDateTime] = useState(() => {
+    if (selectedSlot.date && selectedSlot.time) {
+      const date = new Date(selectedSlot.date + 'T' + selectedSlot.time);
+      return date.toISOString().slice(0, 16);
+    }
+    return '';
+  });
+  const [duration, setDuration] = useState(selectedSlot.duration || '');
 
   const getJobPositionCode = (index: number, title: string) =>
   `sh-113-${(index + 3).toString().padStart(3, '0')}-${title.replace(/\s+/g, '').toLowerCase()}`;
@@ -171,31 +214,35 @@ let allCandidates: any[] = [];
   }
 
   const handleSubmit = () => {
-  if (
-  candidate === undefined ||
-  !jobPosition ||
-  !location ||
-  (interviewType === 'BU' && selectedBusinessUnits.length === 0)
-) {
-  return
-}
-
+    if (
+      candidate === undefined ||
+      !jobPosition ||
+      !location ||
+      (interviewType === 'BU' && selectedBusinessUnits.length === 0) ||
+      !interviewDateTime
+    ) {
+      return;
+    }
+    const [date, time] = interviewDateTime.split('T');
     const interviewData: InterviewData = {
-      date: selectedSlot.date,
-      time: selectedSlot.time,
+      date,
+      time,
       type: interviewType,
-      candidate: allCandidates.find(c => c.ref === candidate)?.name || '',
+      candidate: mockCandidates.find(c => c.id === candidate)?.name || '',
       jobPosition,
       location,
-      ...(interviewType === 'BU' && { businessUnit: selectedBusinessUnits.join(', ') })
-    }
-    onSchedule(interviewData)
+      duration,
+      ...(interviewType === 'BU' && { businessUnit: selectedBusinessUnits.join(', ') }),
+      questions,
+    };
+    onSchedule(interviewData);
   }
 
  const isFormValid =
   candidate !== undefined &&
   jobPosition &&
   location &&
+  interviewDateTime &&
   (
     interviewType !== 'BU'
       ? true
@@ -232,14 +279,33 @@ let allCandidates: any[] = [];
         <div className="flex flex-col md:flex-row gap-8">
           {/* Left Block: Existing Content */}
           <div className="w-full md:w-1/2 space-y-4">
-            {/* Date and Time */}
-            <div className="bg-muted/50 p-4 rounded-md border">
+
+
+            {/* Date, Time, and Duration */}
+            <div className="bg-muted/50 p-4 rounded-md border space-y-2">
               <div className="flex items-center space-x-2 mb-2">
                 <Clock className="h-4 w-4 text-teal-700" />
-                <div className="text-sm font-medium text-muted-foreground">Selected Date & Time</div>
+                <div className="text-sm font-medium text-muted-foreground">Select Date & Time</div>
               </div>
-              <div className="text-lg font-bold">
-                {formatDate(selectedSlot.date)} at {selectedSlot.time}
+              <div className="flex flex-col gap-2">
+                <input
+                  type="datetime-local"
+                  className="border rounded px-2 py-1 w-60 text-sm font-semibold"
+                  value={interviewDateTime}
+                  onChange={e => setInterviewDateTime(e.target.value)}
+                  required
+                />
+                <div className="flex items-center gap-1 mt-2">
+                  <HourglassIcon className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-muted-foreground">Duration:</span>
+                  <input
+                    type="text"
+                    placeholder="e.g. 30 min"
+                    className="border rounded px-2 py-1 w-24 text-sm font-semibold"
+                    value={duration}
+                    onChange={e => setDuration(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 
@@ -331,96 +397,72 @@ let allCandidates: any[] = [];
 </div>
 
 {/* Candidate Selection */}
-  <div className="space-y-2">
-    <Label htmlFor="candidate" className="text-sm font-medium flex items-center space-x-2">
-      <User className="h-4 w-4" />
-      <span>Candidate</span>
-    </Label>
-    <div className="relative">
-      <input
-        type="text"
-        value={
-          candidate
-            ? allCandidates.find(c => c.ref === candidate)?.name || candidateSearch || ''
-            : candidateSearch || ''
-        }
-        onChange={e => {
-          setCandidate(undefined);
-          setCandidateSearch(e.target.value);
-        }}
-        placeholder="Type or select candidate"
-        className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-        autoComplete="off"
-        disabled={!!candidate}
-      />
-      {!candidate && candidateSearch.trim().length > 0 && (
-        <div className="absolute z-10 left-0 right-0 bg-white border rounded shadow mt-1 max-h-40 overflow-y-auto">
-          {allCandidates
-            .filter(c =>
-              c.name.toLowerCase().includes(candidateSearch.toLowerCase())
-            )
-            .map(c => {
-              let badgeColor = '';
-              let badgeText = '';
-              switch (c.hrAction) {
-                case 'shortlist':
-                  badgeColor = 'bg-green-100 text-green-800 border-green-200';
-                  badgeText = 'Shortlisted';
-                  break;
-                case 'not-reviewed':
-                  badgeColor = 'bg-gray-100 text-gray-800 border-gray-200';
-                  badgeText = 'Not Reviewed';
-                  break;
-                case 'reject':
-                  badgeColor = 'bg-red-100 text-red-800 border-red-200';
-                  badgeText = 'Rejected';
-                  break;
-                case 'under-review':
-                  badgeColor = 'bg-blue-100 text-blue-800 border-blue-200';
-                  badgeText = 'Under Review';
-                  break;
-                default:
-                  badgeColor = 'bg-gray-100 text-gray-800 border-gray-200';
-                  badgeText = c.hrAction;
-              }
-              return (
-                <div
-                  key={c.ref}
-                  className="px-3 py-2 cursor-pointer hover:bg-muted flex items-center gap-2"
-                  onClick={() => {
-                    setCandidate(c.ref);
-                    setCandidateSearch('');
-                  }}
-                >
-                  <span>{c.name}</span>
-                  <span className="text-xs text-muted-foreground">{c.position}</span>
-                  <span className={`ml-2 px-2 py-1 rounded border text-xs font-semibold ${badgeColor}`}>{badgeText}</span>
-                </div>
-              );
-            })}
-          {allCandidates.filter(c =>
+<div className="space-y-2">
+  <Label htmlFor="candidate" className="text-sm font-medium flex items-center space-x-2">
+    <User className="h-4 w-4" />
+    <span>Candidate</span>
+  </Label>
+  <div className="relative">
+    <input
+      type="text"
+      value={
+        candidate
+          ? mockCandidates.find(c => c.id === candidate)?.name || candidateSearch || ''
+          : candidateSearch || ''
+      }
+      onChange={e => {
+        setCandidate(undefined);
+        setCandidateSearch(e.target.value);
+      }}
+      placeholder="Type or select candidate"
+      className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+      autoComplete="off"
+      disabled={!!candidate}
+    />
+    {!candidate && candidateSearch.trim().length > 0 && (
+      <div className="absolute z-10 left-0 right-0 bg-white border rounded shadow mt-1 max-h-40 overflow-y-auto">
+        {mockCandidates
+          .filter(c =>
             c.name.toLowerCase().includes(candidateSearch.toLowerCase())
-          ).length === 0 && (
-            <div className="px-3 py-2 text-muted-foreground text-sm">No match</div>
-          )}
-        </div>
-      )}
-      {candidate && (
-        <div className="mt-2 flex items-center gap-2">
-          <Badge variant="outline" className="text-base flex items-center gap-1">
-            {allCandidates.find(c => c.ref === candidate)?.name}
-            <button
-              type="button"
-              className="ml-2 text-red-500 hover:text-red-700"
-              onClick={() => setCandidate(undefined)}
+          )
+          .map(c => (
+            <div
+              key={c.id}
+              className="px-3 py-2 cursor-pointer hover:bg-muted flex items-center gap-2"
+              onClick={() => {
+                setCandidate(c.id);
+                setCandidateSearch('');
+              }}
             >
-              <X className="h-3 w-3" />
-            </button>
-          </Badge>
-        </div>
-      )}
-    </div>
+              
+              <span>{c.name}</span>
+              <span className="text-xs text-muted-foreground">{c.position}</span>
+            </div>
+          ))}
+        {mockCandidates.filter(c =>
+          c.name.toLowerCase().includes(candidateSearch.toLowerCase())
+        ).length === 0 && (
+          <div className="px-3 py-2 text-muted-foreground text-sm">No match</div>
+        )}
+      </div>
+    )}
+    {candidate && (
+      <div className="mt-2 flex items-center gap-2">
+        <Badge variant="outline" className="text-base flex items-center gap-1">
+          
+          {mockCandidates.find(c => c.id === candidate)?.name}
+          <button
+            type="button"
+            className="ml-2 text-red-500 hover:text-red-700"
+            onClick={() => setCandidate(undefined)}
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </Badge>
+      </div>
+    )}
   </div>
+</div>
 
             {/* Business Unit(s) */}
            {interviewType === 'BU' && (
@@ -519,13 +561,23 @@ let allCandidates: any[] = [];
                 <X className="h-4 w-4 mr-2" />
                 Cancel
               </Button>
-              <Button 
-                onClick={handleSubmit}
-                disabled={!isFormValid}
-              >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Schedule Interview
-              </Button>
+              {selectedSlot.questions ? (
+                <Button 
+                  onClick={handleSubmit}
+                  disabled={!isFormValid}
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Save Changes
+                </Button>
+              ) : (
+                <Button 
+                  onClick={handleSubmit}
+                  disabled={!isFormValid}
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Schedule Interview
+                </Button>
+              )}
             </div>
           </div>
 
@@ -577,10 +629,11 @@ let allCandidates: any[] = [];
         >
           Reload
         </Button>
-       <Button
+        <Button
           onClick={() => {
             setQuestionsReadOnly(true);
             setShowQuestions(true);
+            // Do NOT call onSchedule here
           }}
         >
           Accept
@@ -588,10 +641,10 @@ let allCandidates: any[] = [];
       </div>
     </>
   )}
-  </div>
-  </div>
+</div>
+</div>
         </div>
       </DialogContent>
-  </Dialog>
-  );
+    </Dialog>
+  )
 }
