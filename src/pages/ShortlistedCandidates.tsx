@@ -207,7 +207,7 @@ const ShortlistedCandidates: React.FC = () => {
                   <TableHead className="font-semibold text-gray-700 py-3 text-center">Nationality</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-center">Years of Experience</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-left">Degree</TableHead>
-                  <TableHead className="font-semibold text-gray-700 py-3 text-center">Schedule Interview</TableHead>
+                  <TableHead className="font-semibold text-gray-700 py-3 text-center">Take action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
