@@ -1,5 +1,3 @@
-
-         
 import React, { useState } from "react";
 import ShortlistedCandidates from "./pages/ShortlistedCandidates";
 import { useLocation, Routes, Route, Navigate } from "react-router-dom";
@@ -9,7 +7,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { HrDashboardSections } from "@/data/HrkpisData";
+import { committeeDashboardSections } from "@/data/CommitteeKpisData";
 
+import { buDashboardSections } from "@/data/BUDashboardData";
 import ImprovedNavbar from "@/components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -28,13 +29,12 @@ import ManpowerPortal from "./pages/ManpowerPortal";
 import ManpowerAuth from "./pages/ManpowerAuth";
 import RecruitmentRequestForm from "./pages/RecruitmentRequestForm";
 import Record from "./pages/record";
-import CreateJobOfferForm from "./components/CreateJobOfferForm";
+import CreateJobOfferForm from "./components/JobOfferForm";
 import VacanciesListView from "./components/VacanciesListView";
 
 // New HR-specific components
 import HRPortalLayout from "./components/HRPortalLayout";
 import BUPortalLayout from "./components/BUPortalLayout";
-import HRDashboard from "./pages/HRDashboard";
 import BUDashboard from "./pages/BUDashboard";
 import BUOffers from "./pages/BUOffers";
 import HRAnalytics from "./pages/HRAnalytics";
@@ -61,31 +61,33 @@ import CommitteeInterviews from "./pages/CommitteeInterviews";
 import CommitteeCandidates from "./pages/CommitteeCandidates";
 import CareerProgram from "./components/CareerProgram";
 import CommitteeCalendar from "./pages/CommitteeCalendar";
+import Dashboard from "./components/Dashboard";
+import OfferDetails from "./pages/offer-details/[id]/page";
 
 const queryClient = new QueryClient();
 
 // Protected Route Component for Manpower System
 const ProtectedManpowerRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useAuth();
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/manpower/auth" replace />;
   }
-  
+
   return <>{children}</>;
 };
 
 // Role-based Redirect Component
 const ManpowerRoleRedirect = () => {
   const { user } = useAuth();
-  
+
   if (!user) {
     return <Navigate to="/manpower/auth" replace />;
   }
-  
+
   switch (user.role) {
     case 'recruitment':
-      return <Navigate to="/manpower/hr" replace />;
+      return <Navigate to="/manpower/hr/dashboard" replace />;
     case 'committee':
       return <Navigate to="/manpower/home" replace />;
     case 'business unit':
@@ -97,8 +99,11 @@ const ManpowerRoleRedirect = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavbarOnRoutes = ["/auth"];
+  const hideNavbarOnRoutes = ["/auth", "/offer-details/"];
   const isManpowerRoute = location.pathname.startsWith('/manpower');
+
+  // Helper to check if current route starts with any hideNavbarOnRoutes
+  const shouldHideNavbar = hideNavbarOnRoutes.some(route => location.pathname.startsWith(route)) || isManpowerRoute;
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     try {
@@ -134,7 +139,7 @@ const AppContent = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!hideNavbarOnRoutes.includes(location.pathname) && !isManpowerRoute && (
+      {!shouldHideNavbar && (
         <ImprovedNavbar
           isAuthenticated={isAuthenticated}
           mockUser={currentUser}
@@ -161,257 +166,275 @@ const AppContent = () => {
           <Route path="/business-units/:businessUnit" element={<DepartmentPage />} />
           <Route path="/manpower-dashboard" element={<ManpowerDashboard />} />
           <Route path="/recruitment-request" element={<RecruitmentRequestForm />} />
-          
+        
+
 
           {/* Manpower Portal Routes */}
           <Route path="/manpower/auth" element={<ManpowerAuth />} />
           <Route path="/manpower" element={<ManpowerRoleRedirect />} />
 
-          <Route 
-            path="/manpower/home" 
+          <Route
+            path="/manpower/home"
             element={
               <ProtectedManpowerRoute>
                 <CommitteePortalLayout>
                   <CommitteeHome />
                 </CommitteePortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          
+
           {/* HR Portal Routes with Sidebar Layout */}
-          <Route 
-            path="/manpower/hr" 
-            element={
-              <ProtectedManpowerRoute>
-                <HRPortalLayout>
-                  <HRDashboard />
-                </HRPortalLayout>
-              </ProtectedManpowerRoute>
-            } 
-          />
-          <Route 
-            path="/manpower/hr/analytics" 
+
+          
+          <Route
+            path="/manpower/hr/analytics"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <HRAnalytics />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/candidates" 
+
+          <Route
+            path="/offer-details/:id"
+            element={
+              <ProtectedManpowerRoute>
+                <HRPortalLayout>
+                  <OfferDetails />
+                </HRPortalLayout>
+              </ProtectedManpowerRoute>
+            }
+          />
+
+           
+          <Route
+            path="/manpower/hr/candidates"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <HRCandidates />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-           <Route 
-            path="/manpower/hr/short-scores" 
+          <Route
+            path="/manpower/hr/short-scores"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <ShortlistedCandidates />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/resume-library" 
+          <Route
+            path="/manpower/hr/resume-library"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <HRResumeLibrary />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/interviews" 
+          <Route
+            path="/manpower/hr/interviews"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <HRInterviews />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/job-offers" 
+          <Route
+            path="/manpower/hr/job-offers"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <HRJobOffers />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/assessment-scores" 
+          <Route
+            path="/manpower/hr/assessment-scores"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <CandidateAssessmentScore />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/dashboard" 
+          <Route
+            path="/manpower/hr/dashboard"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
-                  <HRDashboard />
+                  <Dashboard
+                    dashboardSections={HrDashboardSections}
+                    title="Manpower Management Dashboard"
+                    description="Key Performance Indicators for recruitment activities"
+                  />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
 
-          
+
           {/* Additional HR Routes for Sub-items */}
-          <Route 
-            path="/manpower/hr/candidates/pipeline" 
+          <Route
+            path="/manpower/hr/candidates/pipeline"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <HRCandidatesPipeline />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/interviews/schedule" 
+          <Route
+            path="/manpower/hr/interviews/schedule"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <ScheduleInterview />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/interviews/management" 
+          <Route
+            path="/manpower/hr/interviews/management"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <InterviewManagement />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/hr/candidates/matching" 
+          <Route
+            path="/manpower/hr/candidates/matching"
             element={
               <ProtectedManpowerRoute>
                 <HRPortalLayout>
                   <JobMatchingModule />
                 </HRPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          
+
           {/* Legacy Manpower Portal Routes (for other roles) */}
           <Route path="/manpower/create-offer" element={<VacanciesListView />} />
-         
-          <Route 
-            path="/manpower/committee" 
+
+          <Route
+            path="/manpower/committee"
             element={
               <ProtectedManpowerRoute>
                 <CommitteePortalLayout>
-                  <CommitteeDashboard />
+                  <Dashboard
+                    dashboardSections={committeeDashboardSections}
+                    title="Recruitment Committee Dashboard"
+                    description="Overview of your committee responsibilities and interview schedule"
+                  />
                 </CommitteePortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-            {/* <Route index element={<BUManpowerManagement />} /> */}
-            <Route path="manpower/committee/interviews" 
-                    element={
+          {/* <Route index element={<BUManpowerManagement />} /> */}
+          <Route path="manpower/committee/interviews"
+            element={
               <ProtectedManpowerRoute>
                 <CommitteePortalLayout>
                   <BUInterviews />
                 </CommitteePortalLayout>
               </ProtectedManpowerRoute>
             }
-            />
-             <Route path="manpower/committee/candidates" 
-                    element={
+          />
+          <Route path="manpower/committee/candidates"
+            element={
               <ProtectedManpowerRoute>
                 <CommitteePortalLayout>
                   <CommitteeCandidates />
                 </CommitteePortalLayout>
               </ProtectedManpowerRoute>
             }
-            />
-            <Route path="manpower/committee/calendar" 
-                    element={
+          />
+          <Route path="manpower/committee/calendar"
+            element={
               <ProtectedManpowerRoute>
                 <CommitteePortalLayout>
                   <CommitteeCalendar />
                 </CommitteePortalLayout>
               </ProtectedManpowerRoute>
             }
-            />
-            <Route path="*" element={<div style={{ padding: '20px', backgroundColor: 'lightblue', border: '2px solid blue' }}>
-              <h2>Committee Fallback Route Hit</h2>
-              <p>This means the route is working but no specific route matched.</p>
-            </div>} />
-          
-          <Route 
-            path="/manpower/bu" 
+          />
+          <Route path="*" element={<div style={{ padding: '20px', backgroundColor: 'lightblue', border: '2px solid blue' }}>
+            <h2>Committee Fallback Route Hit</h2>
+            <p>This means the route is working but no specific route matched.</p>
+          </div>} />
+
+          <Route
+            path="/manpower/bu"
             element={
               <ProtectedManpowerRoute>
                 <BUPortalLayout>
                   <BUDashboard />
                 </BUPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-            <Route 
-            path="/manpower/director/interviews" 
+          <Route
+            path="/manpower/director/interviews"
             element={
               <ProtectedManpowerRoute>
                 <BUPortalLayout>
-                  <BUInterviews/>
+                  <BUInterviews />
                 </BUPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          <Route 
-            path="/manpower/director/candidates" 
+          <Route
+            path="/manpower/director/candidates"
             element={
               <ProtectedManpowerRoute>
                 <BUPortalLayout>
-                  <BUCandidates/>
+                  <BUCandidates />
                 </BUPortalLayout>
               </ProtectedManpowerRoute>
-            } 
-          />
-          
-            <Route 
-            path="/manpower/director/offers" 
-            element={
-              <ProtectedManpowerRoute>
-                <BUPortalLayout>
-                  <BUOffers/>
-                </BUPortalLayout>
-              </ProtectedManpowerRoute>
-            } 
+            }
           />
 
-          <Route 
-            path="/manpower/director/bu-manpower-management" 
+          <Route
+            path="/manpower/director/offers"
             element={
               <ProtectedManpowerRoute>
                 <BUPortalLayout>
-                  <BUManPowerManagement/>
+                  <BUOffers />
                 </BUPortalLayout>
               </ProtectedManpowerRoute>
-            } 
+            }
           />
-          
+
+          <Route
+            path="/manpower/director/bu-manpower-management"
+            element={
+              <ProtectedManpowerRoute>
+                <BUPortalLayout>
+                  <Dashboard
+                    dashboardSections={buDashboardSections}
+                    title="Manpower Management Dashboard"
+                    description="Key Performance Indicators for recruitment activities"
+                  />
+                </BUPortalLayout>
+              </ProtectedManpowerRoute>
+            }
+          />
+
           {/* Legacy route redirect */}
           <Route path="/manpower-portal" element={<Navigate to="/manpower" replace />} />
 
@@ -424,7 +447,7 @@ const AppContent = () => {
         </Routes>
       </main>
 
-      {!hideNavbarOnRoutes.includes(location.pathname) && !isManpowerRoute && <Footer />}
+  {!shouldHideNavbar && <Footer />}
     </div>
   );
 };

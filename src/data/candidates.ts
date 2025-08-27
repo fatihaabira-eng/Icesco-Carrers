@@ -4,13 +4,13 @@ export interface Candidate {
   score: number;
   ref: string;
   name: string;
-  position?: string;
+  position: string;
   nationality: string;
   flag: string;
   age: number;
   degree: string;
   university: string;
-  experience?: string;
+  experience: string;
   matchingScore: number;
   skills: string[];
   languages: string[];
@@ -20,7 +20,7 @@ export interface Candidate {
   hrAction: 'shortlist' | 'reject' | 'not-reviewed' | 'under-review';
   appliedDate: string;
   email: string;
-  status: string;
+  status: 'hired' | 'rejected' | 'under_review' | 'new' | 'interview' | 'offer' | 'declined';
   phone: string;
   location: string;
   year: number;
@@ -35,5 +35,5 @@ export interface Candidate {
     languages: string[];
     parsedDate: string;
   };
-  education?: string;
+  education: string;
 }

@@ -3,11 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { JobOffer, jobOffersData } from '../data/jobOffersData';
+import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  FileText, 
-  Search, 
+import {
+  FileText,
+  Search,
   Filter,
   Plus,
   Edit,
@@ -19,32 +21,17 @@ import {
   ChevronUp,
   X,
   UserX,
-  ListChecks
+  ListChecks,
+  ArrowUpRight
 } from 'lucide-react';
 import { format } from 'date-fns';
 import DashboardHeader from '@/components/DashboardHeader';
 import KPICards from '@/components/KPICards';
 import DashboardSection from '@/components/DashboardSection';
-import CreateJobOfferForm from '@/components/CreateJobOfferForm';
+import CreateJobOfferForm from '@/components/JobOfferForm';
+import Swal from 'sweetalert2';
 
-// Updated Interfaces
-interface JobOffer {
-  id: string;
-  title: string;
-  department: string;
-  type: string;
-  status: 'active' | 'draft' | 'closed' | 'archived';
-  applications: number;
-  publishedDate: string | null;
-  closingDate: string | null;
-  description: string;
-  requirements: string[];
-  salary: string;
-  experience: string;
-  year: number;
-  positions: number;
-  candidates: Candidate[];
-}
+
 
 interface Candidate {
   id: string;
@@ -64,74 +51,18 @@ const stages = [
 ] as const;
 
 const HRJobOffers: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState('2025');
   const [dateRange, setDateRange] = useState('year');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedOffer, setExpandedOffer] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedBusinessUnit, setSelectedBusinessUnit] = useState('all');
+  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+  const [editingOffer, setEditingOffer] = useState<JobOffer | null>(null);
 
-  const jobOffers: JobOffer[] = [
-    {
-      id: 'SHS25001',
-      title: 'Senior Software Engineer',
-      department: 'DT',
-      type: 'Full-time',
-      status: 'active',
-      applications: 45,
-      publishedDate: '2024-01-10',
-      closingDate: '2024-02-10',
-      description: 'Lead development of educational technology platforms',
-      requirements: ['React', 'Node.js', 'TypeScript', 'MongoDB', 'AWS'],
-      salary: 'Competitive',
-      experience: '5+ years',
-      year: 2025,
-      positions: 1,
-      candidates: [
-        { id: 'CAND-1', name: 'Alice Smith', jobTitle: 'Senior Software Engineer', stage: 'interview', stageDate: '2025-01-15' },
-        { id: 'CAND-2', name: 'Bob Johnson', jobTitle: 'Senior Software Engineer', stage: 'offer', stageDate: '2025-01-16' },
-        { id: 'CAND-3', name: 'Clara Brown', jobTitle: 'Senior Software Engineer', stage: 'hired', stageDate: '2025-01-17' },
-        { id: 'CAND-6', name: 'Frank White', jobTitle: 'Senior Software Engineer', stage: 'rejected', stageDate: '2024-01-18' },
-      ]
-    },
-    {
-      id: 'SHS25002',
-      title: 'Marketing Manager',
-      department: 'CCS',
-      type: 'Full-time',
-      status: 'active',
-      applications: 32,
-      publishedDate: '2024-01-08',
-      closingDate: '2024-02-08',
-      description: 'Design and implement innovative marketing strategies',
-      requirements: ['Digital Marketing', 'Strategy', 'Analytics', 'Arabic', 'French'],
-      salary: 'Competitive',
-      experience: '3-5 years',
-      year: 2025,
-      positions: 1,
-      candidates: [
-        { id: 'CAND-4', name: 'David Lee', jobTitle: 'Marketing Manager', stage: 'under_review', stageDate: '2024-01-12' },
-        { id: 'CAND-5', name: 'Emma Wilson', jobTitle: 'Marketing Manager', stage: 'interview', stageDate: '2024-01-14' },
-        { id: 'CAND-7', name: 'Grace Hall', jobTitle: 'Marketing Manager', stage: 'rejected', stageDate: '2024-01-15' },
-      ]
-    },
-    {
-      id: 'SHS25003',
-      title: 'Education Program Manager',
-      department: 'ED',
-      type: 'Contract',
-      status: 'draft',
-      applications: 0,
-      publishedDate: null,
-      closingDate: null,
-      description: 'Design and implement innovative educational programs',
-      requirements: ['Program Management', 'Educational Design', 'Stakeholder Management'],
-      salary: 'Competitive',
-      experience: '3-5 years',
-      year: 2025,
-      positions: 2,
-      candidates: []
-    }
-  ];
+  const [jobOffers, setJobOffers] = useState<JobOffer[]>(jobOffersData);
 
   const abbreviateDepartment = (department: string) => {
     return department
@@ -140,20 +71,60 @@ const HRJobOffers: React.FC = () => {
       .join(' ');
   };
 
+  // Filter job offers by year and date range
   const filterDataByDate = (data: JobOffer[]) => {
     if (selectedYear === 'all') return data;
-    return data.filter(item => item.year === parseInt(selectedYear));
+    const now = new Date();
+    if (dateRange === 'year') {
+      return data.filter(item => {
+        if (!item.publishedDate) return false;
+        return new Date(item.publishedDate).getFullYear() === Number(selectedYear);
+      });
+    } else if (dateRange === 'month') {
+      return data.filter(item => {
+        if (!item.publishedDate) return false;
+        const date = new Date(item.publishedDate);
+        return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+      });
+    }
+    else if (dateRange === 'week') {
+      return data.filter(item => {
+        if (!item.publishedDate) return false;
+        const date = new Date(item.publishedDate);
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        return date.getFullYear() === Number(selectedYear) && date >= startOfWeek && date <= endOfWeek;
+      });
+    } else if (dateRange === 'day') {
+      return data.filter(item => {
+        if (!item.publishedDate) return false;
+        const date = new Date(item.publishedDate);
+        return date.getFullYear() === Number(selectedYear) &&
+          date.getDate() === now.getDate() &&
+          date.getMonth() === now.getMonth();
+      });
+    } else if (dateRange === 'custom') {
+      // You can add custom range logic here, e.g. using startDate/endDate state
+      return data;
+    }
+    return data;
   };
 
-  const filteredJobOffers = filterDataByDate(jobOffers).filter(offer =>
-    offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    offer.department.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredJobOffers = filterDataByDate(jobOffers)
+    .filter(offer =>
+      (selectedBusinessUnit === 'all' || offer.department === selectedBusinessUnit) &&
+      (offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        offer.department.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
   const totalOffers = filteredJobOffers.length;
   const activeOffers = filteredJobOffers.filter(o => o.status === 'active').length;
   const applicationsReceived = filteredJobOffers.reduce((sum, offer) => sum + offer.applications, 0);
-  const positionsFilled = filteredJobOffers.reduce((sum, offer) => 
+  const positionsFilled = filteredJobOffers.reduce((sum, offer) =>
     sum + offer.candidates.filter(c => c.stage === 'hired').length, 0
   );
 
@@ -172,13 +143,47 @@ const HRJobOffers: React.FC = () => {
     setExpandedOffer(expandedOffer === offerId ? null : offerId);
   };
 
-  const handleCreateJobOffer = () => setShowCreateForm(true);
-  const handleCloseCreateForm = () => setShowCreateForm(false);
+  const handleCreateJobOffer = () => {
+    setFormMode('create');
+    setEditingOffer(null);
+    setShowCreateForm(true);
+  };
+  const handleCloseCreateForm = () => {
+    setShowCreateForm(false);
+    setEditingOffer(null);
+  };
+  const handleAddJobOffer = (newOffer: JobOffer) => {
+    setJobOffers(prev => [newOffer, ...prev]);
+    setShowCreateForm(false);
+  };
+  const handleEditJobOffer = (updatedOffer: JobOffer) => {
+    setJobOffers(prev => prev.map(offer => offer.id === updatedOffer.id ? updatedOffer : offer));
+    setShowCreateForm(false);
+    setEditingOffer(null);
+  };
 
-  const getShortlistedCount = (candidates: Candidate[]) => 
+  const handleDeleteJobOffer = (offerId: string) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to delete this job offer? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setJobOffers(prev => prev.filter(offer => offer.id !== offerId));
+        Swal.fire('Deleted!', 'The job offer has been deleted.', 'success');
+      }
+    });
+  };
+
+  const getShortlistedCount = (candidates: Candidate[]) =>
     candidates.filter(c => ['interview', 'offer', 'hired'].includes(c.stage)).length;
 
-  const getRejectedCount = (candidates: Candidate[]) => 
+  const getRejectedCount = (candidates: Candidate[]) =>
     candidates.filter(c => c.stage === 'rejected').length;
 
   const TABLE_COL_COUNT = 11;
@@ -186,16 +191,22 @@ const HRJobOffers: React.FC = () => {
   return (
     <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       {showCreateForm && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out opacity-100">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-in-out scale-100 opacity-100">
             <div className="sticky top-0 bg-white border-b border-gray-200 p-4 sm:p-6 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Create New Job Offer</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{formMode === 'edit' ? 'Edit Job Offer' : 'Create New Job Offer'}</h2>
               <Button variant="ghost" size="icon" onClick={handleCloseCreateForm} className="h-9 w-9 hover:bg-gray-100">
                 <X className="h-5 w-5 text-gray-600" />
               </Button>
             </div>
             <div className="p-4 sm:p-6">
-              <CreateJobOfferForm onClose={handleCloseCreateForm} />
+              <CreateJobOfferForm
+                onClose={handleCloseCreateForm}
+                onCreate={handleAddJobOffer}
+                onEdit={handleEditJobOffer}
+                jobOffer={editingOffer || undefined}
+                mode={formMode}
+              />
             </div>
           </div>
         </div>
@@ -204,10 +215,8 @@ const HRJobOffers: React.FC = () => {
       <DashboardHeader
         title="Job Offers"
         description="Create and manage job postings across all organizational units"
-        selectedYear={selectedYear}
-        setSelectedYear={setSelectedYear}
-        dateRange={dateRange}
-        setDateRange={setDateRange}
+
+
       >
         <Button onClick={handleCreateJobOffer} className="bg-primary hover:bg-primary-light text-white">
           <Plus className="h-5 w-5 mr-2" />
@@ -230,11 +239,46 @@ const HRJobOffers: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button variant="outline" className="border-gray-200 hover:bg-gray-50">
-            <Filter className="h-4 w-4 mr-2 text-gray-600" />
+          <Button variant="outline" className="border-gray-200 text-teal-800" onClick={() => setShowFilters((prev) => !prev)}>
+            <Filter className="h-4 w-4 mr-2 text-teal-800" />
             Filters
           </Button>
         </div>
+        {showFilters && (
+          <div className="flex flex-wrap gap-4 mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium">Year:</span>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Years</SelectItem>
+                  {Array.from({ length: new Date().getFullYear() - 2000 + 1 }, (_, i) => {
+                    const year = (new Date().getFullYear() - i).toString();
+                    return <SelectItem key={year} value={year}>{year}</SelectItem>;
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium">Business Unit:</span>
+              <Select value={selectedBusinessUnit} onValueChange={setSelectedBusinessUnit}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Units</SelectItem>
+                  <SelectItem value="DT">DT</SelectItem>
+                  <SelectItem value="CCS">CCS</SelectItem>
+                  <SelectItem value="ED">ED</SelectItem>
+                  {/* Add more units as needed */}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
 
         <Card className="border-none shadow-lg rounded-xl overflow-hidden">
           <CardContent className="p-0">
@@ -313,12 +357,17 @@ const HRJobOffers: React.FC = () => {
                           </TableCell>
                           <TableCell className="text-gray-700 py-3 sm:py-4">
                             <div className="flex space-x-2">
-                              <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100">
+                              <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100" onClick={() => {
+                                setFormMode('edit');
+                                setEditingOffer(offer);
+                                setShowCreateForm(true);
+                              }}>
                                 <Edit className="h-4 w-4 text-orange-500" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100">
+                              <Button variant="ghost" size="icon" className="h-9 w-9 hover:bg-gray-100" onClick={() => handleDeleteJobOffer(offer.id)}>
                                 <Trash2 className="h-4 w-4 text-red-500" />
                               </Button>
+
                             </div>
                           </TableCell>
                         </TableRow>
@@ -336,7 +385,7 @@ const HRJobOffers: React.FC = () => {
                                       <div><strong>Requirements:</strong></div>
                                       <div className="flex flex-wrap gap-2 mt-2">
                                         {offer.requirements.map((req, index) => (
-                                          <Badge key={index} variant="secondary" className="text-xs bg-gray-100 text-gray-700 border border-gray-200">
+                                          <Badge key={index} variant="secondary" className="text-xs bg-yellow-100 text-yellow-700 border border-yellow-200">
                                             {req}
                                           </Badge>
                                         ))}
@@ -351,22 +400,19 @@ const HRJobOffers: React.FC = () => {
                                           <div className={`p-2 rounded-t-lg text-xs font-semibold ${stage.color}`}>
                                             {stage.title} ({offer.candidates.filter(c => c.stage === stage.id).length})
                                           </div>
-                                          <div className="space-y-2 p-3 bg-white border border-gray-100 rounded-b-lg min-h-[80px] shadow-sm">
-                                            {offer.candidates
-                                              .filter((candidate) => candidate.stage === stage.id)
-                                              .map((candidate) => (
-                                                <div key={candidate.id} className="text-xs p-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-gray-100 transition-colors">
-                                                  {candidate.name}
-                                                </div>
-                                              ))}
-                                            {offer.candidates.filter((candidate) => candidate.stage === stage.id).length === 0 && (
-                                              <div className="text-xs text-gray-400 text-center pt-3">
-                                                Empty
-                                              </div>
-                                            )}
-                                          </div>
                                         </div>
                                       ))}
+                                    </div>
+                                    <div className="flex justify-end mt-12">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-9 px-3 text-xs bg-[#0b787f] text-white"
+                                        onClick={() => navigate(`/offer-details/${offer.id}`)}
+                                      >
+                                        <ArrowUpRight className="h-5 w-5 mr-2" />
+                                        Details
+                                      </Button>
                                     </div>
                                   </div>
                                 </div>

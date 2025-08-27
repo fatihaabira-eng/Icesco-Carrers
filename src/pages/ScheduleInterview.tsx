@@ -12,9 +12,11 @@ export interface InterviewData {
   time: string
   type: 'HR' | 'committee' | 'BU'
   candidate: string
+  candidateRef?: string
   jobPosition: string
   location: string
   businessUnit?: string
+  questions?: any[]
 }
 const mockFixedInterviews: InterviewData[] = [
   {
