@@ -525,40 +525,7 @@ const CandidateProfile: React.FC<CandidateProfileProps> = ({
             </div>
           </div>
 
-          {/* Right Sidebar - History */}
-          {/* <div className="w-80 border-l bg-muted/20">
-            <div className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
-                <History className="h-5 w-5" />
-                <span>Activity History</span>
-              </h3>
-              <div className="space-y-4">
-                {history.map((item) => (
-                  <div key={item.id} className="border-l-2 border-primary pl-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <p className="font-medium text-sm">{item.action}</p>
-                          {item.phase && (
-                            <Badge className={getPhaseColor(item.phase)}>
-                              {phases.find(p => p.id === item.phase)?.title}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">{item.details}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {format(new Date(item.date), 'MMM dd, yyyy HH:mm')}
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        {item.user}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div> */}
+         
         </div>
       </div>
 

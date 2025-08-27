@@ -10,42 +10,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import CandidateProfile from '@/components/CandidateProfileMatching';
 import { InterviewModal } from '@/components/interview-shortlisted-modal';
 
+import { candidatesData, Candidate } from '../data/candidatesData';
+import Pagination from '@/components/Pagination';
+
 // Updated Candidate interface to match HRCandidates
-interface Candidate {
-  ref: string;
-  name: string;
-  position: string;
-  nationality: string;
-  flag: string;
-  age: number;
-  degree: string;
-  university: string;
-  experience: string;
-  matchingScore: number;
-  skills: string[];
-  languages: string[];
-  phase: string;
-  decision: 'hired' | 'rejected';
-  avatar: string;
-  hrAction: 'shortlist' | 'reject' | 'not-reviewed';
-  appliedDate: string;
-  email: string;
-  status: string;
-  phone: string;
-  location: string;
-  year: number;
-  videoUrl?: string;
-  aiScreeningScore: number;
-  aiRecommendations: string[];
-  resumeData?: {
-    extractedSkills: string[];
-    workExperience: string[];
-    education: string[];
-    certifications: string[];
-    languages: string[];
-    parsedDate: string;
-  };
-}
+
 
 interface InterviewData {
   date: string;
@@ -68,201 +37,12 @@ const ShortlistedCandidates: React.FC = () => {
   const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
   const [selectedInterviewCandidate, setSelectedInterviewCandidate] = useState<Candidate | null>(null);
   const [scheduledInterviews, setScheduledInterviews] = useState<{ [ref: string]: InterviewData }>({});
-  const [candidatesData, setCandidatesData] = useState<Candidate[]>([
-    {
-      ref: 'SHS25003',
-      name: 'Ahmed Hassan El-Masri',
-      nationality: 'Egypt',
-      flag: 'https://flagcdn.com/w320/eg.png',
-      age: 32,
-      degree: 'PhD Computer Science',
-      university: 'Cairo University',
-      experience: '8 years',
-      position: 'Senior Software Engineer',
-      matchingScore: 95,
-      skills: ['React', 'Node.js', 'Python', 'AI/ML'],
-      languages: ['Arabic', 'English', 'French'],
-      phase: 'Technical Interview',
-      decision: 'hired',
-      avatar: 'https://randomuser.me/api/portraits/men/75.jpg',
-      hrAction: 'not-reviewed',
-      appliedDate: '2025-01-15',
-      email: 'ahmed.elmasri@email.com',
-      phone: '+20-2-1234-5678',
-      status: 'new',
-      location: 'Cairo, Egypt',
-      year: 2025,
-      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-      aiScreeningScore: 92,
-      aiRecommendations: [
-        'Strong technical background',
-        'Excellent communication skills',
-        'Relevant experience in educational technology',
-      ],
-      resumeData: {
-        extractedSkills: ['JavaScript', 'React', 'Node.js', 'Python', 'Machine Learning'],
-        workExperience: ['Senior Software Engineer at TechCorp (2020-2024)'],
-        education: ['PhD Computer Science - Cairo University (2016)'],
-        certifications: ['AWS Certified Solutions Architect'],
-        languages: ['Arabic', 'English', 'French'],
-        parsedDate: '2024-01-15T12:00:00Z',
-      },
-    },
-    {
-      ref: 'SHS25004',
-      name: 'Fatima Al-Zahra Benali',
-      nationality: 'Morocco',
-      flag: 'https://flagcdn.com/w40/ma.png',
-      age: 29,
-      degree: 'Master Marketing',
-      university: 'Mohammed V University',
-      experience: '6 years',
-      position: 'Marketing Manager',
-      matchingScore: 92,
-      skills: ['Digital Marketing', 'Strategy', 'Analytics'],
-      languages: ['Arabic', 'French', 'English'],
-      phase: 'Final Interview',
-      decision: 'hired',
-      avatar: 'https://randomuser.me/api/portraits/women/75.jpg',
-      hrAction: 'not-reviewed',
-      status: 'new',
-      appliedDate: '2025-01-14',
-      email: 'fatima.benali@email.com',
-      phone: '+212-6-8765-4321',
-      location: 'Casablanca, Morocco',
-      year: 2025,
-      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-      aiScreeningScore: 88,
-      aiRecommendations: [
-        'Strong marketing expertise',
-        'Excellent analytical skills',
-        'Good understanding of MENA market',
-      ],
-      resumeData: {
-        extractedSkills: ['Digital Marketing', 'Social Media Marketing', 'Google Analytics'],
-        workExperience: ['Marketing Manager at BrandAgency (2021-2024)'],
-        education: ['Master Marketing - Mohammed V University (2018)'],
-        certifications: ['Google Ads Certification'],
-        languages: ['Arabic', 'French', 'English'],
-        parsedDate: '2024-01-14T11:30:00Z',
-      },
-    },
-    {
-      ref: 'SHS25005',
-      name: 'Omar Khalil Al-Rashid',
-      nationality: 'Jordan',
-      flag: 'https://flagcdn.com/w40/jo.png',
-      age: 35,
-      degree: 'PhD Education',
-      status: 'new',
-      university: 'University of Jordan',
-      experience: '10 years',
-      position: 'Education Specialist',
-      matchingScore: 89,
-      skills: ['Curriculum Design', 'Policy Development', 'Research'],
-      languages: ['Arabic', 'English'],
-      phase: 'HR Interview',
-      decision: 'rejected',
-      avatar: 'https://randomuser.me/api/portraits/men/76.jpg',
-      hrAction: 'not-reviewed',
-      appliedDate: '2025-01-13',
-      email: 'omar.alrashid@email.com',
-      phone: '+962-6-5555-1234',
-      location: 'Amman, Jordan',
-      year: 2025,
-      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-      aiScreeningScore: 85,
-      aiRecommendations: [
-        'Extensive education experience',
-        'Strong program management skills',
-      ],
-      resumeData: {
-        extractedSkills: ['Curriculum Development', 'Educational Technology'],
-        workExperience: ['Education Program Director at UNESCO (2020-2024)'],
-        education: ['PhD Education - University of Jordan (2016)'],
-        certifications: ['PMP Certification'],
-        languages: ['Arabic', 'English'],
-        parsedDate: '2024-01-13T10:15:00Z',
-      },
-    },
-    {
-      ref: 'SHS25006',
-      name: 'Amina Kone Diabate',
-      nationality: 'Mali',
-      status: 'new',
-      flag: 'https://flagcdn.com/w40/ml.png',
-      age: 31,
-      degree: 'Master Finance',
-      university: 'University of Bamako',
-      experience: '7 years',
-      position: 'Financial Analyst',
-      matchingScore: 87,
-      skills: ['Financial Analysis', 'Risk Management', 'Budgeting'],
-      languages: ['Arabic', 'French', 'English'],
-      phase: 'Screening',
-      decision: 'rejected',
-      avatar: 'https://randomuser.me/api/portraits/women/76.jpg',
-      hrAction: 'not-reviewed',
-      appliedDate: '2025-01-12',
-      email: 'amina.diabate@email.com',
-      phone: '+223-7-1234-5678',
-      location: 'Bamako, Mali',
-      year: 2025,
-      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-      aiScreeningScore: 83,
-      aiRecommendations: [
-        'Strong financial background',
-        'Excellent analytical skills',
-      ],
-      resumeData: {
-        extractedSkills: ['Financial Analysis', 'Excel', 'Budgeting'],
-        workExperience: ['Financial Analyst at FinanceCorp (2021-2024)'],
-        education: ['Master Finance - University of Bamako (2018)'],
-        certifications: ['CFA Level 1'],
-        languages: ['Arabic', 'French', 'English'],
-        parsedDate: '2024-01-12T09:45:00Z',
-      },
-    },
-    {
-      ref: 'SHS25007',
-      name: 'Youssef Ben Mohamed',
-      nationality: 'Tunisia',
-      status: 'new',
-      flag: 'https://flagcdn.com/w40/tn.png',
-      age: 28,
-      degree: 'Master Data Science',
-      university: 'University of Tunis',
-      experience: '5 years',
-      position: 'Data Scientist',
-      matchingScore: 85,
-      skills: ['Python', 'Machine Learning', 'Statistics', 'SQL'],
-      languages: ['Arabic', 'French', 'English'],
-      phase: 'Portfolio Review',
-      decision: 'hired',
-      avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
-      hrAction: 'not-reviewed',
-      appliedDate: '2025-01-11',
-      email: 'youssef.mohamed@email.com',
-      phone: '+216-7-8765-4321',
-      location: 'Tunis, Tunisia',
-      year: 2025,
-      videoUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-      aiScreeningScore: 80,
-      aiRecommendations: [
-        'Strong data science expertise',
-        'Good technical skills',
-      ],
-      resumeData: {
-        extractedSkills: ['Python', 'Machine Learning', 'SQL'],
-        workExperience: ['Data Scientist at DataCorp (2020-2024)'],
-        education: ['Master Data Science - University of Tunis (2018)'],
-        certifications: ['Google Cloud Data Engineer'],
-        languages: ['Arabic', 'French', 'English'],
-        parsedDate: '2024-01-11T08:30:00Z',
-      },
-    },
-  ]);
+  const [candidates, setCandidates] = useState<Candidate[]>(candidatesData);
 
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5); // you can make this selectable
+  
   // Create unique job references with their corresponding titles
   const jobOffers = [
     { value: 'all', label: 'All Job Offers' },
@@ -313,7 +93,7 @@ const ShortlistedCandidates: React.FC = () => {
   };
 
   const handleStatusChange = (candidateRef: string, newStatus: string, reason?: string) => {
-    setCandidatesData((prev) =>
+    setCandidates((prev) =>
       prev.map((candidate) =>
         candidate.ref === candidateRef
           ? { ...candidate, decision: newStatus as 'hired' | 'rejected' }
@@ -324,7 +104,7 @@ const ShortlistedCandidates: React.FC = () => {
   };
 
   const handleHrActionChange = (candidateRef: string, action: 'shortlist' | 'reject' | 'not-reviewed') => {
-    setCandidatesData((prev) =>
+    setCandidates((prev) =>
       prev.map((candidate) =>
         candidate.ref === candidateRef ? { ...candidate, hrAction: action } : candidate
       )
@@ -339,13 +119,13 @@ const ShortlistedCandidates: React.FC = () => {
   const filteredCandidates = candidatesData
     .filter(
       (candidate) =>
-        candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        candidate.position.toLowerCase().includes(searchTerm.toLowerCase())
+        candidate.hrAction === 'shortlist' &&
+        (candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          candidate.position.toLowerCase().includes(searchTerm.toLowerCase()))
     )
     .filter(
       (candidate) =>
-        selectedJobRef === 'all' ||
-        candidate.ref === selectedJobRef
+        selectedJobRef === 'all' || candidate.ref === selectedJobRef
     )
     .sort((a, b) => {
       switch (sortBy) {
@@ -360,8 +140,21 @@ const ShortlistedCandidates: React.FC = () => {
       }
     });
 
+     // PAGINATION LOGIC
+  const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage);
+  const paginatedCandidates = filteredCandidates.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="">
       <div>
         <div className="flex items-center space-x-2">
         
@@ -410,15 +203,15 @@ const ShortlistedCandidates: React.FC = () => {
                 <TableRow className="bg-gray-100">
                   <TableHead className="w-24 font-semibold text-gray-700 py-3 text-left">Ref</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-left">Job Position</TableHead>
-                  <TableHead className="font-semibold text-gray-700 py-3 text-left">Candidate</TableHead>
+                  <TableHead className="font-semibold text-gray-700 py-3 text-center  ">Candidate</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-center">Nationality</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-center">Years of Experience</TableHead>
                   <TableHead className="font-semibold text-gray-700 py-3 text-left">Degree</TableHead>
-                  <TableHead className="font-semibold text-gray-700 py-3 text-center">Plan Interview</TableHead>
+                  <TableHead className="font-semibold text-gray-700 py-3 text-center">Take action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredCandidates.map((candidate) => (
+                {paginatedCandidates.map((candidate) => (
                   <TableRow key={candidate.ref} className="hover:bg-gray-50 transition-colors border-b border-gray-200">
                     <TableCell className="font-medium text-gray-600 py-3 text-left">{candidate.ref}</TableCell>
                     <TableCell className="font-medium text-gray-600 py-3 text-left">
@@ -437,25 +230,25 @@ const ShortlistedCandidates: React.FC = () => {
                       </div>
                     </TableCell>
                     <TableCell className="font-medium text-gray-600 py-3 text-left">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 justify-between">
                         <img src={candidate.avatar} alt={candidate.name} className="h-10 w-10 rounded-full object-cover" />
                         <div>
-                          <p className="text-sm">{candidate.name}</p>
+                          <p className="text-sm text-left">{candidate.name}</p>
                         </div>
-                        
-                        <Button size="sm" variant="default" onClick={() => handleCandidateClick(candidate)}>
+
+                        <Button size="sm" variant="outline" onClick={() => handleCandidateClick(candidate)}>
                           <Eye className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
                     <TableCell className="text-center font-medium text-gray-600 py-3">
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex items-center justify-between gap-1">
                         <img
                           src={candidate.flag}
                           alt={`${candidate.nationality} flag`}
                           className="h-5 w-7 object-cover rounded-sm shadow-sm"
                         />
-                        <span className="text-sm">{candidate.nationality}</span>
+                        <span className="text-sm ">{candidate.nationality}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-center font-medium text-gray-600 py-3">
@@ -471,7 +264,7 @@ const ShortlistedCandidates: React.FC = () => {
                         </Button>
                       ) : (
                         <Button size="sm" variant="default" onClick={() => { setSelectedInterviewCandidate(candidate); setIsInterviewModalOpen(true); }}>
-                          Plan Interview
+                          Schedule Interview
                         </Button>
                       )}
                     </TableCell>
@@ -480,30 +273,37 @@ const ShortlistedCandidates: React.FC = () => {
               </TableBody>
             </Table>
           </div>
+
+           <Pagination
+           currentPage={currentPage}
+           totalPages={totalPages}
+           onPageChange={handlePageChange}
+         />
         </CardContent>
       </Card>
 
-      <Dialog open={isEvaluationOpen} onOpenChange={setIsEvaluationOpen}>
-        <DialogContent className="max-w-50xl h-[95vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Candidate Evaluation</DialogTitle>
-          </DialogHeader>
-          {selectedCandidate && (
+      {selectedCandidate && (
             <CandidateProfile
               candidate={selectedCandidate}
               onClose={handleCloseProfile}
               onStatusChange={handleStatusChange}
             />
           )}
-        </DialogContent>
-      </Dialog>
 
       {/* Interview Planning Modal */}
       {isInterviewModalOpen && selectedInterviewCandidate && (
         <InterviewModal
           selectedSlot={scheduledInterviews[selectedInterviewCandidate.ref]
             ? scheduledInterviews[selectedInterviewCandidate.ref]
-            : { date: '', time: '' }}
+            : {
+                date: '',
+                time: '',
+                candidate: selectedInterviewCandidate.name,
+                jobPosition: selectedInterviewCandidate.position,
+                businessUnit: selectedInterviewCandidate.businessUnit,
+                location: selectedInterviewCandidate.location,
+              }
+          }
           onSchedule={(data) => handleScheduleInterview(selectedInterviewCandidate.ref, data)}
           onClose={() => setIsInterviewModalOpen(false)}
         />

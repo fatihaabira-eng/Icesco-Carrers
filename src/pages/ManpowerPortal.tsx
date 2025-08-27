@@ -30,7 +30,7 @@ import InterviewManagement from './InterviewManagement';
 import icescoLogo from "@/assets/logo.png";
 import CVTechPage from './CVTechPage';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
-import CreateJobOfferForm from '@/components/CreateJobOfferForm';
+import CreateJobOfferForm from '@/components/JobOfferForm';
 
 interface ManpowerPortalProps {
   defaultRole?: 'hr' | 'committee' | 'director';

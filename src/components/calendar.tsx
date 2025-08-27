@@ -1,7 +1,11 @@
 import { InterviewData } from "../pages/ScheduleInterview"
+import { InterviewModal } from "./interview-modal";
+// InterviewModal now accepts interviewData and questions for pre-filling
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Clock, User, MapPin, Building2, Users, Briefcase, Plus, CalendarIcon } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog'
+import { useState } from "react"
 
 interface CalendarProps {
   onSlotClick: (date: string, time: string) => void
@@ -61,6 +65,15 @@ const isSelectedDay = (date: Date) => {
 
   const getInterviewTypeColor = (type: string) => {
     switch (type) {
+      case 'HR': return ' text-blue-700 border-blue-600'
+      case 'committee': return ' text-emerald-700 border-emerald-600'
+      case 'BU': return 'text-yellow-700 border-yellow-600'
+      default: return 'bg-muted text-muted-foreground border-border'
+    }
+  }
+
+    const getInterviewTypeBadgeColor = (type: string) => {
+    switch (type) {
       case 'HR': return 'bg-blue-50 text-blue-700 border-blue-600'
       case 'committee': return 'bg-emerald-50 text-emerald-700 border-emerald-600'
       case 'BU': return 'bg-yellow-50 text-yellow-700 border-yellow-600'
@@ -82,103 +95,124 @@ const isSelectedDay = (date: Date) => {
     return date.toDateString() === today.toDateString()
   }
 
-  return (
-     <Card>
-      <CardContent className="p-0">
-        <div className="overflow-hidden">
-          {/* Header with time slots */}
-          <div className="grid grid-cols-10 bg-muted/50 border-b">
-            <div className="col-span-1 p-4 border-r border-border">
-              <div className="flex items-center justify-center space-x-2">
-                <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-bold">Day / Time</span>
-              </div>
-            </div>
-            {timeSlots.map((time) => (
-              <div key={time} className="p-4 text-center border-r border-border last:border-r-0">
-                <div className="flex items-center justify-center space-x-1">
-                  <Clock className="h-3 w-3 text-muted-foreground" />
-                  <div className="text-sm font-bold">
-                    {time}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+  const [selectedInterview, setSelectedInterview] = useState<InterviewData | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
-          {/* Days rows */}
-          {days.map((day, dayIndex) => {
-            const dateStr = formatDate(day)
-            const todayClass = isToday(day) ? 'bg-teal-50 border-l-2 border-l-primary' : ''
-            const selectedClass = isSelectedDay(day) ? 'ring-inset' : ''
-            
-            
-            return (
-              <div
-                key={dateStr}
-                className={`grid grid-cols-10 border-b border-border last:border-b-0 hover:bg-accent/30 transition-colors ${todayClass} ${selectedClass}`}
-                style={isSelectedDay(day) ? { backgroundColor: '#e4ebf0ff' } : {}}
-              >
-                {/* Day name */}
-                <div className={`col-span-1 p-4 border-r border-border bg-muted/30 flex items-center justify-center ${isSelectedDay(day) ? 'font-bold text-primary' : ''}`}>
-                  <div className="flex items-center space-x-2">
-                  
-                    <span className={`text-sm font-bold text-center ${isToday(day) ? 'text-primary' : 'text-foreground'}`}>
-                      {dayNames[dayIndex]}
-                    </span>
-                    {isSelectedDay(day) && (
-                      <span className="ml-2 px-2 py-0.5 rounded-full bg-primary text-white text-xs">Selected</span>
-                    )}
+  const handleInterviewClick = (interview: InterviewData) => {
+    setSelectedInterview(interview);
+    setShowModal(true);
+  };
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedInterview(null);
+  };
+
+  return (
+    <>
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-hidden">
+            {/* Header with time slots */}
+            <div className="grid grid-cols-10 bg-muted/50 border-b">
+              <div className="col-span-1 p-4 border-r border-border">
+                <div className="flex items-center justify-center space-x-2">
+                  <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-bold">Day / Time</span>
+                </div>
+              </div>
+              {timeSlots.map((time) => (
+                <div key={time} className="p-4 text-center border-r border-border last:border-r-0">
+                  <div className="flex items-center justify-center space-x-1">
+                    <Clock className="h-3 w-3 text-muted-foreground" />
+                    <div className="text-sm font-bold">
+                      {time}
+                    </div>
                   </div>
                 </div>
-                
-                {/* Time slots for this day */}
-                {timeSlots.map((time) => {
-                  const interview = getInterviewForSlot(dateStr, time)
+              ))}
+            </div>
+
+            {/* Days rows */}
+            {days.map((day, dayIndex) => {
+              const dateStr = formatDate(day)
+              const todayClass = isToday(day) ? 'bg-teal-50 border-l-2 border-l-primary' : ''
+              const selectedClass = isSelectedDay(day) ? 'ring-inset' : ''
+              
+              
+              return (
+                <div
+                  key={dateStr}
+                  className={`grid grid-cols-10 border-b border-border last:border-b-0 hover:bg-accent/30 transition-colors ${todayClass} ${selectedClass}`}
+                  style={isSelectedDay(day) ? { backgroundColor: '#e4ebf0ff' } : {}}
+                >
+                  {/* Day name */}
+                  <div className={`col-span-1 p-4 border-r border-border bg-muted/30 flex items-center justify-center ${isSelectedDay(day) ? 'font-bold text-primary' : ''}`}>
+                    <div className="flex items-center space-x-2">
+                    
+                      <span className={`text-sm font-bold text-center ${isToday(day) ? 'text-primary' : 'text-foreground'}`}>
+                        {dayNames[dayIndex]}
+                      </span>
+                     
+                    </div>
+                  </div>
                   
-                  return (
-                    <div 
-                      key={`${dateStr}-${time}`}
-                      className="p-2 border-r border-border last:border-r-0 min-h-[80px] cursor-pointer hover:bg-teal-700 transition-all duration-200 relative group"
-                      onClick={() => !interview && onSlotClick(dateStr, time)}
-                    >
-                      {interview ? (
-                        <div className={`p-3 rounded-md text-xs font-medium h-full flex flex-col justify-between border ${getInterviewTypeColor(interview.type)}`}>
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-1">
-                              {(() => {
-                                const InterviewIcon = getInterviewTypeIcon(interview.type)
-                                return <InterviewIcon className="h-3 w-3" />
-                              })()}
-                              <div className="font-bold truncate">{interview.candidate}</div>
+                  {/* Time slots for this day */}
+                  {timeSlots.map((time) => {
+                    const interview = getInterviewForSlot(dateStr, time)
+                    
+                    return (
+                      <div
+                        key={`${dateStr}-${time}`}
+                        className="p-2 border-r border-border last:border-r-0 min-h-[80px] cursor-pointer hover:bg-teal-700 transition-all duration-200 relative group"
+                        onClick={() => interview ? handleInterviewClick(interview) : onSlotClick(dateStr, time)}
+                      >
+                        {interview ? (
+                          <div className={`p-3 rounded-lg shadow-md bg-white text-xs font-medium h-full flex flex-col justify-between border ${getInterviewTypeColor(interview.type)} transition-all duration-200`}>
+                            <div className="space-y-1">
+                              <div className="flex items-center space-x-1">
+                                {(() => {
+                                  const InterviewIcon = getInterviewTypeIcon(interview.type)
+                                  return <InterviewIcon className="h-3 w-3 text-primary" />
+                                })()}
+                                <div className="font-bold truncate text-gray-900">{interview.candidate}</div>
+                              </div>
                             </div>
-                            <div className="flex items-center space-x-1 opacity-90">
-                              <Badge variant="secondary" className="text-xs px-1 py-0 bg-gray-500 text-white">
+                            <div className="flex items-center space-x-1 opacity-75 text-xs">
+                              <Briefcase className="h-2 w-2 text-gray-500" />
+                              <div className="truncate text-gray-700">{interview.jobPosition}</div>
+                            </div>
+                            <div className="flex items-center space-x-1 opacity-90 mt-2">
+                              <Badge variant="secondary" className={`text-xs px-2 py-0 font-semibold border ${getInterviewTypeBadgeColor(interview.type)} `}> 
                                 {interview.type.replace('-', ' ').toUpperCase()}
                               </Badge>
                             </div>
                           </div>
-                          <div className="flex items-center space-x-1 opacity-75 text-xs">
-                            <Briefcase className="h-2 w-2" />
-                            <div className="truncate">{interview.jobPosition}</div>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 flex flex-col items-center space-y-1">
+                              <Plus className="h-4 w-4 text-white" />
+                              <span className="text-xs text-white">Add Interview</span>
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 flex flex-col items-center space-y-1">
-                            <Plus className="h-4 w-4 text-white" />
-                            <span className="text-xs text-white">Add Interview</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )
-          })}
-        </div>
-      </CardContent>
-    </Card>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
+        </CardContent>
+      </Card>
+      {showModal && selectedInterview && (
+        <InterviewModal
+          selectedSlot={{ date: selectedInterview.date, time: selectedInterview.time }}
+          onSchedule={() => setShowModal(false)}
+          onClose={handleCloseModal}
+          interviewData={selectedInterview}
+          questions={selectedInterview.questions || []}
+        />
+      )}
+    </>
   )
 }

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { InterviewData } from "../pages/ScheduleInterview"
 import { getShortlistedCandidates } from "../data/candidatesData"
+import { getInterviews } from "../data/interviewsData"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 import { candidatesData } from "../data/candidatesData";
@@ -16,6 +17,8 @@ interface InterviewModalProps {
   selectedSlot: { date: string; time: string }
   onSchedule: (data: InterviewData) => void
   onClose: () => void
+  interviewData?: InterviewData
+  questions?: any[]
 }
 
 
@@ -115,22 +118,43 @@ const mockBusinessUnits = [
 
 
 
-export function InterviewModal({ selectedSlot, onSchedule, onClose }: InterviewModalProps) {
-  const [interviewType, setInterviewType] = useState<'HR' | 'committee' | 'BU'>('HR')
+export function InterviewModal({ selectedSlot, onSchedule, onClose, interviewData, questions: questionsProp }: InterviewModalProps) {
+  // Accept interviewData and questions for pre-filling
+  // Check if slot is available based on interview data
+  function isSlotAvailable(date: string, time: string) {
+    const allInterviews = getInterviews(new Date());
+    // Convert time string to minutes since midnight
+    function timeToMinutes(t: string) {
+      const [h, m] = t.split(":").map(Number);
+      return h * 60 + m;
+    }
+    const selectedStart = timeToMinutes(time);
+    const selectedEnd = selectedStart + 60; // Assume 60 min duration for new slot, or make this configurable
+    return !allInterviews.some(interview => {
+      if (interview.date !== date) return false;
+      const interviewStart = timeToMinutes(interview.time);
+      const interviewEnd = interviewStart + interview.duration;
+      // Check for overlap
+      return (
+        (selectedStart < interviewEnd) && (interviewStart < selectedEnd)
+      );
+    });
+  }
+  const [interviewType, setInterviewType] = useState<'HR' | 'committee' | 'BU'>(interviewData?.type || 'HR');
   const [questionJobFilter, setQuestionJobFilter] = useState('');
   const [questionBUFilter, setQuestionBUFilter] = useState('');
 
- const [questions, setQuestions] = useState(defaultQuestions);
-const [questionsReadOnly, setQuestionsReadOnly] = useState(false);
-
+    const [questions, setQuestions] = useState(Array.isArray(questionsProp) && questionsProp.length > 0 ? questionsProp : defaultQuestions);
+  const [questionsReadOnly, setQuestionsReadOnly] = useState(false);
 
   const [candidateSearch, setCandidateSearch] = useState('');
-  const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>([]);
-  const [candidate, setCandidate] = useState<string | undefined>(undefined)
-  const [jobPosition, setJobPosition] = useState('')
-  const [location, setLocation] = useState('')
-  const [businessUnit, setBusinessUnit] = useState('')
-const [showQuestions, setShowQuestions] = useState(false);
+    const [selectedBusinessUnits, setSelectedBusinessUnits] = useState<string[]>(interviewData && interviewData.businessUnit ? interviewData.businessUnit.split(',').map(bu => bu.trim()) : []);
+  const [candidate, setCandidate] = useState<string | undefined>(interviewData?.candidate ? candidatesData.find(c => c.name === interviewData.candidate)?.ref : undefined);
+    const [jobPosition, setJobPosition] = useState(interviewData && interviewData.jobPosition ? interviewData.jobPosition : '');
+    const [location, setLocation] = useState(interviewData && interviewData.location ? interviewData.location : '');
+  const [businessUnit, setBusinessUnit] = useState('');
+    const [showQuestions, setShowQuestions] = useState(Array.isArray(questionsProp) && questionsProp.length > 0);
+    const [localTime, setLocalTime] = useState(selectedSlot.time || (interviewData && interviewData.time ? interviewData.time : ''));
 
 let allCandidates: any[] = [];
   if (interviewType === 'HR') {
@@ -170,27 +194,38 @@ let allCandidates: any[] = [];
     })
   }
 
-  const handleSubmit = () => {
+ const handleSubmit = () => {
+  // Check all required fields
   if (
-  candidate === undefined ||
-  !jobPosition ||
-  !location ||
-  (interviewType === 'BU' && selectedBusinessUnits.length === 0)
-) {
-  return
-}
-
-    const interviewData: InterviewData = {
-      date: selectedSlot.date,
-      time: selectedSlot.time,
-      type: interviewType,
-      candidate: allCandidates.find(c => c.ref === candidate)?.name || '',
-      jobPosition,
-      location,
-      ...(interviewType === 'BU' && { businessUnit: selectedBusinessUnits.join(', ') })
-    }
-    onSchedule(interviewData)
+    candidate === undefined ||
+    !jobPosition ||
+    !location ||
+    (interviewType === 'BU' && selectedBusinessUnits.length === 0) ||
+    !localTime
+  ) {
+    // You might want to show which fields are missing here
+    return;
   }
+
+  // Explicitly check slot availability
+  if (!isSlotAvailable(selectedSlot.date, localTime)) {
+    // You could set some state here to show an error message
+    alert('The selected time slot is not available. Please choose another time.');
+    return;
+  }
+
+  const interviewData: InterviewData = {
+    date: selectedSlot.date,
+    time: localTime,
+    type: interviewType,
+    candidate: allCandidates.find(c => c.ref === candidate)?.name || '',
+    jobPosition,
+    location,
+    ...(interviewType === 'BU' && { businessUnit: selectedBusinessUnits.join(', ') })
+  };
+  
+  onSchedule(interviewData);
+}
 
  const isFormValid =
   candidate !== undefined &&
@@ -238,9 +273,23 @@ let allCandidates: any[] = [];
                 <Clock className="h-4 w-4 text-teal-700" />
                 <div className="text-sm font-medium text-muted-foreground">Selected Date & Time</div>
               </div>
-              <div className="text-lg font-bold">
-                {formatDate(selectedSlot.date)} at {selectedSlot.time}
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold">{formatDate(selectedSlot.date)} at</span>
+                <input
+                  type="time"
+                  value={localTime}
+                  onChange={e => setLocalTime(e.target.value)}
+                  className="border rounded px-2 py-1 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-primary"
+                  style={{ width: '110px' }}
+                />
               </div>
+             <div className="mt-2">
+            {localTime && isSlotAvailable(selectedSlot.date, localTime) ? (
+              <span className="text-green-600 font-semibold">Slot Available</span>
+            ) : localTime ? (
+              <span className="text-red-600 font-semibold">Slot Not Available - Please choose another time</span>
+            ) : null}
+          </div>
             </div>
 
             {/* Interview Type */}
@@ -519,13 +568,17 @@ let allCandidates: any[] = [];
                 <X className="h-4 w-4 mr-2" />
                 Cancel
               </Button>
-              <Button 
-                onClick={handleSubmit}
-                disabled={!isFormValid}
-              >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Schedule Interview
-              </Button>
+             <Button 
+              onClick={handleSubmit}
+              disabled={
+                !isFormValid || 
+                !localTime || 
+                !isSlotAvailable(selectedSlot.date, localTime)
+              }
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Schedule Interview
+            </Button>
             </div>
           </div>
 

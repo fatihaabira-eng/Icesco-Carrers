@@ -204,13 +204,16 @@ export function InterviewModal({ selectedSlot, onSchedule, onClose }: InterviewM
   ))}
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    })
+    if (!dateStr || isNaN(Date.parse(dateStr))) {
+      return 'Select date and time';
+    }
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 
   const handleSubmit = () => {
@@ -294,6 +297,7 @@ export function InterviewModal({ selectedSlot, onSchedule, onClose }: InterviewM
                   value={interviewDateTime}
                   onChange={e => setInterviewDateTime(e.target.value)}
                   required
+                  placeholder="Select date and time"
                 />
                 <div className="flex items-center gap-1 mt-2">
                   <HourglassIcon className="h-4 w-4 text-primary" />

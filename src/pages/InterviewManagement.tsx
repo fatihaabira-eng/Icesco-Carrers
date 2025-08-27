@@ -1,3 +1,15 @@
+// InterviewData type for modal integration
+interface InterviewData {
+  date: string;
+  time: string;
+  type?: string;
+  candidate?: string;
+  jobPosition?: string;
+  location?: string;
+  duration?: string;
+  businessUnit?: string;
+  questions?: any[];
+}
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,150 +41,93 @@ import {
   Plus,
   Eye,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  CheckCheck,
+  CalendarCog
 } from 'lucide-react';
-import { format, addDays, startOfWeek, addWeeks, isSameDay, getDay } from 'date-fns';
+import { format, addDays, startOfWeek, addWeeks, isSameDay } from 'date-fns';
+import { getInterviews } from '../data/interviewsData';
+import Pagination from '@/components/Pagination';
+import { candidatesData, Candidate } from '../data/candidatesData';
+import { useNavigate } from 'react-router-dom';
+import { InterviewModal } from '@/components/interview-shortlisted-modal';
 
 // Define the types for our data structures
-type Candidate = {
-  name: string;
-  position: string;
-  avatar: string;
-};
-
-type Interview = {
-  id: number;
-  candidate: Candidate;
-  date: Date;
-  time: string;
-  duration: number;
-  round: string;
-  mode: 'video' | 'in-person' | 'phone';
-  location: string;
-  status: 'scheduled' | 'confirmed' | 'pending' | 'completed' | 'rescheduled' | 'cancelled';
-  businessUnit: string;
-};
 
 const InterviewManagement: React.FC = () => {
   const [selectedWeek, setSelectedWeek] = useState(0);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterBusinessUnit, setFilterBusinessUnit] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isInterviewModalOpen, setIsInterviewModalOpen] = useState(false);
+  const [selectedInterviewCandidate, setSelectedInterviewCandidate] = useState<Candidate | null>(null);
+  const [scheduledInterviews, setScheduledInterviews] = useState<{ [ref: string]: InterviewData }>({});
+  const [interviews, setInterviews] = useState(getInterviews(addWeeks(startOfWeek(new Date(), { weekStartsOn: 1 }), 0)));
+  const [editingInterview, setEditingInterview] = useState<any | null>(null); // Track interview being edited
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5); // you can make this selectable
 
   const currentWeek = addWeeks(startOfWeek(new Date(), { weekStartsOn: 1 }), selectedWeek);
+  const handleScheduleInterview = (candidateRef: string, interviewData: InterviewData) => {
+    setScheduledInterviews(prev => ({ ...prev, [candidateRef]: interviewData }));
+    if (editingInterview) {
+      // Update existing interview
+      setInterviews(prev => prev.map(interview =>
+        interview.id === editingInterview.id
+          ? {
+              ...interview,
+              candidate: {
+                name: interviewData.candidate || '',
+                position: interviewData.jobPosition || '',
+                avatar: selectedInterviewCandidate?.avatar || '',
+              },
+              date: interviewData.date,
+              time: interviewData.time,
+              duration: interviewData.duration ? parseInt(interviewData.duration) : 60,
+              round: interviewData.type || '',
+              location: interviewData.location || '',
+              businessUnit: interviewData.businessUnit || '',
+            }
+          : interview
+      ));
+    } else {
+      // Add new interview
+      setInterviews(prev => [
+        ...prev,
+        {
+          id: prev.length ? Math.max(...prev.map(i => i.id)) + 1 : 1,
+          candidate: {
+            name: interviewData.candidate || '',
+            position: interviewData.jobPosition || '',
+            avatar: selectedInterviewCandidate?.avatar || '',
+          },
+          date: interviewData.date,
+          time: interviewData.time,
+          duration: interviewData.duration ? parseInt(interviewData.duration) : 60,
+          round: interviewData.type || '',
+          mode: 'video',
+          location: interviewData.location || '',
+          status: 'scheduled',
+          businessUnit: interviewData.businessUnit || '',
+        }
+      ]);
+    }
+    setIsInterviewModalOpen(false);
+    setEditingInterview(null);
+  };
+  // Week navigation handlers
+  const handlePrevWeek = () => setSelectedWeek((prev) => prev - 1);
+  const handleNextWeek = () => setSelectedWeek((prev) => prev + 1);
 
-  // Mock interview data with real avatars from the internet 🖼️
-  const interviews: Interview[] = [
-    {
-      id: 1,
-      candidate: {
-        name: 'Ahmed Hassan El-Masri',
-        position: 'Senior Software Engineer',
-        // --- Updated Avatar URL ---
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-      },
-      date: addDays(currentWeek, 1),
-      time: '10:00',
-      duration: 60,
-      round: 'Technical',
-      mode: 'video',
-      location: 'Google Meet',
-      status: 'scheduled',
-      businessUnit: 'Engineering',
-    },
-    {
-      id: 2,
-      candidate: {
-        name: 'Fatima Al-Zahra Benali',
-        position: 'Marketing Manager',
-        // --- Updated Avatar URL ---
-        avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
-      },
-      date: addDays(currentWeek, 2),
-      time: '14:00',
-      round: 'HR',
-      duration: 45,
-      mode: 'in-person',
-      location: 'Conference Room A',
-      status: 'confirmed',
-      businessUnit: 'Marketing',
-    },
-    {
-      id: 3,
-      candidate: {
-        name: 'Omar Khalil Al-Rashid',
-        position: 'Education Specialist',
-        // --- Updated Avatar URL ---
-        avatar: 'https://randomuser.me/api/portraits/men/35.jpg'
-      },
-      date: addDays(currentWeek, 3),
-      time: '11:30',
-      duration: 60,
-      round: 'Committee',
-      mode: 'video',
-      location: 'Zoom Meeting',
-      status: 'pending',
-      businessUnit: 'Education',
-    },
-    {
-      id: 4,
-      candidate: {
-        name: 'Amina Kone Diabate',
-        position: 'Financial Analyst',
-        // --- Updated Avatar URL ---
-        avatar: 'https://randomuser.me/api/portraits/women/23.jpg'
-      },
-      date: addDays(currentWeek, 4),
-      time: '15:30',
-      duration: 45,
-      round: 'Technical',
-      mode: 'phone',
-      location: 'Phone Call',
-      status: 'completed',
-      businessUnit: 'Finance',
-    },
-    {
-      id: 5,
-      candidate: {
-        name: 'Youssef Ben Mohamed',
-        position: 'Data Scientist',
-        // --- Updated Avatar URL ---
-        avatar: 'https://randomuser.me/api/portraits/men/55.jpg'
-      },
-      date: addDays(currentWeek, 5),
-      time: '09:00',
-      round: 'HR',
-      duration: 90,
-      mode: 'in-person',
-      location: 'Lab Room B',
-      status: 'rescheduled',
-      businessUnit: 'Research',
-    },
-    {
-      id: 6,
-      candidate: {
-        name: 'Layla Ibrahim',
-        position: 'UX Designer',
-        // --- Updated Avatar URL ---
-        avatar: 'https://randomuser.me/api/portraits/women/68.jpg'
-      },
-      date: addDays(currentWeek, 1),
-      time: '13:00',
-      duration: 60,
-      round: 'Technical',
-      mode: 'video',
-      location: 'Microsoft Teams',
-      status: 'confirmed',
-      businessUnit: 'Engineering',
-    },
-  ];
+  // Use interviews state variable only
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled': return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'confirmed': return 'bg-green-100 text-green-800 border-green-200';
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'completed': return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'completed': return 'bg-green-100 text-green-800 border-green-200';
       case 'rescheduled': return 'bg-orange-100 text-orange-800 border-orange-200';
       case 'cancelled': return 'bg-red-100 text-red-800 border-red-200';
       default: return 'bg-gray-100 text-gray-800';
@@ -184,7 +139,7 @@ const InterviewManagement: React.FC = () => {
       case 'scheduled': return 'bg-blue-500';
       case 'confirmed': return 'bg-green-500';
       case 'pending': return 'bg-yellow-500';
-      case 'completed': return 'bg-gray-500';
+      case 'completed': return 'bg-green-400';
       case 'rescheduled': return 'bg-orange-500';
       case 'cancelled': return 'bg-red-500';
       default: return 'bg-gray-400';
@@ -195,7 +150,9 @@ const InterviewManagement: React.FC = () => {
     switch (status) {
       case 'confirmed': return <CheckCircle className="h-4 w-4 text-green-600" />;
       case 'pending': return <AlertCircle className="h-4 w-4 text-yellow-600" />;
-      case 'cancelled': return <XCircle className="h-4 w-4 text-red-600" />;
+      case 'completed': return <CheckCheck className="h-4 w-4 text-green-800" />;
+      case 'cancelled': return <XCircle className="h-4 w-4 text-green-700" />;
+      case 'rescheduled': return <CalendarCog className="h-4 w-4 text-orange-800" />;
       default: return <Calendar className="h-4 w-4 text-blue-600" />;
     }
   };
@@ -213,14 +170,16 @@ const InterviewManagement: React.FC = () => {
     const matchesSearch = interview.candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       interview.candidate.position.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || interview.status === filterStatus;
-    const matchesBusinessUnit = filterBusinessUnit === 'all' || interview.businessUnit === filterBusinessUnit;
+    const matchesRound = filterBusinessUnit === 'all' || interview.round === filterBusinessUnit;
+    const interviewDate = new Date(interview.date);
+    const matchesWeek = interviewDate >= currentWeek && interviewDate < addDays(currentWeek, 7);
 
-    return matchesSearch && matchesStatus && matchesBusinessUnit;
+    return matchesSearch && matchesStatus && matchesRound && matchesWeek;
   });
 
   const getWeeklyStats = () => {
     const weekInterviews = interviews.filter(interview =>
-      interview.date >= currentWeek && interview.date < addDays(currentWeek, 7)
+      new Date(interview.date) >= currentWeek && new Date(interview.date) < addDays(currentWeek, 7)
     );
 
     return {
@@ -233,9 +192,26 @@ const InterviewManagement: React.FC = () => {
     };
   };
 
+
+  
+  // PAGINATION LOGIC
+  const totalPages = Math.ceil(filteredInterviews.length / itemsPerPage);
+  const paginatedInterviews = filteredInterviews.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   const weeklyStats = getWeeklyStats();
 
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(currentWeek, i));
+
+  const navigate = useNavigate();
 
   return (
     <div className="bg-background min-h-screen">
@@ -250,7 +226,52 @@ const InterviewManagement: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="bg-primary text-white border-primary hover:bg-primary-ligh">
+            <Button 
+              variant="outline" 
+              className="bg-primary text-white border-primary hover:bg-primary-ligh"
+              onClick={() => {
+                setIsInterviewModalOpen(true);
+                setSelectedInterviewCandidate({
+                  id: 'new',
+                  businessUnit: '',
+                  score: 0,
+                  ref: 'new',
+                  name: '',
+                  position: '',
+                  nationality: '',
+                  flag: '',
+                  age: 0,
+                  degree: '',
+                  university: '',
+                  experience: '',
+                  matchingScore: 0,
+                  skills: [],
+                  languages: [],
+                  phase: '',
+                  decision: 'under_review',
+                  avatar: '',
+                  hrAction: 'not-reviewed',
+                  appliedDate: '',
+                  email: '',
+                  status: 'new',
+                  phone: '',
+                  location: '',
+                  year: new Date().getFullYear(),
+                  videoUrl: '',
+                  aiScreeningScore: 0,
+                  aiRecommendations: [],
+                  resumeData: {
+                    extractedSkills: [],
+                    workExperience: [],
+                    education: [],
+                    certifications: [],
+                    languages: [],
+                    parsedDate: ''
+                  },
+                  education: '',
+                });
+              }}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Schedule New
             </Button>
@@ -261,16 +282,16 @@ const InterviewManagement: React.FC = () => {
         {/* Filters and Controls */}
         <Card className="border-gray-200 shadow-sm">
           <CardContent className="p-4">
-            <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+            <div className="flex flex-col lg:flex-row gap-4 lg:items-center mt-4">
               {/* Week Navigation */}
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" className="border-blue-200 text-blue-800 hover:bg-blue-100">
+                <Button variant="outline" size="icon" className="border-blue-200 text-blue-800 hover:bg-blue-100" onClick={handlePrevWeek}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <span className="text-sm font-medium text-center w-48 text-gray-800">
                   {format(currentWeek, 'MMM dd')} - {format(addDays(currentWeek, 6), 'MMM dd, yyyy')}
                 </span>
-                <Button variant="outline" size="icon" className="border-blue-200 text-blue-800 hover:bg-blue-100">
+                <Button variant="outline" size="icon" className="border-blue-200 text-blue-800 hover:bg-blue-100" onClick={handleNextWeek}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -291,7 +312,7 @@ const InterviewManagement: React.FC = () => {
                 <div className="flex gap-2">
                   <Select value={filterStatus} onValueChange={setFilterStatus}>
                     <SelectTrigger className="w-full md:w-40 border-gray-200 text-gray-800">
-                      <Filter className="h-4 w-4 mr-2 text-blue-600" />
+                      <Filter className="h-4 w-4 mr-2 text-[#0b787f]" />
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -306,46 +327,46 @@ const InterviewManagement: React.FC = () => {
 
                   <Select value={filterBusinessUnit} onValueChange={setFilterBusinessUnit}>
                     <SelectTrigger className="w-full md:w-40 border-gray-200 text-gray-800">
-                      <Users className="h-4 w-4 mr-2 text-green-600" />
-                      <SelectValue placeholder="Business Unit" />
+                      <Users className="h-4 w-4 mr-2 text-[#0b787f]" />
+                      <SelectValue placeholder="Round" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Rounds</SelectItem>
-                      <SelectItem value="Marketing">HR</SelectItem>
-                      <SelectItem value="Engineering">Technical</SelectItem>
-                      <SelectItem value="Education">Committee</SelectItem>
+                      <SelectItem value="HR">HR</SelectItem>
+                      <SelectItem value="Technical">Technical</SelectItem>
+                      <SelectItem value="Committee">Committee</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Interview Tabs */}
-        <Tabs defaultValue="list" className="space-y-6">
+
+
+             {/* Interview Tabs */}
+        <Tabs defaultValue="list" className="space-y-6 mt-6">
           <TabsList className="bg-gray-100">
             <TabsTrigger value="list" className="data-[state=active]:bg-[#d5f3f5] data-[state=active]:text-primary">List View</TabsTrigger>
             <TabsTrigger value="calendar" className="data-[state=active]:bg-[#d5f3f5] data-[state=active]:text-primary">Calendar View</TabsTrigger>
           </TabsList>
 
           <TabsContent value="list">
-            <Card className="border-gray-200 shadow-sm">
-              <CardContent className="p-0">
+           
+             <div className="border rounded-lg overflow-hidden">
                 <Table className="w-full">
                   <TableHeader>
                     <TableRow className="bg-gray-50 border-b border-gray-200">
-                      <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Candidate</TableHead>
-                      <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Position</TableHead>
-                      <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Round</TableHead>
-                      <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Mode</TableHead>
-                      <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Date & Time</TableHead>
-                      <TableHead className="font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Status</TableHead>
-                      <TableHead className="text-center font-semibold text-gray-700 text-xs uppercase tracking-wide py-3">Actions</TableHead>
+                      <TableHead className="font-semibold text-gray-700 text-xs  tracking-wide py-3">Candidate</TableHead>
+                      <TableHead className="font-semibold text-gray-700 text-xs  tracking-wide py-3">Position</TableHead>
+                      <TableHead className="font-semibold text-gray-700 text-xs  tracking-wide py-3">Round</TableHead>
+                      <TableHead className="font-semibold text-gray-700 text-xs  tracking-wide py-3">Mode</TableHead>
+                      <TableHead className="font-semibold text-gray-700 text-xs  tracking-wide py-3">Date & Time</TableHead>
+                      <TableHead className="font-semibold text-gray-700 text-xs  tracking-wide py-3">Status</TableHead>
+                      <TableHead className="text-center font-semibold text-gray-700 text-xs  tracking-wide py-3">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredInterviews.length > 0 ? filteredInterviews.map(interview => (
+                    {paginatedInterviews.length > 0 ? paginatedInterviews.map(interview => (
                       <TableRow key={interview.id} className="hover:bg-gray-50 transition-colors border-b border-gray-100">
                         <TableCell className="font-normal text-gray-600 py-4">
                           
@@ -398,8 +419,54 @@ const InterviewManagement: React.FC = () => {
                         </TableCell>
                         <TableCell className="font-normal text-gray-600 py-4">
                           <div className="flex items-center justify-center gap-2">
-                            
-                            <Button size="icon" variant="ghost" className="text-orange-600 hover:bg-orange-100">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="text-orange-600 hover:bg-orange-100"
+                              onClick={() => {
+                                setEditingInterview(interview);
+                                setIsInterviewModalOpen(true);
+                                setSelectedInterviewCandidate({
+                                  id: 'edit',
+                                  businessUnit: interview.businessUnit || '',
+                                  score: 0,
+                                  ref: 'edit',
+                                  name: interview.candidate.name,
+                                  position: interview.candidate.position,
+                                  nationality: '',
+                                  flag: '',
+                                  age: 0,
+                                  degree: '',
+                                  university: '',
+                                  experience: '',
+                                  matchingScore: 0,
+                                  skills: [],
+                                  languages: [],
+                                  phase: '',
+                                  decision: 'under_review',
+                                  avatar: interview.candidate.avatar,
+                                  hrAction: 'not-reviewed',
+                                  appliedDate: '',
+                                  email: '',
+                                  status: 'new',
+                                  phone: '',
+                                  location: interview.location,
+                                  year: new Date().getFullYear(),
+                                  videoUrl: '',
+                                  aiScreeningScore: 0,
+                                  aiRecommendations: [],
+                                  resumeData: {
+                                    extractedSkills: [],
+                                    workExperience: [],
+                                    education: [],
+                                    certifications: [],
+                                    languages: [],
+                                    parsedDate: ''
+                                  },
+                                  education: '',
+                                });
+                              }}
+                            >
                               <Edit className="h-4 w-4" />
                             </Button>
                           </div>
@@ -414,8 +481,13 @@ const InterviewManagement: React.FC = () => {
                     )}
                   </TableBody>
                 </Table>
-              </CardContent>
-            </Card>
+              </div>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </TabsContent>
 
           <TabsContent value="calendar">
@@ -478,7 +550,47 @@ const InterviewManagement: React.FC = () => {
             </Card>
           </TabsContent>
         </Tabs>
+          </CardContent>
+        </Card>
+
+       
       </div>
+
+      {isInterviewModalOpen && selectedInterviewCandidate && (
+        <InterviewModal
+          selectedSlot={editingInterview
+            ? {
+                date: editingInterview.date,
+                time: editingInterview.time,
+                type: editingInterview.round || '',
+                candidate: editingInterview.candidate.name || '',
+                jobPosition: editingInterview.candidate.position || '',
+                location: editingInterview.location,
+                duration: String(editingInterview.duration),
+                businessUnit: editingInterview.businessUnit,
+              }
+            : (() => {
+                const slot = scheduledInterviews[selectedInterviewCandidate.ref];
+                if (!slot) return { date: '', time: '' };
+                if ('candidate' in slot && typeof slot.candidate === 'object') {
+                  return {
+                    date: slot.date,
+                    time: slot.time,
+                    type: (slot as any).round || '',
+                    candidate: (slot as any).candidate && typeof (slot as any).candidate === 'object' ? ((slot as any).candidate.name || '') : '',
+                    jobPosition: (slot as any).candidate && typeof (slot as any).candidate === 'object' ? ((slot as any).candidate.position || '') : '',
+                    location: slot.location,
+                    duration: String(slot.duration),
+                    businessUnit: slot.businessUnit,
+                  };
+                }
+                return slot;
+              })()
+          }
+          onSchedule={(data) => handleScheduleInterview(selectedInterviewCandidate.ref, data)}
+          onClose={() => { setIsInterviewModalOpen(false); setEditingInterview(null); }}
+        />
+      )}
     </div>
   );
 };
