@@ -115,7 +115,7 @@ const Record: React.FC = () => {
         // Show success message and redirect back to apply page
         console.log('Video stored for application form:', recordedBlob);
         alert('Video submitted successfully!');
-        navigate('/apply?step=8'); // Go back to step 8 to show success state
+        navigate('/apply?step=10'); // Go back to step 8 to show success state
       };
       reader.readAsDataURL(recordedBlob);
 
