@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import JobRecommendations from "@/components/JobRecommendations";
@@ -9,13 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { JobService, JobOffer } from "@/services/apiServices";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Search, 
-  Users, 
-  Globe, 
-  Heart, 
-  Target, 
+import {
+  Search,
+  Users,
+  Globe,
+  Heart,
+  Target,
   Award,
   MapPin,
   Play,
@@ -43,7 +44,7 @@ const featuredJobs = [
     title: "Education Program Manager",
     businessUnit: "Education",
     location: "Remote",
-    type: "Full-time", 
+    type: "Full-time",
     experience: "3-5 years",
     description: "Design and implement innovative educational programs to enhance learning outcomes in member states.",
     skills: ["Program Management", "Educational Design", "Stakeholder Management", "Arabic", "French"]
@@ -127,7 +128,7 @@ const careerPaths = [
     icon: GraduationCap,
     color: "bg-blue-500"
   },
-  
+
   {
     id: "culture",
     title: " Internship Program",
@@ -142,7 +143,37 @@ export default function Home() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedBusinessUnit, setSelectedBusinessUnit] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
+  const [jobOffers, setJobOffers] = useState<JobOffer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+  const fetchJobOffers = async () => {
+    try {
+      setLoading(true);
+      const offers = await JobService.getJobs();
+      
+      // Ensure we always set an array
+      if (Array.isArray(offers)) {
+        setJobOffers(offers);
+      } else {
+        console.error('Expected array but got:', offers);
+        setJobOffers([]);
+        setError('Invalid data format received from server');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to load job offers');
+      console.error('Error fetching job offers:', err);
+      setJobOffers([]); // Ensure it's always an array even on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchJobOffers();
+}, []);
+
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -159,12 +190,50 @@ export default function Home() {
     navigate("/about");
   };
   const handleProgramSelect = (programId: string) => {
-  if (programId === "education") {
-    navigate("/opportunities?program=youth");
-  } else {
-    navigate("/opportunities");
+    if (programId === "education") {
+      navigate("/opportunities?program=youth");
+    } else {
+      navigate("/opportunities");
+    }
+  };
+
+const transformJobOfferToCardProps = (offer: JobOffer) => ({
+  id: offer.id.toString(),
+  title: offer.jobTitle,
+  businessUnit: offer.business_unit.name, // Now using the name from the business unit object
+  location: offer.location,
+  type: offer.contract_type.typeName,
+  experience: "2+ years",
+  description: offer.jobDescription,
+  skills: offer.requiredSkills.split(',').map(skill => skill.trim()),
+  priority: offer.priority.priorityLevel,
+});
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading job opportunities...</p>
+        </div>
+      </div>
+    );
   }
-};
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center text-destructive">
+          <p>Error loading job opportunities: {error}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -188,70 +257,70 @@ export default function Home() {
 
       {/* EVP + Testimonials */}
       <section className="section-padding bg-background">
-  <div className="max-w-7xl mx-auto container-padding">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
-      {/* Testimonial Video/Image */}
-      <div className="flex flex-col justify-center">
-        <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl group">
-  <iframe
-    className="absolute inset-0 w-full h-full"
-    src="https://www.youtube.com/embed/gqCKxEaPgOM?autoplay=1&mute=1&loop=1&playlist=gqCKxEaPgOM"
-    title="اليوم الأول من ملتقى شباب المعرفة للعالم الإسلامي بالإيسيسكو"
-    frameBorder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    referrerPolicy="strict-origin-when-cross-origin"
-    allowFullScreen
-  ></iframe>
+        <div className="max-w-7xl mx-auto container-padding">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+            {/* Testimonial Video/Image */}
+            <div className="flex flex-col justify-center">
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-2xl group">
+                <iframe
+                  className="absolute inset-0 w-full h-full"
+                  src="https://www.youtube.com/embed/gqCKxEaPgOM?autoplay=1&mute=1&loop=1&playlist=gqCKxEaPgOM"
+                  title="اليوم الأول من ملتقى شباب المعرفة للعالم الإسلامي بالإيسيسكو"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
 
-  {/* Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
 
-          {/* Optional Overlay Button – only visible if you want to trigger something */}
-          <Button
-            size="sm"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hidden group-hover:flex"
-          >
-            <Play className="w-4 h-4 mr-2" />
-            Play Story
-          </Button>
+                {/* Optional Overlay Button – only visible if you want to trigger something */}
+                <Button
+                  size="sm"
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hidden group-hover:flex"
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Play Story
+                </Button>
 
-          {/* Text overlay */}
-          {/* <div className="absolute bottom-4 left-4 text-white">
+                {/* Text overlay */}
+                {/* <div className="absolute bottom-4 left-4 text-white">
             <p className="font-semibold">{testimonials[0].name}</p>
             <p className="text-sm opacity-90">{testimonials[0].role}</p>
           </div> */}
-        </div>
-      </div>
+              </div>
+            </div>
 
-      {/* EVP Text */}
-      <div className="flex flex-col justify-center space-y-6">
-        <div className="space-y-4">
-          <h2 className="font-title text-3xl md:text-4xl font-bold text-foreground">
-            Why joining ICESCO Family
-          </h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            At ICESCO, we empower individuals to make a global impact while fostering personal and professional growth. Join a diverse, mission-driven organization where your work contributes to advancing education, science, and culture across the Islamic world.
-          </p>
-        </div>
-        
-        <blockquote className="border-l-4 border-primary pl-6 italic text-muted-foreground">
-          "At ICESCO, we do not just prepare for the future — we shape it. We empower youth, champion innovation, and build bridges between cultures."
-          <footer className="mt-2 text-sm font-title font-bold text-foreground">
-            — Dr. Salim M. AlMalik, Director‑General of ICESCO
-          </footer>
-        </blockquote>
+            {/* EVP Text */}
+            <div className="flex flex-col justify-center space-y-6">
+              <div className="space-y-4">
+                <h2 className="font-title text-3xl md:text-4xl font-bold text-foreground">
+                  Why joining ICESCO Family
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  At ICESCO, we empower individuals to make a global impact while fostering personal and professional growth. Join a diverse, mission-driven organization where your work contributes to advancing education, science, and culture across the Islamic world.
+                </p>
+              </div>
 
-        {/* <div className="grid grid-cols-1 gap-4 pt-4">
+              <blockquote className="border-l-4 border-primary pl-6 italic text-muted-foreground">
+                "At ICESCO, we do not just prepare for the future — we shape it. We empower youth, champion innovation, and build bridges between cultures."
+                <footer className="mt-2 text-sm font-title font-bold text-foreground">
+                  — Dr. Salim M. AlMalik, Director‑General of ICESCO
+                </footer>
+              </blockquote>
+
+              {/* <div className="grid grid-cols-1 gap-4 pt-4">
           <div className="text-center p-4 bg-primary/5 rounded-lg">
             <p className="text-2xl font-bold text-primary">53</p>
             <p className="text-sm text-muted-foreground">Member States</p>
           </div>
         </div> */}
-      </div>
-    </div>
-  </div>
-</section>
-          {/* Career Paths & Programs */}
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Career Paths & Programs */}
       <section className="section-padding bg-muted/30">
         <div className="max-w-7xl mx-auto container-padding">
           <div className="text-center space-y-6 mb-16">
@@ -271,7 +340,7 @@ export default function Home() {
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                       <path.icon className="w-6 h-6 text-primary" />
                     </div>
-                    
+
                   </div>
                   <CardTitle className="text-xl">{path.title}</CardTitle>
                 </CardHeader>
@@ -279,7 +348,7 @@ export default function Home() {
                   <p className="text-muted-foreground">{path.description}</p>
                   <div className="flex justify-between items-center text-sm">
                     <Button variant="outline" size="sm" onClick={() => handleProgramSelect(path.id)}>
-                      Explore 
+                      Explore
                     </Button>
                   </div>
                 </CardContent>
@@ -298,7 +367,7 @@ export default function Home() {
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Discover our most sought-after positions and join teams making a global impact.
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto bg-background rounded-xl shadow-lg p-6 space-y-4">
               <div className="flex flex-col sm:flex-row gap-4">
@@ -310,21 +379,7 @@ export default function Home() {
                     className="w-full"
                   />
                 </div>
-                {/* <div className="sm:w-48">
-                  <Select value={searchCategory} onValueChange={setSearchCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Categories" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      <SelectItem value="digital">Digital Transformation</SelectItem>
-                      <SelectItem value="education">Education</SelectItem>
-                      <SelectItem value="science">Science & Technology</SelectItem>
-                      <SelectItem value="culture">Culture & Heritage</SelectItem>
-                      <SelectItem value="hr">Human Resources</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div> */}
+
                 <Button onClick={handleSearch} className="sm:w-auto">
                   <Search className="w-4 h-4 mr-2" />
                   Search
@@ -334,18 +389,31 @@ export default function Home() {
           </div>
 
           {/* Job Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {featuredJobs.map((job, index) => (
-              <JobCard key={index} {...job} />
-            ))}
-          </div>
+          {Array.isArray(jobOffers) && jobOffers.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {jobOffers.slice(0, 6).map((offer) => (
+                <JobCard
+                  key={offer.id}
+                  {...transformJobOfferToCardProps(offer)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">
+                {loading ? 'Loading job opportunities...' : 'No job opportunities available at the moment.'}
+              </p>
+            </div>
+          )}
 
-          <div className="text-center">
-            <Button variant="outline" size="lg" onClick={handleExploreOpportunities}>
-              View All Opportunities
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </div>
+          {jobOffers.length > 6 && (
+            <div className="text-center">
+              <Button variant="outline" size="lg" onClick={handleExploreOpportunities}>
+                View All Opportunities ({jobOffers.length})
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -389,9 +457,9 @@ export default function Home() {
             <p className="font-sans text-xl text-white/90">
               Join our talent community and be the first to know about new opportunities, events, and insights from ICESCO.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <Input 
+              <Input
                 placeholder="Enter your email"
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/70"
               />
@@ -399,7 +467,7 @@ export default function Home() {
                 Subscribe
               </Button>
             </div>
-            
+
             <p className="text-sm text-white/70">
               By subscribing, you agree to receive career updates and opportunities from ICESCO.
             </p>

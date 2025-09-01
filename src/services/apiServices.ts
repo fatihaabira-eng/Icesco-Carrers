@@ -2,23 +2,30 @@
 import apiClient from '../lib/axios';
 
 // Types for different API responses
+
+
+
+
 export interface JobOffer {
-  id: string;
-  title: string;
-  businessUnit: string;
+  id: number;
+  reference: string;
+  jobTitle: string;
   location: string;
-  type: string;
-  experience: string;
-  urgent?: boolean;
-  description: string;
-  skills: string[];
-  requirements: string[];
-  responsibilities: string[];
-  salary_range?: string;
-  benefits?: string[];
-  application_deadline: string;
-  created_at: string;
-  updated_at: string;
+  contract_type: ContractType;
+  job_status: JobStatus;
+  priority: Priority;
+  business_unit: BusinessUnit;
+  numberOfPositions: number;
+  closingDate: string;
+  publishedDate: string;
+  joiningDate: string;
+  jobDescription: string;
+  tasks: string;
+  requiredSkills: string;
+  academicQualifications: string;
+  preferredCertifications: string;
+  salaryBenefits: string;
+  program_category: ProgramCategory;
 }
 
 export interface Application {
@@ -38,6 +45,29 @@ export interface BusinessUnit {
   open_positions: number;
 }
 
+
+export interface ContractType {
+  id: number;
+  typeName: string;
+}
+
+export interface JobStatus {
+  id: number;
+  statusName: string;
+}
+
+export interface Priority {
+  id: number;
+  priorityLevel: string;
+}
+
+
+export interface ProgramCategory {
+  id: number;
+  name: string;
+}
+
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -52,43 +82,73 @@ export interface ApiResponse<T> {
 
 export class JobService {
   /**
-   * Get all job offers with optional filters
+   * Get all job offers with full details
    */
   static async getJobs(params?: {
-    businessUnit?: string;
-    location?: string;
-    type?: string;
-    experience?: string;
-    keyword?: string;
-    page?: number;
+    skip?: number;
     limit?: number;
-  }): Promise<ApiResponse<JobOffer[]>> {
+  }): Promise<JobOffer[]> {
     try {
-      const response = await apiClient.get('/jobs', { params });
-      return response.data;
+      const response = await apiClient.get('/job_offers-full/', { params });
+      
+      // Handle different response formats
+      if (Array.isArray(response.data)) {
+        return response.data;
+      } else if (response.data && Array.isArray(response.data.data)) {
+        // If the response has a data property that's an array
+        return response.data.data;
+      } else if (response.data && response.data.success && Array.isArray(response.data.data)) {
+        // If the response has success: true and data array
+        return response.data.data;
+      } else {
+        console.error('Unexpected API response format:', response.data);
+        return [];
+      }
     } catch (error: any) {
+      console.error('API Error:', error.response?.data || error.message);
       throw new Error(error.message || 'Failed to fetch jobs');
     }
   }
 
   /**
-   * Get featured/urgent jobs
+   * Get job offers summary (with application counts)
    */
-  static async getFeaturedJobs(): Promise<ApiResponse<JobOffer[]>> {
+  static async getJobSummaries(params?: {
+    skip?: number;
+    limit?: number;
+  }): Promise<any[]> {
     try {
-      const response = await apiClient.get('/jobs/featured');
+      const response = await apiClient.get('/job_offers/', { params });
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch featured jobs');
+      throw new Error(error.message || 'Failed to fetch job summaries');
     }
   }
 
   /**
-   * Search jobs
+   * Get job offer by ID
    */
-  static async searchJobs(query: string): Promise<ApiResponse<JobOffer[]>> {
+  static async getJobById(jobId: number): Promise<JobOffer> {
     try {
-      const response = await apiClient.get(`/jobs/search?q=${encodeURIComponent(query)}`);
+      const response = await apiClient.get(`/job_offers/${jobId}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to fetch job');
+    }
+  }
+
+  /**
+   * Search jobs by keyword
+   */
+  static async searchJobs(query: string, params?: {
+    skip?: number;
+    limit?: number;
+  }): Promise<JobOffer[]> {
+    try {
+      // This endpoint might need to be implemented on your backend
+      const response = await apiClient.get('/job_offers/search', {
+        params: { q: query, ...params }
+      });
       return response.data;
     } catch (error: any) {
       throw new Error(error.message || 'Failed to search jobs');
@@ -100,9 +160,9 @@ export class BusinessUnitService {
   /**
    * Get all business units
    */
-  static async getBusinessUnits(): Promise<ApiResponse<BusinessUnit[]>> {
+  static async getBusinessUnits(): Promise<BusinessUnit[]> {
     try {
-      const response = await apiClient.get('/business-units');
+      const response = await apiClient.get('/business_units/');
       return response.data;
     } catch (error: any) {
       throw new Error(error.message || 'Failed to fetch business units');
@@ -112,33 +172,21 @@ export class BusinessUnitService {
   /**
    * Get business unit by ID
    */
-  static async getBusinessUnit(businessUnitId: string): Promise<ApiResponse<BusinessUnit>> {
+  static async getBusinessUnit(businessUnitId: string): Promise<BusinessUnit> {
     try {
-      const response = await apiClient.get(`/business-units/${businessUnitId}`);
+      const response = await apiClient.get(`/business_units/${businessUnitId}`);
       return response.data;
     } catch (error: any) {
       throw new Error(error.message || 'Failed to fetch business unit');
     }
   }
-
-  /**
-   * Get jobs by business unit
-   */
-  static async getBusinessUnitJobs(businessUnitId: string): Promise<ApiResponse<JobOffer[]>> {
-    try {
-      const response = await apiClient.get(`/business-units/${businessUnitId}/jobs`);
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch business unit jobs');
-    }
-  }
 }
 
-export class UserService {
+export class ApplicationService {
   /**
    * Get user applications
    */
-  static async getUserApplications(userId: string): Promise<ApiResponse<Application[]>> {
+  static async getUserApplications(userId: string): Promise<Application[]> {
     try {
       const response = await apiClient.get(`/users/${userId}/applications`);
       return response.data;
@@ -147,27 +195,29 @@ export class UserService {
     }
   }
 
+  
+
   /**
-   * Get user profile
+   * Get application by ID
    */
-  static async getUserProfile(userId: string): Promise<ApiResponse<any>> {
+  static async getApplication(applicationId: string): Promise<Application> {
     try {
-      const response = await apiClient.get(`/users/${userId}/profile`);
+      const response = await apiClient.get(`/applications/${applicationId}`);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch user profile');
+      throw new Error(error.message || 'Failed to fetch application');
     }
   }
 
   /**
-   * Update user profile
+   * Submit new application
    */
-  static async updateUserProfile(userId: string, profileData: any): Promise<ApiResponse<any>> {
+  static async submitApplication(applicationData: any): Promise<any> {
     try {
-      const response = await apiClient.put(`/users/${userId}/profile`, profileData);
+      const response = await apiClient.post('/applications/', applicationData);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to update user profile');
+      throw new Error(error.message || 'Failed to submit application');
     }
   }
 }
@@ -176,13 +226,13 @@ export class AuthService {
   /**
    * Login user
    */
-  static async login(email: string, password: string): Promise<ApiResponse<{ token: string; user: any }>> {
+  static async login(email: string, password: string): Promise<{ token: string; user: any }> {
     try {
       const response = await apiClient.post('/auth/login', { email, password });
       
       // Store token in localStorage
-      if (response.data.data.token) {
-        localStorage.setItem('auth_token', response.data.data.token);
+      if (response.data.token) {
+        localStorage.setItem('auth_token', response.data.token);
       }
       
       return response.data;
@@ -199,13 +249,13 @@ export class AuthService {
     password: string;
     full_name: string;
     phone_number?: string;
-  }): Promise<ApiResponse<{ token: string; user: any }>> {
+  }): Promise<{ token: string; user: any }> {
     try {
       const response = await apiClient.post('/auth/register', userData);
       
       // Store token in localStorage
-      if (response.data.data.token) {
-        localStorage.setItem('auth_token', response.data.data.token);
+      if (response.data.token) {
+        localStorage.setItem('auth_token', response.data.token);
       }
       
       return response.data;
@@ -230,7 +280,7 @@ export class AuthService {
   /**
    * Verify token
    */
-  static async verifyToken(): Promise<ApiResponse<{ user: any }>> {
+  static async verifyToken(): Promise<{ user: any }> {
     try {
       const response = await apiClient.get('/auth/verify');
       return response.data;
@@ -241,40 +291,51 @@ export class AuthService {
   }
 }
 
+export class UserService {
+  /**
+   * Get user profile
+   */
+  static async getUserProfile(userId: string): Promise<any> {
+    try {
+      const response = await apiClient.get(`/users/${userId}/profile`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to fetch user profile');
+    }
+  }
+
+  /**
+   * Update user profile
+   */
+  static async updateUserProfile(userId: string, profileData: any): Promise<any> {
+    try {
+      const response = await apiClient.put(`/users/${userId}/profile`, profileData);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to update user profile');
+    }
+  }
+}
+
+// Simple notification service (you might want to implement this later)
 export class NotificationService {
   /**
-   * Get user notifications
+   * Get user notifications (mock for now)
    */
-  static async getNotifications(): Promise<ApiResponse<any[]>> {
+  static async getNotifications(): Promise<any[]> {
     try {
-      const response = await apiClient.get('/notifications');
-      return response.data;
+      // This endpoint might not exist yet, returning mock data
+      return [
+        {
+          id: '1',
+          type: 'info',
+          message: 'Welcome to ICESCO Careers Platform',
+          read: false,
+          created_at: new Date().toISOString()
+        }
+      ];
     } catch (error: any) {
       throw new Error(error.message || 'Failed to fetch notifications');
-    }
-  }
-
-  /**
-   * Mark notification as read
-   */
-  static async markAsRead(notificationId: string): Promise<ApiResponse<any>> {
-    try {
-      const response = await apiClient.patch(`/notifications/${notificationId}/read`);
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error.message || 'Failed to mark notification as read');
-    }
-  }
-
-  /**
-   * Mark all notifications as read
-   */
-  static async markAllAsRead(): Promise<ApiResponse<any>> {
-    try {
-      const response = await apiClient.patch('/notifications/read-all');
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error.message || 'Failed to mark all notifications as read');
     }
   }
 }
