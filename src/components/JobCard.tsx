@@ -11,12 +11,12 @@ interface JobCardProps {
   location: string;
   type: string;
   experience: string;
-  urgent?: boolean;
+  priority: string;
   description: string;
   skills: string[];
 
-  image?: string; 
-  imageAlt?: string; 
+  image?: string;
+  imageAlt?: string;
 }
 
 export default function JobCard({
@@ -26,14 +26,14 @@ export default function JobCard({
   location,
   type,
   experience,
-  urgent = false,
+  priority,
   description,
   skills,
-  image, 
+  image,
   imageAlt,
 }: JobCardProps) {
   return (
-     <Card className="card-hover group cursor-pointer bg-card border-border flex flex-col justify-between h-full overflow-hidden">
+    <Card className="card-hover group cursor-pointer bg-card border-border flex flex-col justify-between h-full overflow-hidden">
       {/* ✅ Image Section */}
       {image && (
         <div className="relative h-48 w-full overflow-hidden">
@@ -43,13 +43,13 @@ export default function JobCard({
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           {/* Overlay for urgent badge */}
-          {urgent && (
+        
             <div className="absolute top-3 right-3">
               <Badge className="bg-red-500 text-white shadow-lg">
-                Urgent
+                {priority}
               </Badge>
             </div>
-          )}
+        
           {/* Gradient overlay for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
@@ -64,9 +64,9 @@ export default function JobCard({
             <p className="text-primary font-medium">{businessUnit}</p>
           </div>
           {/* Show urgent badge here only if no image */}
-          {urgent && !image && (
+          {priority && !image && (
             <Badge className="bg-secondary text-secondary-foreground">
-              Urgent
+              {priority}
             </Badge>
           )}
         </div>
@@ -90,13 +90,13 @@ export default function JobCard({
       <CardContent className="flex flex-col flex-1 justify-between space-y-4">
         {/* Fixed height area for description and skills */}
         <div className="flex-1 space-y-4">
-          
-        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
-          {description.length > 10 
-            ? `${description.substring(0, description.lastIndexOf(' ', 40) || 100)}...` 
-            : description
-          }
-        </p>
+
+          <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
+            {description.length > 10
+              ? `${description.substring(0, description.lastIndexOf(' ', 40) || 100)}...`
+              : description
+            }
+          </p>
 
           <div className="space-y-2">
             <p className="text-sm font-medium text-card-foreground">Key Skills:</p>
